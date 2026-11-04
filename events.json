@@ -1,0 +1,30 @@
+{
+  "_help": "Upcoming events. Add your own: date (YYYY-MM-DD), title, region (US/DE/EU/Global), category, note. approx=true means the date is estimated - check it.",
+  "events": [
+    {"date": "2026-11-04", "title": "US midterms: results, recounts, winners & losers", "region": "US", "category": "Politics", "note": "Counting continues for days. Videos: who won, what changes, Trump reaction."},
+    {"date": "2026-11-10", "title": "GTA VI pre-load opens (PS5 / Xbox)", "region": "Global", "category": "Gaming", "note": "Up to 212 GB download. Xbox: 9 Nov 7pm ET.", "url": "https://www.rockstargames.com/VI"},
+    {"date": "2026-11-11", "title": "Karneval starts 11.11 at 11:11 + St. Martin", "region": "DE", "category": "Culture", "note": "Koeln, Mainz, Duesseldorf. Same day: Veterans Day in the US."},
+    {"date": "2026-11-12", "title": "GTA VI physical copies in stores", "region": "Global", "category": "Gaming"},
+    {"date": "2026-11-14", "title": "'Gen Z regelt!' protests planned", "region": "DE", "category": "Politics", "note": "Cost of living / education protests, last ones got violent."},
+    {"date": "2026-11-19", "title": "GTA VI release (PS5 / Xbox Series X|S)", "region": "Global", "category": "Gaming", "note": "Biggest launch of the year. Prepare videos BEFORE: map, price, reviews, memes.", "url": "https://www.rockstargames.com/VI"},
+    {"date": "2026-11-20", "title": "The Hunger Games: Sunrise on the Reaping (cinemas)", "region": "Global", "category": "Movies", "note": "Early screenings from 18 Nov."},
+    {"date": "2026-11-22", "title": "Totensonntag", "region": "DE", "category": "Culture"},
+    {"date": "2026-11-26", "title": "Thanksgiving + Macy's Parade", "region": "US", "category": "Culture"},
+    {"date": "2026-11-26", "title": "Narnia (Greta Gerwig) in IMAX", "region": "Global", "category": "Movies", "approx": true, "note": "Netflix release around Christmas - check."},
+    {"date": "2026-11-27", "title": "Black Friday", "region": "Global", "category": "Shopping", "note": "Deals videos, GTA VI / console deals."},
+    {"date": "2026-11-27", "title": "Weihnachtsmaerkte open (most cities)", "region": "DE", "category": "Culture", "approx": true, "note": "Dates vary by city (some from 23 Nov)."},
+    {"date": "2026-11-29", "title": "1. Advent + Euro 7 rule for new cars", "region": "DE", "category": "Culture"},
+    {"date": "2026-11-30", "title": "Cyber Monday", "region": "US", "category": "Shopping"},
+    {"date": "2026-12-02", "title": "Spotify Wrapped 2026", "region": "Global", "category": "Music", "approx": true, "note": "Usually first week of December."},
+    {"date": "2026-12-06", "title": "Nikolaus", "region": "DE", "category": "Culture"},
+    {"date": "2026-12-09", "title": "TIME Person of the Year", "region": "US", "category": "Culture", "approx": true},
+    {"date": "2026-12-10", "title": "The Game Awards 2026 (Los Angeles)", "region": "Global", "category": "Gaming", "note": "Night of 10-11 Dec in Europe. Trailers & surprise reveals.", "url": "https://thegameawards.com/"},
+    {"date": "2026-12-11", "title": "Jumanji 3 (cinemas)", "region": "Global", "category": "Movies", "approx": true},
+    {"date": "2026-12-18", "title": "AVENGERS: DOOMSDAY + DUNE: PART THREE ('Dunesday')", "region": "Global", "category": "Movies", "note": "Rumour: Marvel may move Doomsday 1 week earlier - watch the news."},
+    {"date": "2026-12-24", "title": "Christmas (Heiligabend in DE)", "region": "Global", "category": "Culture"},
+    {"date": "2026-12-31", "title": "New Year's Eve / Silvester", "region": "Global", "category": "Culture"},
+    {"date": "2027-01-03", "title": "New US Congress sworn in", "region": "US", "category": "Politics", "approx": true},
+    {"date": "2027-01-10", "title": "Golden Globes", "region": "US", "category": "Movies", "approx": true},
+    {"date": "2027-02-14", "title": "Super Bowl LXI (SoFi Stadium, LA)", "region": "US", "category": "Sport", "approx": true}
+  ]
+}

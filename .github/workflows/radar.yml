@@ -1,0 +1,80 @@
+# Trend Radar in the cloud: runs every 15 minutes, even when the PC is off.
+# - sends notifications to the phone (ntfy, topic = secret NTFY_TOPIC)
+# - keeps its memory (state.json) and a small snapshot (latest.json) on the "data" branch
+# - publishes the dashboard on GitHub Pages
+name: Trend Radar
+
+on:
+  schedule:
+    - cron: "*/15 * * * *"
+  workflow_dispatch:
+
+concurrency:
+  group: trend-radar
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+
+      - name: Restore memory from the data branch
+        run: |
+          mkdir -p data
+          if git fetch --depth 1 origin data; then
+            git show FETCH_HEAD:state.json > data/state.json || rm -f data/state.json
+          fi
+
+      - name: Check trends and notify
+        env:
+          TRENDRADAR_CLOUD: "1"
+          NTFY_TOPIC: ${{ secrets.NTFY_TOPIC }}
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+          YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
+        run: python trend_radar.py
+
+      - name: Save memory to the data branch
+        if: always()
+        run: |
+          test -f data/state.json || exit 0
+          rm -rf store && mkdir store
+          cp data/state.json store/
+          cp data/latest.json store/ 2>/dev/null || true
+          tail -n 300 data/log.txt > store/log.txt 2>/dev/null || true
+          cd store
+          git init -q -b data
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -q -m "radar $(date -u +%Y-%m-%dT%H:%MZ)"
+          git push -q -f "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git" data
+
+      - name: Prepare dashboard site
+        run: |
+          rm -rf site && mkdir site
+          cp dashboard.html site/index.html
+          cp icon.png site/ 2>/dev/null || true
+          cp data/latest.json site/ 2>/dev/null || true
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: site
+
+      - id: deploy
+        uses: actions/deploy-pages@v4

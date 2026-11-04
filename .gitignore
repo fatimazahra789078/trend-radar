@@ -1,0 +1,8 @@
+# private / generated - never uploaded
+config.local.json
+data/
+dashboard.html
+*.tmp
+__pycache__/
+store/
+site/

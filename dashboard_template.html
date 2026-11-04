@@ -1,0 +1,493 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Trend Radar</title>
+<link rel="icon" href="icon.png">
+<style>
+:root{
+  --bg:#0a0f1d; --panel:#111a2e; --panel2:#172240; --line:#23304f; --text:#e8edf7; --muted:#8e9bb8;
+  --hot:#ff5449; --trend:#ffa928; --watch:#ffd23f; --story:#4fc3ff; --ok:#38d996; --accent:#ff7a50; --live:#ff3b3b;
+  --chip:#1b2746; --shadow:0 1px 0 rgba(255,255,255,.03) inset, 0 8px 24px rgba(0,0,0,.25);
+}
+@media (prefers-color-scheme: light){
+  :root{ --bg:#f3f5fa; --panel:#ffffff; --panel2:#f2f5fb; --line:#dfe5f0; --text:#111827; --muted:#5b6886;
+         --chip:#edf1f8; --shadow:0 1px 2px rgba(16,24,40,.06), 0 6px 16px rgba(16,24,40,.06); }
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--text);font:14px/1.45 "Segoe UI",system-ui,-apple-system,Roboto,Arial,sans-serif}
+a{color:inherit}
+.wrap{max-width:1320px;margin:0 auto;padding:0 16px 48px}
+header{position:sticky;top:0;z-index:5;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.top{display:flex;flex-wrap:wrap;align-items:center;gap:12px 20px;padding:12px 0}
+.brand{display:flex;align-items:center;gap:10px;font-weight:800;letter-spacing:.06em;font-size:16px}
+.brand img{width:30px;height:30px}
+.status{color:var(--muted);font-size:12.5px}
+.status b{color:var(--text)}
+.clocks{display:flex;gap:14px;margin-left:auto;flex-wrap:wrap}
+.clock{font-size:12px;color:var(--muted);text-align:right}
+.clock b{display:block;color:var(--text);font-size:14px;font-variant-numeric:tabular-nums}
+.tabs{display:flex;gap:2px;overflow-x:auto;scrollbar-width:none}
+.tabs::-webkit-scrollbar{display:none}
+.tab{border:0;background:none;color:var(--muted);padding:10px 12px;font:inherit;font-weight:600;cursor:pointer;border-bottom:2px solid transparent;white-space:nowrap}
+.tab[aria-selected=true]{color:var(--text);border-color:var(--accent)}
+.tab .n{font-size:11px;background:var(--chip);border-radius:9px;padding:1px 7px;margin-left:6px;color:var(--muted)}
+.bar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:16px 0}
+.chipbtn{border:1px solid var(--line);background:var(--panel);color:var(--text);border-radius:999px;padding:6px 12px;font:inherit;font-size:13px;cursor:pointer}
+.chipbtn[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.search{flex:1;min-width:160px;max-width:300px;border:1px solid var(--line);background:var(--panel);color:var(--text);border-radius:10px;padding:7px 12px;font:inherit}
+select{border:1px solid var(--line);background:var(--panel);color:var(--text);border-radius:10px;padding:7px 10px;font:inherit}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(360px,1fr));gap:14px}
+@media (max-width:420px){.grid{grid-template-columns:1fr}}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:14px 14px 12px;box-shadow:var(--shadow);display:flex;flex-direction:column;gap:8px;position:relative;min-width:0}
+.card.t2{border-color:color-mix(in srgb,var(--hot) 55%,var(--line))}
+.card.t2::before,.card.brk::before{content:"";position:absolute;inset:0 0 auto 0;height:3px;border-radius:14px 14px 0 0;background:linear-gradient(90deg,var(--hot),var(--trend))}
+.card.brk::before{background:var(--live)}
+.row{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+.rank{color:var(--muted);font-weight:700;font-variant-numeric:tabular-nums}
+.badge{font-size:11px;font-weight:800;letter-spacing:.05em;border-radius:6px;padding:2px 7px;text-transform:uppercase}
+.b-hot{background:var(--hot);color:#fff}.b-trend{background:var(--trend);color:#1b1300}.b-story{background:var(--story);color:#00202f}
+.b-new{background:var(--ok);color:#002914}.b-watch{background:var(--watch);color:#2a2000}.b-low{background:var(--chip);color:var(--muted)}
+.b-live{background:var(--live);color:#fff}
+.cat{font-size:11px;color:var(--muted);border:1px dashed var(--line);border-radius:6px;padding:1px 7px}
+.score{margin-left:auto;font-weight:800;font-variant-numeric:tabular-nums;cursor:help}
+.rise{color:var(--ok);font-size:12px;font-weight:700}
+.head{display:flex;gap:12px;align-items:flex-start}
+.head h3{margin:0;font-size:17px;line-height:1.3;flex:1;min-width:0;overflow-wrap:anywhere}
+.head img{width:56px;height:56px;border-radius:10px;object-fit:cover;flex:none;background:var(--chip)}
+.sum{color:var(--muted);font-size:12.5px}
+.ctx{font-size:13.5px;text-decoration:none;border-left:3px solid var(--accent);padding-left:8px}
+.ctx:hover{text-decoration:underline}
+.cc{font-size:11px;font-weight:700;border:1px solid var(--line);border-radius:5px;padding:1px 6px;background:var(--chip)}
+.cc.focus{border-color:var(--accent);color:var(--accent)}
+.meta{color:var(--muted);font-size:12px}
+.rel{display:flex;flex-wrap:wrap;gap:5px}
+.rel span{font-size:11.5px;background:var(--chip);border-radius:6px;padding:2px 7px;color:var(--muted)}
+.links{display:flex;gap:6px;flex-wrap:wrap;margin-top:2px}
+.links a{font-size:12px;text-decoration:none;border:1px solid var(--line);border-radius:8px;padding:4px 9px;background:var(--panel2)}
+.links a:hover{border-color:var(--accent)}
+details{font-size:13px}
+summary{cursor:pointer;color:var(--muted);font-size:12.5px}
+details ul{margin:6px 0 0;padding-left:18px}
+details li{margin:3px 0}
+details li small,.muted{color:var(--muted)}
+.idea{background:var(--panel2);border-radius:10px;padding:8px 10px;margin-top:6px}
+.idea p{margin:0 0 4px}
+.empty{color:var(--muted);padding:40px;text-align:center}
+.events{display:flex;flex-direction:column;gap:22px;margin-top:16px}
+.month h2,.sec h2{font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:0 0 8px}
+.ev{display:grid;grid-template-columns:88px 1fr auto;gap:12px;align-items:center;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:10px 14px;margin-bottom:8px}
+.ev.soon{border-color:var(--accent)}
+.ev .d{font-weight:800;font-variant-numeric:tabular-nums}
+.ev .d small{display:block;color:var(--muted);font-weight:500}
+.ev .t{font-weight:600;min-width:0;overflow-wrap:anywhere}
+.ev .t small{display:block;color:var(--muted);font-weight:400}
+.cd{font-size:12px;font-weight:800;border-radius:999px;padding:4px 10px;background:var(--chip);white-space:nowrap}
+.ev.soon .cd{background:var(--accent);color:#fff}
+.ev.live .cd{background:var(--live);color:#fff}
+@media (max-width:560px){.ev{grid-template-columns:1fr auto}.ev .d{grid-column:1/-1}}
+.sites,.cols{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px;margin-top:16px}
+.box{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:14px;min-width:0}
+.box h2{margin:0 0 10px;font-size:15px}
+.site{display:block;text-decoration:none;padding:7px 0;border-top:1px solid var(--line)}
+.site b{display:block}
+.site span{color:var(--muted);font-size:12.5px}
+.site:hover b{color:var(--accent)}
+.box ol{margin:0;padding-left:24px}
+.box li{margin:0 0 9px;overflow-wrap:anywhere}
+.box li a{text-decoration:none;font-weight:600}
+.box li a:hover{text-decoration:underline}
+.box small{display:block;color:var(--muted)}
+.tlink{margin-top:3px;border:1px solid var(--accent);color:var(--accent);background:none;border-radius:6px;font:inherit;font-size:11.5px;padding:1px 7px;cursor:pointer}
+.mrow{display:flex;gap:10px;align-items:center;margin:0 0 8px}
+.mrow img{width:40px;height:40px;border-radius:6px;object-fit:cover;flex:none;background:var(--chip)}
+.mrow .r{width:22px;color:var(--muted);font-weight:700;text-align:right;flex:none}
+.mrow a{text-decoration:none;font-weight:600}
+.big{color:var(--watch)}
+footer{color:var(--muted);font-size:12px;margin-top:28px;line-height:1.8}
+.src{display:inline-block;margin-right:12px}
+.src.bad{color:var(--hot)}
+.hint{color:var(--muted);font-size:12.5px;margin:-4px 0 12px}
+code{background:var(--chip);border-radius:5px;padding:1px 6px}
+.away{border-color:var(--accent);margin-top:16px}
+.cols3{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px}
+.cols3 ol{margin:6px 0 0}
+</style>
+</head>
+<body>
+<header>
+  <div class="wrap">
+    <div class="top">
+      <div class="brand"><img src="icon.png" alt="">TREND RADAR</div>
+      <div class="status" id="status"></div>
+      <div class="clocks" id="clocks"></div>
+    </div>
+    <nav class="tabs" role="tablist" id="tabs"></nav>
+  </div>
+</header>
+<main class="wrap" id="main"></main>
+<div class="wrap"><footer id="foot"></footer></div>
+
+<script>
+const DATA = /*__DATA__*/null;
+const $ = (s, el=document) => el.querySelector(s);
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const store = {
+  get(k, d){ try { const v = localStorage.getItem("tr_"+k); return v === null ? d : JSON.parse(v); } catch(e){ return d; } },
+  set(k, v){ try { localStorage.setItem("tr_"+k, JSON.stringify(v)); } catch(e){} }
+};
+const FOCUS = ["US","DE","GB","FR","IT","ES"], DACH = ["DE","AT","CH"], EUROPE = ["GB","FR","IT","ES","NL","AT","CH","EU"];
+const isJustIn = t => t.just_in || (t.first_pub_h != null ? t.first_pub_h <= 1.5 : t.age_h < 1);
+const isRepeat = t => t.days_seen >= 2 || t.hours_seen >= 6;
+const startedH = t => t.first_pub_h != null ? Math.max(t.first_pub_h, t.age_h || 0) : t.age_h;
+const state = { tab: store.get("tab","trends"), filter: store.get("filter","all"), cat: store.get("cat","all"),
+                hcat: store.get("hcat","all"), q: "", sort: store.get("sort","score") };
+const A = (u, t, cls="") => `<a class="${cls}" href="${esc(u)}" target="_blank" rel="noopener">${t}</a>`;
+
+function ago(h){
+  if (h == null) return "";
+  if (h < 1) return Math.max(1, Math.round(h*60)) + " min";
+  if (h < 48) return Math.round(h) + "h";
+  return Math.round(h/24) + " days";
+}
+const hoursFrom = iso => iso ? (Date.now() - new Date(iso).getTime())/3600000 : null;
+function fmtTime(iso){ return new Date(iso).toLocaleTimeString([], {hour:"2-digit", minute:"2-digit"}); }
+function fmtDay(iso){ return new Date(iso).toLocaleString([], {weekday:"short", day:"2-digit", month:"short", hour:"2-digit", minute:"2-digit"}); }
+
+function header(){
+  const next = new Date(new Date(DATA.generated).getTime() + DATA.every*60000);
+  const ok = DATA.sources.filter(s => s.ok).length;
+  $("#status").innerHTML = `Updated <b>${fmtTime(DATA.generated)}</b> · next check ~${fmtTime(next.toISOString())} · ${ok}/${DATA.sources.length} sources OK`;
+  const zones = [["New York","America/New_York"],["Los Angeles","America/Los_Angeles"],["Berlin","Europe/Berlin"],["You (PC)",undefined]];
+  const draw = () => { $("#clocks").innerHTML = zones.map(([n,z]) => {
+      let t; try { t = new Date().toLocaleTimeString([], z ? {hour:"2-digit", minute:"2-digit", timeZone:z} : {hour:"2-digit", minute:"2-digit"}); } catch(e){ t = "--"; }
+      return `<div class="clock">${n}<b>${t}</b></div>`; }).join(""); };
+  draw(); setInterval(draw, 30000);
+}
+
+function tabs(){
+  const today = new Date().toISOString().slice(0,10);
+  const n = {
+    trends: DATA.topics.filter(t => !t.story).length,
+    news: Object.values(DATA.headlines || {}).reduce((n, l) => n + l.length, 0),
+    watch: Object.keys(DATA.watch || {}).length,
+    sports: (DATA.sports || []).filter(g => g.state === "in").length || (DATA.sports || []).length,
+    charts: "", events: DATA.events.filter(e => e.date >= today).length, sites: "", history: (DATA.alerts||[]).length };
+  n.ideas = "";
+  const T = [["trends","Trends"],["ideas","&#128161; Ideas"],["news","Top news"],["watch","Watchlist"],["sports", (DATA.sports||[]).some(g=>g.state==="in") ? "Sports &#128308;" : "Sports"],
+             ["charts","Charts"],["events","Upcoming"],["sites","Best sites"],["history","Sent"]];
+  $("#tabs").innerHTML = T.map(([id,l]) => `<button class="tab" role="tab" data-tab="${id}" aria-selected="${state.tab===id}">${l}${n[id]!==""?`<span class="n">${n[id]}</span>`:""}</button>`).join("");
+  $("#tabs").onclick = e => { const b = e.target.closest(".tab"); if (!b) return; state.tab = b.dataset.tab; store.set("tab", state.tab); tabs(); render(); window.scrollTo(0,0); };
+}
+
+/* ---------- video ideas (templates, no invented facts) ---------- */
+const IDEAS = {
+  "Sports": [["The moment everyone is talking about: %s","%s: Alle Reaktionen"],["%s - what happens next?","%s: Was jetzt passiert"]],
+  "Politics": [["%s: what it means for you","%s: Was das für Deutschland bedeutet"],["%s explained in 60 seconds","%s in 60 Sekunden erklärt"]],
+  "World & conflicts": [["%s: what we know so far","%s: Was wir bisher wissen"],["%s explained on a map","%s auf der Karte erklärt"]],
+  "Crime & disasters": [["%s: verified facts only","%s: Die gesicherten Fakten"],["%s - what we know and what we don't","%s: Was bekannt ist - und was nicht"]],
+  "Movies & TV": [["%s: everything we know","%s: Alles, was wir wissen"],["%s - release, trailer, cast","%s: Start, Trailer, Cast"]],
+  "Music": [["Why everyone is listening to %s","Warum gerade alle %s hören"],["%s: the story behind the hit","%s: Die Geschichte hinter dem Hit"]],
+  "Gaming": [["%s: everything you need to know","%s: Alles, was du wissen musst"],["%s - first reactions","%s: Erste Reaktionen"]],
+  "Tech & AI": [["%s: what changed and why it matters","%s: Was sich ändert"],["%s explained simply","%s einfach erklärt"]],
+  "Business": [["%s: why everyone is talking about it","%s: Warum alle darüber reden"],["%s - what happened today","%s: Was heute passiert ist"]],
+  "Celebs & viral": [["%s: the full story","%s: Die ganze Geschichte"],["Why %s is everywhere right now","Warum %s gerade überall ist"]],
+  "General": [["%s: why everyone is talking about it","%s: Das steckt dahinter"],["%s explained in 60 seconds","%s in 60 Sekunden erklärt"]],
+};
+const OTHER_LANG = {
+  FR: [["FR", "%s : ce qu'il faut savoir"], ["FR", "%s expliqué en 60 secondes"]],
+  IT: [["IT", "%s: cosa sapere"], ["IT", "%s spiegato in 60 secondi"]],
+  ES: [["ES", "%s: lo que sabemos"], ["ES", "%s explicado en 60 segundos"]],
+};
+const COUNTRY_TAG = {US:"#usa", GB:"#uk", DE:"#deutschland", AT:"#österreich", CH:"#schweiz", FR:"#france", IT:"#italia", ES:"#españa"};
+function titlesFor(t){
+  const n = t.name.replace(/^#/, "").slice(0, 70);
+  const list = IDEAS[t.category] || IDEAS.General;
+  const out = [];
+  const en = t.countries.some(c => c === "US" || c === "GB") || !t.countries.some(c => FOCUS.includes(c));
+  const de = t.countries.some(c => DACH.includes(c));
+  for (const [e, d] of list){ if (en) out.push(["EN", e.replace("%s", n)]); if (de) out.push(["DE", d.replace("%s", n)]); }
+  for (const c of ["FR","IT","ES"]) if (t.countries.includes(c)) for (const [l, s] of OTHER_LANG[c]) out.push([l, s.replace("%s", n)]);
+  return out;
+}
+function hashtagsFor(t){
+  const n = t.name.replace(/^#/, "").slice(0, 70);
+  return ["#" + n.replace(/[^\p{L}\p{N}]/gu, ""), "#" + (t.category||"news").replace(/[^A-Za-z]/g,"").toLowerCase(),
+          ...t.countries.map(c => COUNTRY_TAG[c]).filter(Boolean), "#news"].filter((v,i,a) => a.indexOf(v) === i).join(" ");
+}
+function ideas(t){
+  return `<details><summary>Video ideas</summary><div class="idea">${titlesFor(t).map(([l, s]) =>
+    `<p><span class="muted">${l}:</span> ${esc(s)}</p>`).join("")}
+    <p class="muted">${esc(hashtagsFor(t))}</p>
+    ${["Crime & disasters","World & conflicts"].includes(t.category) ? `<p class="muted">Sensitive topic: only say what 2+ trusted sources confirm.</p>` : ""}</div></details>`;
+}
+function freshLine(t){
+  const bits = [];
+  if (t.first_pub_h != null) bits.push(`first article ${ago(t.first_pub_h)} ago`);
+  if (t.last_pub_h != null) bits.push(`latest ${ago(t.last_pub_h)} ago`);
+  if (t.recent1) bits.push(`<b>${t.recent1} in the last hour</b>${t.recent1_outlets > 1 ? ` (${t.recent1_outlets} sites)` : ""}`);
+  return bits.length ? `<div class="meta">&#128339; ${bits.join(" · ")}</div>` : "";
+}
+
+function card(t, i){
+  const tierB = t.breaking ? `<span class="badge b-live">Breaking</span>` : t.story ? `<span class="badge b-story">News</span>` :
+    t.tier === 2 ? `<span class="badge b-hot">Hot</span>` : t.tier === 1 ? `<span class="badge b-trend">Trending</span>` : `<span class="badge b-low">Watching</span>`;
+  const isNew = t.age_h != null && t.age_h < 1.5;
+  const why = Object.entries(t.parts).map(([k,v]) => `${k} ${v}`).join(" + ");
+  const cc = t.countries.map(c => `<span class="cc ${FOCUS.includes(c)?"focus":""}">${esc(c)}</span>`).join(" ");
+  const news = t.news.length ? `<details><summary>${t.news.length} headlines</summary><ul>${t.news.map(n =>
+      `<li>${A(n.u, esc(n.t))} <small>${esc(n.s)} · ${esc(n.c)}${n.a != null ? " · " + ago(n.a) + " ago" : ""}</small></li>`).join("")}</ul></details>` : "";
+  const L = t.links;
+  return `<article class="card t${t.tier} ${t.breaking?"brk":""}">
+    <div class="row"><span class="rank">#${i+1}</span>${tierB}${t.just_in?`<span class="badge b-live">&#9889; Just in</span>`:isNew?`<span class="badge b-new">New</span>`:""}${t.days_seen>=2?`<span class="badge b-story">&#128257; Day ${t.days_seen}</span>`:""}${t.watch?`<span class="badge b-watch">&#9733; ${esc(t.watch)}</span>`:""}
+      <span class="cat">${esc(t.category)}</span>${t.rising>1?`<span class="rise">&#9650; +${t.rising}</span>`:""}<span class="score" title="Why: ${esc(why)}">${t.score}</span></div>
+    <div class="head"><h3>${esc(t.name)}</h3>${t.pic?`<img src="${esc(t.pic)}" alt="" loading="lazy" referrerpolicy="no-referrer">`:""}</div>
+    <div class="sum">${esc(t.summary)}</div>
+    ${t.context?A(t.url, esc(t.context), "ctx"):""}
+    <div class="row">${cc}</div>
+    ${freshLine(t)}
+    <div class="meta">On the radar for ${ago(t.age_h)} · seen in ${t.hours_seen} hour${t.hours_seen>1?"s":""}${t.days_seen>1?` · ${t.days_seen} days`:""}${t.theme?` · keeps coming back: “${esc(t.theme)}”`:""}</div>
+    ${t.related.length?`<div class="rel">${t.related.map(r=>`<span>${esc(r)}</span>`).join("")}</div>`:""}
+    <div class="links">${A(L.news,"News")}${A(L.youtube,"YouTube")}${A(L.tiktok,"TikTok")}${A(L.x,"X")}${A(L.trends,"Trend graph")}</div>
+    ${news}${ideas(t)}
+  </article>`;
+}
+
+function filtered(list){
+  const f = state.filter, q = state.q.trim().toLowerCase();
+  let out = list.filter(t => {
+    if (f === "us" && !t.countries.includes("US")) return false;
+    if (f === "de" && !t.countries.some(c => DACH.includes(c))) return false;
+    if (["gb","fr","it","es"].includes(f) && !t.countries.includes(f.toUpperCase())) return false;
+    if (f === "eu" && !t.countries.some(c => EUROPE.includes(c) || DACH.includes(c))) return false;
+    if (f === "hot" && t.tier < 2) return false;
+    if (f === "watch" && !t.watch) return false;
+    if (f === "justin" && !isJustIn(t)) return false;
+    if (f === "repeat" && !isRepeat(t)) return false;
+    if (state.cat !== "all" && t.category !== state.cat) return false;
+    if (q && !(t.name + " " + t.related.join(" ") + " " + t.context + " " + t.news.map(n=>n.t).join(" ")).toLowerCase().includes(q)) return false;
+    return true;
+  });
+  if (state.sort === "new") out.sort((a,b) => (startedH(a) ?? 999) - (startedH(b) ?? 999));
+  if (state.sort === "repeat") out.sort((a,b) => (b.days_seen*100+b.hours_seen) - (a.days_seen*100+a.hours_seen));
+  if (state.sort === "rising") out.sort((a,b) => ((b.rising||0) + b.recent1) - ((a.rising||0) + a.recent1));
+  return out;
+}
+
+function awayBanner(){
+  const c = DATA.catchup;
+  if (!c) return "";
+  const gap = c.gap_h < 48 ? Math.round(c.gap_h) + "h" : Math.round(c.gap_h/24) + " days";
+  const col = (title, items) => items.length ? `<div><b>${title}</b><ol>${items.join("")}</ol></div>` : "";
+  return `<section class="box away"><h2>&#128229; While you were away (${gap}) <small style="display:inline">· since ${fmtDay(c.since)}</small></h2><div class="cols3">
+    ${col("Top trends", c.top.map(t => `<li>${t.url ? A(t.url, esc(t.name)) : esc(t.name)}<small>${esc(t.summary)}</small></li>`))}
+    ${col("Sports results", c.results.map(r => `<li>${r.u ? A(r.u, esc(r.t)) : esc(r.t)}</li>`))}
+    ${col("Watchlist", (c.watch||[]).map(w => `<li><b>${esc(w.term)}</b> (${w.n}${w.n>=40?"+":""} new) · ${A(w.u, esc(w.t))}</li>`))}
+  </div></section>`;
+}
+
+function renderTrends(){
+  const F = [["all","All"],["us","USA"],["de","Germany / DACH"],["gb","UK"],["fr","France"],["it","Italy"],["es","Spain"],["eu","All Europe"],
+             ["hot","&#128293; Hot"],["justin","&#9889; Just in"],["repeat","&#128257; Repeats"],["watch","&#9733; Watchlist"]];
+  const cats = [...new Set(DATA.topics.map(t => t.category))].sort();
+  const list = filtered(DATA.topics);
+  $("#main").innerHTML = `${awayBanner()}<div class="bar">${F.map(([id,l]) => `<button class="chipbtn" data-f="${id}" aria-pressed="${state.filter===id}">${l}</button>`).join("")}
+      <select id="cat"><option value="all">All categories</option>${cats.map(c => `<option>${esc(c)}</option>`).join("")}</select>
+      <input class="search" id="q" placeholder="Search..." value="${esc(state.q)}">
+      <select id="sort"><option value="score">Biggest first</option><option value="new">Newest first</option><option value="rising">Rising fastest</option><option value="repeat">Repeats most</option></select></div>
+    <p class="hint">Score = search volume + X ranking + news coverage + new articles in 2h + countries + how long it keeps coming back. Hot from ${DATA.hot}, trending from ${DATA.trend}. Hover the number to see why.</p>
+    <div class="grid">${list.length ? list.map(card).join("") : `<div class="empty">Nothing here right now.</div>`}</div>`;
+  $("#sort").value = state.sort; $("#cat").value = cats.includes(state.cat) ? state.cat : "all";
+  $("#main .bar").onclick = e => { const b = e.target.closest("[data-f]"); if (!b) return; state.filter = b.dataset.f; store.set("filter", state.filter); render(); };
+  $("#q").oninput = e => { state.q = e.target.value; const pos = e.target.selectionStart; render(); const el = $("#q"); el.focus(); el.setSelectionRange(pos,pos); };
+  $("#sort").onchange = e => { state.sort = e.target.value; store.set("sort", state.sort); render(); };
+  $("#cat").onchange = e => { state.cat = e.target.value; store.set("cat", state.cat); render(); };
+}
+
+/* ---------- Ideas: what to film now to get views ---------- */
+const CATW = {"Celebs & viral":1.3,"Movies & TV":1.25,"Gaming":1.25,"Music":1.2,"Sports":1.15,"Tech & AI":1.1,"General":1,
+              "Business":1,"Politics":0.95,"World & conflicts":0.9,"Crime & disasters":0.85};
+const FORMATS = {
+  "Sports": ["Reaction short: the key moment in 30s", "3 things you missed", "What it means for the next game / the table"],
+  "Politics": ["Explained in 60 seconds", "What changes for you (USA vs Europe)", "Map or timeline video"],
+  "World & conflicts": ["What we know so far (verified only)", "Map explainer", "Why Europe / the US cares"],
+  "Crime & disasters": ["Timeline of verified facts", "What we know / what we don't know", "No speculation: show your sources"],
+  "Movies & TV": ["Trailer breakdown", "Everything we know: date, cast, story", "Ranking / fan theories"],
+  "Music": ["The story behind the song", "Use the sound in a trend video", "Lyrics meaning or reaction"],
+  "Gaming": ["First look / leaks", "Price, date, platforms in 30s", "Easter eggs and tips"],
+  "Tech & AI": ["What's new in 60 seconds", "Is it worth it?", "How it affects you"],
+  "Business": ["Why the stock moved", "What it means for your money", "The company story in 60s"],
+  "Celebs & viral": ["The full story as a timeline", "Internet reactions", "Before vs now"],
+  "General": ["Why everyone is talking about it", "Explained in 60 seconds", "Reactions"],
+};
+const POST = {US:"17:00-21:00 and 00:00-02:00", GB:"19:00-22:00", DE:"18:00-21:00", AT:"18:00-21:00", CH:"18:00-21:00",
+              FR:"18:00-21:00", IT:"18:00-21:00", ES:"18:00-21:00"};
+const NAMES = {US:"USA", GB:"UK", DE:"Germany", AT:"Austria", CH:"Switzerland", FR:"France", IT:"Italy", ES:"Spain", EU:"Europe"};
+function freshW(t){ const h = startedH(t); if (h == null) return 1; return h <= 2 ? 1.5 : h <= 6 ? 1.3 : h <= 24 ? 1.0 : 0.8; }
+function opp(t){
+  const nf = t.countries.filter(c => FOCUS.includes(c)).length;
+  return t.score * freshW(t) * (CATW[t.category] || 1) * ((t.rising || 0) > 0 || t.recent1 >= 3 ? 1.15 : 1) * (nf >= 2 ? 1.2 : 1);
+}
+function ideaCard(t, i){
+  const h = startedH(t);
+  const why = [h != null ? `started ${ago(h)} ago` : "", t.recent1 ? `${t.recent1} articles in the last hour` : "",
+               t.rising > 1 ? `rising +${t.rising}` : "", isRepeat(t) ? `on the radar ${t.hours_seen}h${t.days_seen > 1 ? " / " + t.days_seen + " days" : ""}` : "",
+               t.countries.filter(c => FOCUS.includes(c)).map(c => NAMES[c] || c).join(", ")].filter(Boolean).join(" · ");
+  const post = [...new Set(t.countries.filter(c => POST[c]))].slice(0, 4).map(c => `${NAMES[c]}: ${POST[c]}`).join(" · ");
+  const L = t.links;
+  return `<article class="card ${t.just_in ? "brk" : "t" + t.tier}">
+    <div class="row"><span class="rank">#${i+1}</span>${t.just_in ? `<span class="badge b-live">&#9889; Just in</span>` : t.tier === 2 ? `<span class="badge b-hot">Hot</span>` : ""}<span class="cat">${esc(t.category)}</span><span class="score">${Math.round(opp(t))}</span></div>
+    <div class="head"><h3>${esc(t.name)}</h3>${t.pic ? `<img src="${esc(t.pic)}" alt="" loading="lazy" referrerpolicy="no-referrer">` : ""}</div>
+    <div class="sum">${esc(why)}</div>
+    ${t.context ? A(t.url, esc(t.context), "ctx") : ""}
+    <div class="idea"><p><b>Formats</b></p>${(FORMATS[t.category] || FORMATS.General).map(f => `<p>• ${esc(f)}</p>`).join("")}</div>
+    <div class="idea"><p><b>Titles</b></p>${titlesFor(t).slice(0, 6).map(([l, s]) => `<p><span class="muted">${l}:</span> ${esc(s)}</p>`).join("")}
+      <p class="muted">${esc(hashtagsFor(t))}</p></div>
+    ${post ? `<div class="meta">&#128336; Post (Morocco time): ${esc(post)}</div>` : ""}
+    ${["Crime & disasters","World & conflicts"].includes(t.category) ? `<div class="meta">Sensitive: only say what 2+ trusted sources confirm.</div>` : ""}
+    <div class="links">${A(L.youtube,"Check YouTube")}${A(L.tiktok,"Check TikTok")}${A(L.news,"News")}${A(L.trends,"Trend graph")}</div>
+  </article>`;
+}
+function renderIdeas(){
+  const T = DATA.topics.filter(t => t.tier > 0 || t.just_in || t.watch);
+  const used = new Set();
+  const pick = (list, n) => { const out = []; for (const t of list){ if (out.length >= n) break; if (!used.has(t.id)){ used.add(t.id); out.push(t); } } return out; };
+  const now = pick([...T].filter(t => freshW(t) >= 1.3 || t.just_in).sort((a,b) => opp(b) - opp(a)), 8);
+  const multi = pick([...T].filter(t => t.countries.filter(c => FOCUS.includes(c)).length >= 3).sort((a,b) => opp(b) - opp(a)), 6);
+  const longT = pick([...T].filter(isRepeat).sort((a,b) => b.score - a.score), 6);
+  const today = new Date(); today.setHours(0,0,0,0);
+  const evs = DATA.events.filter(e => { const d = (new Date(e.date + "T00:00:00") - today) / 86400000; return d >= 0 && d <= 10; });
+  const sec = (title, hint, list) => list.length ? `<section style="margin-top:22px"><h2 style="margin:0 0 4px;font-size:17px">${title}</h2><p class="hint" style="margin:0 0 12px">${hint}</p>
+    <div class="grid">${list.map(ideaCard).join("")}</div></section>` : "";
+  const B = DATA.briefing;
+  const brief = B && B.text ? `<section class="box away"><h2>&#129504; ${esc(B.title)}</h2><div style="white-space:pre-wrap;font-size:13.5px;line-height:1.55">${esc(B.text.split("\n").slice(1).join("\n").trim())}</div></section>` : "";
+  $("#main").innerHTML = `${brief}<p class="hint" style="margin-top:16px">Ranked by chance of views now: fresh + rising + several of your countries + categories that get views (celebs, movies, gaming, music, sports). The big number = idea score. Always check YouTube / TikTok first: if there are already 50 videos, take a different angle.</p>
+    ${sec("&#128640; Film this now", "New in the last hours and still growing - short video (30-60s), post fast.", now)}
+    ${sec("&#127757; One topic, many countries", "Trending in 3+ of your countries: one video, several languages.", multi)}
+    ${sec("&#128257; Long trends", "Keeps coming back for hours or days - a longer explainer or a series.", longT)}
+    ${evs.length ? `<section style="margin-top:22px"><h2 style="margin:0 0 4px;font-size:17px">&#128197; Prepare before it happens</h2><p class="hint" style="margin:0 0 12px">Events in the next 10 days: post 1-3 days before, people search early.</p><div class="events">${evs.map(e => {
+        const left = Math.round((new Date(e.date + "T00:00:00") - today)/86400000);
+        return `<div class="ev ${left<=3?"soon":""}"><div class="d">${new Date(e.date + "T00:00:00").toLocaleDateString("en-GB",{day:"2-digit",month:"short"})}<small>${left===0?"today":left===1?"tomorrow":"in "+left+" days"}</small></div>
+        <div class="t">${esc(e.title)}<small>Ideas: "${esc(e.title)} - everything you need to know" · countdown short · predictions · "what time / where to watch"</small></div><span class="cd">${esc(e.category||"")}</span></div>`; }).join("")}</div></section>` : ""}
+    ${now.length + multi.length + longT.length ? "" : `<div class="empty">No strong ideas right now - check again later.</div>`}`;
+}
+
+function renderHeadlines(){
+  const H = DATA.headlines || {};
+  const order = [["DE","Germany"],["US","USA"],["GB","UK"],["FR","France"],["IT","Italy"],["ES","Spain"]].filter(([c]) => H[c]);
+  for (const c of Object.keys(H)) if (!order.some(o => o[0] === c)) order.push([c, c]);
+  const cats = [...new Set(Object.values(H).flat().map(h => h.cat))];
+  const C = ["all", ...cats];
+  $("#main").innerHTML = `<div class="bar">${C.map(c => `<button class="chipbtn" data-c="${esc(c)}" aria-pressed="${state.hcat===c}">${c==="all"?"All":esc(c)}</button>`).join("")}</div>
+    <p class="hint">What each country is talking about right now (Google News + Tagesschau / ZDF). Orange tag = it is also a trend - click it.</p>
+    <div class="cols">${order.map(([c, name]) => { const list = H[c].filter(h => state.hcat === "all" || h.cat === state.hcat);
+      return list.length ? `<section class="box"><h2>${esc(name)}</h2><ol>${list.map(h => `
+      <li>${h.b?`<span class="badge b-live">Breaking</span> `:""}${A(h.u, esc(h.t))}
+        <small>${h.a != null ? `<b>${ago(h.a)} ago</b> · ` : ""}${esc(h.s)}${h.cov > 1 ? ` · ${h.cov} articles` : ""} · ${esc(h.cat)}${h.src !== "Google News" && !h.src.startsWith("Google News") ? " · " + esc(h.src) : ""}</small>
+        ${h.trend ? `<button class="tlink" data-q="${esc(h.trend)}">trend: ${esc(h.trend)}</button>` : ""}</li>`).join("")}</ol></section>` : ""; }).join("")}</div>`;
+  $("#main").onclick = e => {
+    const c = e.target.closest("[data-c]"); if (c){ state.hcat = c.dataset.c; store.set("hcat", state.hcat); render(); return; }
+    const b = e.target.closest(".tlink"); if (!b) return;
+    state.tab = "trends"; state.filter = "all"; state.cat = "all"; state.q = b.dataset.q; store.set("tab","trends"); tabs(); render(); };
+}
+
+function renderWatch(){
+  const W = DATA.watch || {};
+  const terms = Object.entries(W).sort((a,b) => (b[1].n2 - a[1].n2) || (b[1].n24 - a[1].n24));
+  $("#main").innerHTML = `<p class="hint" style="margin-top:16px">Your words from <code>config.json</code> → "watchlist". Each one has its own news search. You get a notification for new articles (max every few hours per word) and immediately when a word spikes.</p>
+    <div class="cols">${terms.map(([term, w]) => `<section class="box"><h2>&#9733; ${esc(term)}</h2>
+      <div class="row" style="margin-bottom:8px"><span class="cc">${w.n24}${w.n24>=40?"+":""} today</span><span class="cc ${w.n2>=5?"focus":""}">${w.n2} in 2h</span>
+      ${w.topic ? `<button class="tlink" data-q="${esc(w.topic)}">trend: ${esc(w.topic)} (${w.topic_score})</button>` : ""}</div>
+      <ol>${w.items.slice(0,6).map(a => `<li>${A(a.u, esc(a.t))}<small>${esc(a.s)} · ${ago(hoursFrom(a.p))} ago</small></li>`).join("") || "<li class='muted'>No news in the last 24h</li>"}</ol></section>`).join("")}</div>`;
+  $("#main").onclick = e => { const b = e.target.closest(".tlink"); if (!b) return;
+    state.tab = "trends"; state.filter = "all"; state.cat = "all"; state.q = b.dataset.q; store.set("tab","trends"); tabs(); render(); };
+}
+
+function renderSports(){
+  const G = DATA.sports || [];
+  const sec = (title, list) => list.length ? `<section class="sec" style="margin-top:18px"><h2>${title}</h2>${list.map(g => {
+      const h = hoursFrom(g.date);
+      const cd = g.state === "in" ? "LIVE" : g.state === "post" ? "Final" : (h > -1 ? "soon" : `in ${ago(-h)}`);
+      return `<div class="ev ${g.state==="in"?"live":g.big?"soon":""}"><div class="d">${esc(g.league)}<small>${fmtDay(g.date)}</small></div>
+        <div class="t">${g.big?`<span class="big">&#9733;</span> `:""}${g.u?A(g.u, esc(g.txt)):esc(g.txt)}<small>${esc(g.detail)}${g.notes.length?" · "+esc(g.notes.join(" · ")):""}</small></div>
+        <span class="cd">${cd}</span></div>`; }).join("")}</section>` : "";
+  $("#main").innerHTML = `<p class="hint" style="margin-top:16px">ESPN data: NFL, NBA, MLB, NHL, college football, UFC, MLS, Bundesliga, DFB-Pokal, Champions League, Premier League, LaLiga. &#9733; = big game (playoffs, Super Bowl, finals, special games, your <code>watch_teams</code>) → you get the final result as a notification.</p>
+    ${sec("Live now", G.filter(g => g.state === "in"))}
+    ${sec("Big games coming up", G.filter(g => g.state === "pre" && g.big))}
+    ${sec("Results (last 30h)", G.filter(g => g.state === "post"))}
+    ${sec("All upcoming games (next days)", G.filter(g => g.state === "pre" && !g.big))}
+    ${G.length ? "" : `<div class="empty">No games right now.</div>`}`;
+}
+
+function renderCharts(){
+  const C = DATA.charts || {};
+  const music = Object.entries(C.music || {}).map(([cc, list]) => `<section class="box"><h2>Top songs ${cc === "US" ? "USA" : cc === "DE" ? "Germany" : esc(cc)} <small style="display:inline">· Apple Music</small></h2>
+    ${list.slice(0,15).map(s => `<div class="mrow"><span class="r">${s.r}</span>${s.art?`<img src="${esc(s.art)}" alt="" loading="lazy">`:""}<div>${A(s.u, esc(s.song))}<small>${esc(s.artist)}</small></div></div>`).join("")}</section>`).join("");
+  const stocks = (C.stocks||[]).length ? `<section class="box"><h2>Trending stocks USA <small style="display:inline">· Yahoo Finance</small></h2><ol>${C.stocks.map(s =>
+    `<li>${A(s.u, esc(s.sym))} ${s.name?`<span class="muted">${esc(s.name)}</span>`:""}</li>`).join("")}</ol></section>` : "";
+  const movies = (C.movies||[]).length ? `<section class="box"><h2>Top movies USA <small style="display:inline">· iTunes (buy / rent)</small></h2>
+    ${C.movies.map(m => `<div class="mrow"><span class="r">${m.r}</span>${m.art?`<img src="${esc(m.art)}" alt="" loading="lazy">`:""}<div>${A(m.u, esc(m.t))}<small>${esc(m.g)}</small></div></div>`).join("")}</section>` : "";
+  const hn = (C.hn||[]).length ? `<section class="box"><h2>Tech: Hacker News front page</h2><ol>${C.hn.map(h =>
+    `<li>${A(h.u, esc(h.t))}<small>${h.p} points</small></li>`).join("")}</ol></section>` : "";
+  const yt = Object.entries(C.youtube || {}).map(([cc, list]) => `<section class="box"><h2>YouTube trending ${esc(cc)}</h2>
+    ${list.slice(0,15).map(v => `<div class="mrow"><span class="r">${v.r}</span>${v.art?`<img src="${esc(v.art)}" alt="" loading="lazy">`:""}<div>${A(v.u, esc(v.t))}<small>${esc(v.ch)} · ${(v.v/1e6).toFixed(1)}M views</small></div></div>`).join("")}</section>`).join("");
+  $("#main").innerHTML = `<div class="cols">${music}${movies}${stocks}${hn}${yt}</div>
+    ${yt ? "" : `<p class="hint" style="margin-top:14px">Tip: put a free YouTube Data API key in <code>config.json</code> → "youtube_api_key" to also see YouTube trending USA + Germany.</p>`}`;
+}
+
+function renderEvents(){
+  const today = new Date(); today.setHours(0,0,0,0);
+  const evs = DATA.events.filter(e => new Date(e.date + "T00:00:00") >= today);
+  const byMonth = {};
+  for (const e of evs){ const k = e.date.slice(0,7); (byMonth[k] ||= []).push(e); }
+  const html = Object.entries(byMonth).map(([m, list]) => {
+    const title = new Date(m + "-01T00:00:00").toLocaleDateString("en-GB", {month:"long", year:"numeric"});
+    return `<section class="month"><h2>${title}</h2>${list.map(e => {
+      const d = new Date(e.date + "T00:00:00"); const left = Math.round((d - today)/86400000);
+      const cd = left === 0 ? "TODAY" : left === 1 ? "Tomorrow" : `in ${left} days`;
+      return `<div class="ev ${left<=7?"soon":""}"><div class="d">${d.toLocaleDateString("en-GB",{day:"2-digit",month:"short"})}<small>${d.toLocaleDateString("en-GB",{weekday:"long"})}</small></div>
+        <div class="t">${e.url ? A(e.url, esc(e.title)) : esc(e.title)} <span class="cc">${esc(e.region||"")}</span> <span class="cc">${esc(e.category||"")}</span>${e.approx?` <span class="cc" title="Date estimated - check it">~ date</span>`:""}${e.note?`<small>${esc(e.note)}</small>`:""}</div>
+        <span class="cd">${cd}</span></div>`; }).join("")}</section>`;
+  }).join("");
+  $("#main").innerHTML = `<p class="hint" style="margin-top:16px">Prepare videos BEFORE the day: the trend starts 2-7 days early. Edit <code>events.json</code> to add your own events - you get a reminder 7 days, 2 days and on the day.</p><div class="events">${html || `<div class="empty">No events. Add some in events.json.</div>`}</div>`;
+}
+
+function renderSites(){
+  $("#main").innerHTML = `<div class="sites">${DATA.sites.map(([cat, list]) => `<section class="box"><h2>${esc(cat)}</h2>${list.map(([n,u,d]) =>
+     A(u, `<b>${esc(n)}</b><span>${esc(d)}</span>`, "site")).join("")}</section>`).join("")}</div>`;
+}
+
+function renderHistory(){
+  const H = DATA.alerts || [];
+  $("#main").innerHTML = `<p class="hint" style="margin-top:16px">Notifications already sent to this PC${DATA.ntfy ? " and your phone (ntfy)" : ""}.</p>
+    <section class="box">${H.length ? `<ol>${H.map(a => `<li>${a.url && a.url.startsWith("http") ? A(a.url, esc(a.title)) : esc(a.title)}<small>${fmtDay(a.at)}</small></li>`).join("")}</ol>` : `<div class="empty">Nothing sent yet.</div>`}</section>`;
+}
+
+function render(){
+  $("#main").onclick = null;
+  ({trends: renderTrends, ideas: renderIdeas, news: renderHeadlines, watch: renderWatch, sports: renderSports, charts: renderCharts,
+    events: renderEvents, sites: renderSites, history: renderHistory}[state.tab] || renderTrends)();
+}
+
+function footer(){
+  const bad = DATA.sources.filter(s => !s.ok);
+  $("#foot").innerHTML = `${DATA.sources.length} sources (${DATA.sources.filter(s=>s.ok).length} OK)` +
+    (bad.length ? ` · not working right now: ` + bad.map(s => `<span class="src bad" title="${esc(s.err||"")}">${esc(s.name)}</span>`).join("") : "") +
+    `<details style="margin-top:6px"><summary>All sources</summary>${DATA.sources.map(s => `<span class="src ${s.ok?"":"bad"}" title="${esc(s.err||"")}">${s.ok?"&#10003;":"&#10007;"} ${esc(s.name)}${s.n>=0?` (${s.n})`:""}</span>`).join("")}</details>` +
+    (DATA.ntfy ? `Phone: install the <b>ntfy</b> app → + → subscribe to <code>${esc(DATA.ntfy)}</code> (keep it secret).<br>` : "") +
+    (DATA.online_url && !DATA.cloud ? `Online dashboard (open it on your phone): ${A(DATA.online_url, esc(DATA.online_url))}<br>` : "") +
+    (DATA.cloud ? `This online copy is updated every 15 minutes by GitHub Actions, also when your PC is off.<br>` : "") +
+    `Settings: <code>config.json</code> (watchlist, teams, countries, how many notifications) · Events: <code>events.json</code> · Desktop icon “Trend Radar” = check now.`;
+}
+
+// reload when the page has been idle a while, so a newer check shows up
+let idle = Date.now();
+["mousemove","keydown","scroll","click"].forEach(ev => addEventListener(ev, () => idle = Date.now(), {passive:true}));
+setInterval(() => { if (Date.now() - idle > 8*60000) location.reload(); }, 60000);
+
+if (DATA){ header(); tabs(); render(); footer(); }
+else { $("#main").innerHTML = `<div class="empty">No data yet - run a check first.</div>`; }
+</script>
+</body>
+</html>
