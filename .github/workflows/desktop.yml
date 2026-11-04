@@ -20,7 +20,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [windows-latest, macos-latest]
+        # macos-15-intel: Apple Silicon runners are often overloaded; the universal build still runs on M1-M4 Macs
+        os: [windows-latest, macos-15-intel]
     runs-on: ${{ matrix.os }}
     defaults:
       run:
@@ -61,6 +62,7 @@ jobs:
 
   release:
     needs: build
+    if: ${{ !cancelled() }}   # publish what was built, even if one platform failed
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
