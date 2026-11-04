@@ -201,7 +201,8 @@ function tabs(){
   n.ideas = "";
   const D = DATA.disasters || {};
   n.disasters = (D.quakes || []).filter(q => q.big).length + (D.gdacs || []).filter(g => g.level === "Red" || g.level === "Orange").length || "";
-  const T = [["trends","Trends"],["ideas","&#128161; Ideas"],["news","Top news"],["disasters","&#127757; Disasters"],["watch","Watchlist"],["sports", (DATA.sports||[]).some(g=>g.state==="in") ? "Sports &#128308;" : "Sports"],
+  n.ai = "";
+  const T = [["trends","Trends"],["ideas","&#128161; Ideas"],["news","Top news"],["disasters","&#127757; Disasters"],["ai","&#127916; AI tools"],["watch","Watchlist"],["sports", (DATA.sports||[]).some(g=>g.state==="in") ? "Sports &#128308;" : "Sports"],
              ["charts","Charts"],["events","Upcoming"],["sites","Best sites"],["history","Sent"]];
   $("#tabs").innerHTML = T.map(([id,l]) => `<button class="tab" role="tab" data-tab="${id}" aria-selected="${state.tab===id}">${l}${n[id]!==""?`<span class="n">${n[id]}</span>`:""}</button>`).join("");
   $("#tabs").onclick = e => { const b = e.target.closest(".tab"); if (!b) return; state.tab = b.dataset.tab; store.set("tab", state.tab); tabs(); render(); window.scrollTo(0,0); };
@@ -213,6 +214,7 @@ const IDEAS = {
   "Politics": [["%s: what it means for you","%s: Was das für Deutschland bedeutet"],["%s explained in 60 seconds","%s in 60 Sekunden erklärt"]],
   "World & conflicts": [["%s: what we know so far","%s: Was wir bisher wissen"],["%s explained on a map","%s auf der Karte erklärt"]],
   "Crime & accidents": [["%s: verified facts only","%s: Die gesicherten Fakten"],["%s - what we know and what we don't","%s: Was bekannt ist - und was nicht"]],
+  "AI video & image": [["I tested %s - here is what it can do","Ich habe %s getestet - das kann es"],["%s: free vs paid, which one to use?","%s: kostenlos oder bezahlt - was lohnt sich?"]],
   "Natural disasters": [["%s: what is happening right now","%s: Was gerade passiert"],["%s on the map: where, how strong, what's next","%s auf der Karte: wo, wie stark, wie geht es weiter"]],
   "Movies & TV": [["%s: everything we know","%s: Alles, was wir wissen"],["%s - release, trailer, cast","%s: Start, Trailer, Cast"]],
   "Music": [["Why everyone is listening to %s","Warum gerade alle %s hören"],["%s: the story behind the hit","%s: Die Geschichte hinter dem Hit"]],
@@ -340,6 +342,7 @@ const FORMATS = {
   "Politics": ["Explained in 60 seconds", "What changes for you (USA vs Europe)", "Map or timeline video"],
   "World & conflicts": ["What we know so far (verified only)", "Map explainer", "Why Europe / the US cares"],
   "Crime & accidents": ["Timeline of verified facts", "What we know / what we don't know", "No speculation: show your sources"],
+  "AI video & image": ["Side-by-side test vs the competition (same prompt)", "Free or local alternative tutorial", "Make a short film with it in 60s"],
   "Natural disasters": ["Map: where it hits and how strong", "Live update short (what changed in the last hours)", "How to stay safe / how to help (official sources only)"],
   "Movies & TV": ["Trailer breakdown", "Everything we know: date, cast, story", "Ranking / fan theories"],
   "Music": ["The story behind the song", "Use the sound in a trend video", "Lyrics meaning or reaction"],
@@ -399,6 +402,29 @@ function renderIdeas(){
         return `<div class="ev ${left<=3?"soon":""}"><div class="d">${new Date(e.date + "T00:00:00").toLocaleDateString("en-GB",{day:"2-digit",month:"short"})}<small>${left===0?"today":left===1?"tomorrow":"in "+left+" days"}</small></div>
         <div class="t">${esc(e.title)}<small>Ideas: "${esc(e.title)} - everything you need to know" · countdown short · predictions · "what time / where to watch"</small></div><span class="cd">${esc(e.category||"")}</span></div>`; }).join("")}</div></section>` : ""}
     ${now.length + multi.length + longT.length ? "" : `<div class="empty">No strong ideas right now - check again later.</div>`}`;
+}
+
+/* ---------- AI tools (video / image / voice) ---------- */
+const PIPE = {"text-to-video":"&#127916; Text to video","image-to-video":"&#127902;&#65039; Image to video","text-to-image":"&#128444;&#65039; Text to image","text-to-speech":"&#127908; Voice (text to speech)"};
+function renderAI(){
+  const AI = DATA.ai || {}, M = AI.models || {}, W = DATA.watch || {};
+  const news = DATA.topics.filter(t => t.category === "AI video & image").slice(0, 8);
+  const fmtN = n => n >= 1e6 ? (n/1e6).toFixed(1) + "M" : n >= 1e3 ? Math.round(n/1e3) + "K" : String(n);
+  const models = Object.entries(M).map(([pipe, list]) => `<section class="box"><h2>${PIPE[pipe] || esc(pipe)}</h2><ol>${list.slice(0, 10).map(m => {
+      const age = hoursFrom(m.created); const isNew = age != null && age < 30 * 24;
+      return `<li>${A(m.u, esc(m.id))} ${isNew ? `<span class="badge b-new">New</span>` : ""}${m.variant ? ` <span class="cat">variant</span>` : ""}
+        <small>&#10084; ${fmtN(m.likes)} · &#11015; ${fmtN(m.downloads)}${m.created ? " · " + new Date(m.created).toLocaleDateString("en-GB", {day:"2-digit", month:"short", year:"numeric"}) : ""}</small></li>`; }).join("")}</ol></section>`).join("");
+  const tools = Object.entries(W).filter(([, w]) => w.group).sort((a, b) => b[1].n24 - a[1].n24);
+  const toolNews = tools.map(([term, w]) => `<section class="box"><h2>${esc(term)}</h2>
+      <div class="row" style="margin-bottom:8px"><span class="cc">${w.n24}${w.n24 >= 40 ? "+" : ""} today</span><span class="cc ${w.n2 >= 5 ? "focus" : ""}">${w.n2} in 2h</span></div>
+      <ol>${w.items.slice(0, 4).map(a => `<li>${A(a.u, esc(a.t))}<small>${esc(a.s)} · ${ago(hoursFrom(a.p))} ago</small></li>`).join("") || "<li class='muted'>No news in the last 24h</li>"}</ol></section>`).join("");
+  const guide = (AI.tools || []).map(g => `<section class="box"><h2>${esc(g.title)}</h2>${g.tools.map(x =>
+      A(x.url, `<b>${esc(x.name)}</b><span>${esc(x.note)}</span>`, "site")).join("")}</section>`).join("");
+  $("#main").innerHTML = `<p class="hint" style="margin-top:16px">AI video, image and voice tools: news, new open models trending on Hugging Face (most run free on your own PC with ComfyUI), and a guide. You get an "AI MODEL" notification when a new model reaches the top. Phone channel: your topic + <code>-ai</code>.</p>
+    ${news.length ? `<section style="margin-top:6px"><h2 style="margin:0 0 10px;font-size:17px">&#128240; AI video &amp; image in the news</h2><div class="grid">${news.map(card).join("")}</div></section>` : ""}
+    <h2 style="margin:22px 0 4px;font-size:17px">&#129303; Trending open models (Hugging Face)</h2><div class="cols">${models || `<div class="muted">No data yet.</div>`}</div>
+    ${toolNews ? `<h2 style="margin:22px 0 4px;font-size:17px">&#128225; Latest news per tool</h2><div class="cols">${toolNews}</div>` : ""}
+    ${guide ? `<h2 style="margin:22px 0 4px;font-size:17px">&#129517; Tools guide <small class="muted" style="font-size:12px">(November 2026 - prices change, check the site)</small></h2><div class="sites">${guide}</div>` : ""}`;
 }
 
 /* ---------- Natural disasters ---------- */
@@ -518,7 +544,7 @@ function renderHistory(){
 
 function render(){
   $("#main").onclick = null;
-  ({trends: renderTrends, ideas: renderIdeas, news: renderHeadlines, disasters: renderDisasters, watch: renderWatch, sports: renderSports, charts: renderCharts,
+  ({trends: renderTrends, ideas: renderIdeas, news: renderHeadlines, disasters: renderDisasters, ai: renderAI, watch: renderWatch, sports: renderSports, charts: renderCharts,
     events: renderEvents, sites: renderSites, history: renderHistory}[state.tab] || renderTrends)();
 }
 
@@ -542,7 +568,7 @@ setInterval(() => { if (Date.now() - idle > 8*60000) location.reload(); }, 60000
 function fromHash(){
   const h = (location.hash || "").slice(1).toLowerCase();
   if (["us","de","eu","gb","fr","it","es"].includes(h)){ state.tab = "trends"; state.filter = h; state.cat = "all"; }
-  else if (["sports","disasters","ideas","news","watch","charts","events"].includes(h)) state.tab = h;
+  else if (["sports","disasters","ideas","news","watch","charts","events","ai"].includes(h)) state.tab = h;
   else return false;
   store.set("tab", state.tab); store.set("filter", state.filter); return true;
 }

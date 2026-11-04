@@ -134,6 +134,9 @@ CATEGORIES = {
     "Music": "song album tour concert konzert singer sanger rapper grammy chart music musik spotify billboard chanson canzone cancion concerto concierto sanremo eurovision",
     "Gaming": "gta playstation ps5 xbox nintendo game award fortnite minecraft steam gaming videogame rockstar",
     "Celebs & viral": "celebrity promi dating wedding hochzeit baby divorce scheidung viral meme influencer royal prince harry meghan kardashian mariage matrimonio boda",
+    "AI video & image": "seedance kling veo sora hailuo minimax luma pika midjourney flux seedream ideogram krea "
+                        "higgsfield comfyui ltx hunyuanvideo hunyuan lora diffusion deepfake elevenlabs suno udio "
+                        "ai video ai image video generator image generator text-to-video image-to-video nano banana stable diffusion wan 2",
 }
 
 # --------------------------------------------------------------------------- utils
@@ -278,6 +281,8 @@ def matches_phrase(phrase_toks, text_toks):
 CAT_PHRASES = {
     "Politics": ["white house"], "Sports": ["super bowl", "champions league", "premier league", "grand prix"],
     "Movies & TV": ["box office", "star wars"], "Gaming": ["game award"],
+    "AI video & image": ["ai video", "ai image", "video generator", "image generator", "text-to-video", "image-to-video",
+                         "nano banana", "stable diffusion", "wan 2", "runway gen", "runway ai", "runway ml", "leonardo ai"],
 }
 
 
@@ -378,9 +383,85 @@ def src_feed(feed):
                or it.findtext("{http://purl.org/dc/elements/1.1/}date"))
         title = html.unescape(title).strip()
         out.append({"kind": feed.get("kind", "news"), "source": feed["name"], "country": feed["country"],
-                    "term": title, "outlet": feed["name"], "rank": rank, "url": link.strip(),
+                    "term": title, "outlet": feed["name"], "rank": rank, "url": link.strip(), "cat": feed.get("cat"),
                     "published": parse_date(pub), "breaking": bool(BREAKING_RE.search(title))})
     return out
+
+
+# --------------------------------------------------------------------------- AI tools (video / image / voice models)
+
+HF_PIPE_LABEL = {"text-to-video": "Text to video", "image-to-video": "Image to video", "text-to-image": "Text to image",
+                 "text-to-speech": "Text to speech (voice)"}
+VARIANT_RE = re.compile(r"lora|gguf|quant|pruned|fp8|fp16|nf4|int4|int8|bnb|awq|merge|hybrid|-turbo-|distill-lora", re.I)
+
+
+def watch_terms(cfg):
+    """Your watchlist + the AI tools list (tagged with the AI category)."""
+    terms = [(t, None) for t in cfg.get("watchlist", [])]
+    ac = cfg.get("ai_tools") or {}
+    if ac.get("enabled", True):
+        terms += [(t, "AI video & image") for t in ac.get("watch", []) if t not in cfg.get("watchlist", [])]
+    return terms
+
+
+def src_hf(pipeline):
+    """Models trending on Hugging Face for one task: the newest open (often local) AI models."""
+    d = fetch_json(f"https://huggingface.co/api/models?pipeline_tag={pipeline}&sort=trendingScore&direction=-1&limit=15",
+                   timeout=25, ua=APP_UA)
+    out = []
+    for rank, m in enumerate(d, 1):
+        mid = m.get("id") or m.get("modelId") or ""
+        out.append({"kind": "ai_model", "source": "Hugging Face", "country": "", "term": mid, "id": mid,
+                    "author": mid.split("/")[0] if "/" in mid else "", "pipeline": pipeline, "rank": rank,
+                    "likes": m.get("likes") or 0, "downloads": m.get("downloads") or 0,
+                    "created": parse_date(m.get("createdAt")), "trending": m.get("trendingScore") or 0,
+                    "variant": bool(VARIANT_RE.search(mid)), "url": f"https://huggingface.co/{mid}"})
+    return out
+
+
+def ai_alerts(signals, state, cfg, now, quiet):
+    """New AI models entering the Hugging Face top of their task -> one alert each (first run: one summary)."""
+    ac = cfg.get("ai_tools") or {}
+    seen = state.setdefault("ai_models", {})
+    models = [s for s in signals if s["kind"] == "ai_model"]
+    first_run = not seen
+    out, fresh = [], []
+    for m in sorted(models, key=lambda m: m["rank"]):
+        key = m["id"]
+        is_new = key not in seen
+        seen.setdefault(key, now.isoformat())
+        young = hours_since(m.get("created"), now) <= 24 * ac.get("new_model_days", 60)
+        if not is_new or m["variant"] or m["rank"] > ac.get("top_n", 5) or not young or m["likes"] < ac.get("min_likes", 30):
+            continue
+        fresh.append(m)
+    if not ac.get("notify_new_models", True) or quiet:
+        fresh = []
+    if first_run and fresh:
+        names = ", ".join(f"{m['id'].split('/')[-1]} ({HF_PIPE_LABEL.get(m['pipeline'], m['pipeline'])})" for m in fresh[:6])
+        out.append(mk_alert("\U0001F3AC AI models trending now", names[:200], "Open models - most run locally (see the AI tools tab)",
+                            "https://huggingface.co/models?sort=trending", tag="aiinit", priority=3, short="AI models",
+                            kind="ai", category="AI video & image", label="AI MODEL",
+                            push_text="\n".join(f"\U0001F539 {m['id']} - {HF_PIPE_LABEL.get(m['pipeline'], m['pipeline'])}, "
+                                                f"❤ {m['likes']}" for m in fresh[:8])))
+    elif not first_run:
+        for m in fresh[:3]:
+            video = m["pipeline"] in ("text-to-video", "image-to-video")
+            lines = [f"\U0001F525 #{m['rank']} trending on Hugging Face · {HF_PIPE_LABEL.get(m['pipeline'], m['pipeline'])}",
+                     f"❤ {m['likes']} likes · ⬇ {m['downloads']:,} downloads · created {(m.get('created') or '')[:10]}",
+                     "\U0001F4BB Open model - can run on your own PC (check the model card for GPU memory)"]
+            out.append(mk_alert(f"\U0001F3AC NEW AI MODEL: {m['id']}", lines[0], lines[1], m["url"], tag="ai" + sid(m["id"]),
+                                priority=4 if video else 3, short=m["id"], kind="ai", category="AI video & image",
+                                label="AI MODEL", push_text="\n".join(lines)))
+    for k in [k for k, v in seen.items() if hours_since(v, now) > 120 * 24]:
+        del seen[k]
+    data = {}
+    for m in models:
+        data.setdefault(m["pipeline"], []).append({
+            "id": m["id"], "author": m["author"], "likes": m["likes"], "downloads": m["downloads"], "created": m.get("created"),
+            "u": m["url"], "rank": m["rank"], "variant": m["variant"]})
+    for v in data.values():
+        v.sort(key=lambda x: x["rank"])
+    return out, data
 
 
 def src_wikipedia(lang, cc):
@@ -750,8 +831,12 @@ def collect(cfg, state, gap_h=0.0):
     for ed in cfg.get("watch_news_editions", ["US"]):
         params = cfg["google_news"].get(ed)
         if params:
-            for term in cfg.get("watchlist", []):
+            for term, _group in watch_terms(cfg):
                 jobs.append((f"Watch {ed}: {term}", src_watch, (term, ed, params), 30))
+    ac = cfg.get("ai_tools") or {}
+    if ac.get("enabled", True):
+        for pipe in ac.get("hf_pipelines", list(HF_PIPE_LABEL)):
+            jobs.append((f"Hugging Face {pipe}", src_hf, (pipe,), 60))
     for path, label, cc in cfg.get("sports_leagues", []):
         jobs.append((f"ESPN {label}", src_espn, (path, label, cc), 0))
     for cc in cfg.get("music_countries", []):
@@ -858,7 +943,7 @@ def build_topics(signals, cfg, now):
     cw = cfg.get("country_weight", {})
     terms, heads = [], []
     for s in signals:
-        if s["kind"] in ("sport", "movie_chart", "watch", "briefing", "disaster"):
+        if s["kind"] in ("sport", "movie_chart", "watch", "briefing", "disaster", "ai_model"):
             continue
         s["key"] = norm(s["term"])
         s["toks"] = s["key"].split()
@@ -1316,7 +1401,7 @@ def cache_picture(url):
 #   5 urgent (breaking, red disasters) · 4 very important (hot, just in, repeating, big finals, briefing)
 #   3 trending / normal · 2 low (digest, music charts, reminders)
 KIND_LABEL = {"disaster": "DISASTER", "watch": "WATCHLIST", "music": "MUSIC CHART", "event": "EVENT",
-              "digest": "DIGEST", "catchup": "SUMMARY", "briefing": "BRIEFING"}
+              "digest": "DIGEST", "catchup": "SUMMARY", "briefing": "BRIEFING", "ai": "AI MODEL"}
 KIND_PRIORITY = {"music": 2, "digest": 2, "catchup": 4, "briefing": 4}
 
 
@@ -1403,7 +1488,7 @@ CHANNEL_FILTERS = {
     "-eu": ("Europe", lambda cs: any(c in EU_SET for c in cs)),
 }
 CHANNEL_HASH = {"": "", "-all": "", "-us": "#us", "-de": "#de", "-eu": "#eu", "-sports": "#sports",
-                "-disasters": "#disasters"}
+                "-disasters": "#disasters", "-ai": "#ai"}
 
 
 def channels_for(a, cfg):
@@ -1422,6 +1507,8 @@ def channels_for(a, cfg):
         ch.append("-sports")
     if a.get("category") == "Natural disasters" or a["kind"] == "disaster" or a.get("label") == "BREAKING":
         ch.append("-disasters")
+    if a.get("category") == "AI video & image" or a["kind"] == "ai":
+        ch.append("-ai")
     return ch
 
 
@@ -1521,7 +1608,8 @@ def watch_alerts(signals, topics, state, cfg, now, quiet, since=None):
         if s["kind"] == "watch":
             arts.setdefault(s["watch_term"], []).append(s)
     out, summary, first, missed = [], {}, [], []
-    for term in cfg.get("watchlist", []):
+    for term, group in watch_terms(cfg):
+        extra_tags = {"category": group, "label": "AI TOOLS"} if group else {}
         items = sorted(arts.get(term, []), key=lambda a: a.get("published") or "", reverse=True)
         uniq, seen_t = [], set()
         for a in items:
@@ -1531,7 +1619,7 @@ def watch_alerts(signals, topics, state, cfg, now, quiet, since=None):
         recent2 = [a for a in uniq if hours_since(a.get("published"), now) <= 2]
         topic = next((t for t in topics if t.get("watch") == term), None)
         summary[term] = {"n24": len(uniq), "n2": len(recent2), "topic": topic["name"] if topic else None,
-                         "topic_score": topic["score"] if topic else None,
+                         "topic_score": topic["score"] if topic else None, "group": group,
                          "items": [{"t": a["term"], "u": a["url"], "s": a["outlet"], "p": a.get("published")} for a in uniq[:8]]}
         rec = ws.setdefault(term, {"last": None, "spike": None, "seen": []})
         seen = set(rec["seen"])
@@ -1556,7 +1644,7 @@ def watch_alerts(signals, topics, state, cfg, now, quiet, since=None):
             a = recent2[0]
             out.append(mk_alert(f"\u26A1 {term.upper()} is spiking: {len(recent2)} articles in 2h", a["term"][:150],
                                 f"{a['outlet']} · {len(uniq)} articles today", a["url"], tag="w" + sid(term),
-                                priority=4, short=term, kind="watch"))
+                                priority=4, short=term, kind="watch", **extra_tags))
             rec["spike"] = rec["last"] = now.isoformat()
         elif cool and new_items and not quiet:
             a = new_items[0]
@@ -1564,7 +1652,7 @@ def watch_alerts(signals, topics, state, cfg, now, quiet, since=None):
             out.append(mk_alert(f"\u2B50 {term.upper()}: {a['term']}"[:150],
                                 f"{a['outlet']} · {len(uniq)} articles today, {len(recent2)} in 2h{extra}",
                                 (new_items[1]["term"][:140] if len(new_items) > 1 else ""), a["url"],
-                                tag="w" + sid(term), short=term, kind="watch"))
+                                tag="w" + sid(term), short=term, kind="watch", **extra_tags))
             rec["last"] = now.isoformat()
     if first and not quiet:
         first.sort(key=lambda x: -x[1])
@@ -2067,6 +2155,7 @@ def render_dashboard(topics, health, events, cfg, now, signals, watch_summary, g
         "ntfy": "" if CLOUD else cfg.get("ntfy_topic", ""),   # the public online dashboard never shows the secret topic
         "briefing": state.get("briefing"), "cloud": CLOUD, "online_url": cfg.get("online_dashboard", ""),
         "disasters": state.get("disaster_data") or {},
+        "ai": {"models": state.get("ai_data") or {}, "tools": load_json(ROOT / "ai_tools.json", {}).get("groups", [])},
         "catchup": state.get("catchup") if hours_since((state.get("catchup") or {}).get("at"), now) < 12 else None,
     }
     blob = json.dumps(data, ensure_ascii=False).replace("</", "<\\/")
@@ -2220,6 +2309,8 @@ def run_check(dry=False, report=False, sim_gap=None, preview=False):
         events = sorted(load_json(ROOT / "events.json", {}).get("events", []), key=lambda e: e.get("date", ""))
         e_alerts = event_alerts(events, state, cfg, now, quiet)
         d_alerts, dis_data = disaster_alerts(signals, state, cfg, now, quiet)
+        ai_new, ai_data = ai_alerts(signals, state, cfg, now, quiet)
+        e_alerts = ai_new + e_alerts
         d_alerts = fold(d_alerts, (cfg.get("disasters") or {}).get("max_toasts", 3), "\U0001F30D Disasters")
         if catchup:
             alerts = d_alerts + catchup_alerts(topics, queue, s_alerts, w_alerts, m_alerts, e_alerts, state, now, gap_h, last_ok)
@@ -2237,6 +2328,7 @@ def run_check(dry=False, report=False, sim_gap=None, preview=False):
             mark_topics([(t, r) for t, r, _ in queue] + also, now)
 
         state["disaster_data"] = dis_data
+        state["ai_data"] = ai_data
         render_dashboard(topics, health, events, cfg, now, signals, watch_summary, games, state)
         export_latest(topics, signals, watch_summary, games, events, now)
         state["last_run"] = state["last_ok_run"] = now.isoformat()

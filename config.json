@@ -84,6 +84,10 @@
     {"name": "BBC Europe", "country": "EU", "url": "https://feeds.bbci.co.uk/news/world/europe/rss.xml"},
     {"name": "Euronews", "country": "EU", "url": "https://www.euronews.com/rss?format=mrss&level=theme&name=news"},
     {"name": "Politico Europe", "country": "EU", "url": "https://www.politico.eu/feed/"},
+    {"name": "TechCrunch AI", "country": "US", "cat": "Tech & AI", "url": "https://techcrunch.com/category/artificial-intelligence/feed/"},
+    {"name": "The Verge AI", "country": "US", "cat": "Tech & AI", "url": "https://www.theverge.com/rss/ai-artificial-intelligence/index.xml"},
+    {"name": "The Decoder", "country": "DE", "cat": "Tech & AI", "url": "https://the-decoder.com/feed/"},
+    {"name": "Reddit r/aivideo", "country": "US", "kind": "community", "cat": "AI video & image", "url": "https://www.reddit.com/r/aivideo/.rss"},
     {"name": "Reddit r/popular", "country": "US", "kind": "community", "url": "https://www.reddit.com/r/popular/.rss"},
     {"name": "Reddit r/de", "country": "DE", "kind": "community", "url": "https://www.reddit.com/r/de/.rss"}
   ],
@@ -105,6 +109,16 @@
   "_sports_help": "You get FINAL results of big games: playoffs, Super Bowl, finals, special games, and every game of watch_teams.",
   "sports_notifications": true,
   "max_sports_toasts": 2,
+
+  "ai_tools": {
+    "enabled": true,
+    "watch": ["seedance", "kling", "veo", "hailuo", "runway ai", "pika", "luma ai", "midjourney", "nano banana", "seedream",
+              "flux ai", "ltx video", "wan 2", "hunyuanvideo", "comfyui", "higgsfield", "ai video generator", "open source video model",
+              "elevenlabs", "suno ai"],
+    "hf_pipelines": ["text-to-video", "image-to-video", "text-to-image", "text-to-speech"],
+    "notify_new_models": true, "top_n": 5, "new_model_days": 60, "min_likes": 30
+  },
+  "_ai_tools_help": "AI video / image / voice tools: each word in 'watch' gets its own news search (category 'AI video & image'). New open models trending on Hugging Face (top_n of each task, younger than new_model_days) make an 'AI MODEL' notification. Phone channel: your topic + -ai.",
 
   "music_countries": ["US", "DE", "GB", "FR", "IT", "ES"],
   "music_notifications": true,

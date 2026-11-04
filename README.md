@@ -64,6 +64,7 @@ Pick the **channels** you want (your topic + an ending):
 | `your-topic-eu` | Europe (UK, France, Italy, Spain…) – trending and up |
 | `your-topic-sports` | sports results and sports trends |
 | `your-topic-disasters` | natural disasters + breaking news |
+| `your-topic-ai` | AI video / image / voice tools: new models + news (Seedance, Kling, Veo, LTX, Wan...) |
 
 Example – **USA only**: subscribe to `your-topic-us` and nothing else.
 On Android you can also set a *minimum priority* per subscription (urgent = 5, very important = 4, normal = 3, low = 2).
@@ -88,6 +89,11 @@ Tip: open the dashboard on the phone and choose **Add to Home screen** – it th
   NWS (US weather warnings), NASA EONET
 - **GDELT:** is coverage of a topic accelerating?
 - **Watchlist:** a news search for each of your words (Tesla, GTA 6, Avengers, Super Bowl…)
+- **AI tools for creators:** news search for Seedance, Kling, Veo, Hailuo, Runway, Pika, Luma, Midjourney, Nano Banana,
+  Seedream, FLUX, LTX, Wan, HunyuanVideo, ComfyUI, Higgsfield, ElevenLabs, Suno… · **new open models trending on
+  Hugging Face** (text-to-video, image-to-video, text-to-image, text-to-speech – most run free on your own PC with
+  ComfyUI) · TechCrunch AI, The Verge AI, The Decoder, Reddit r/aivideo. The dashboard tab **🎬 AI tools** also has a
+  tools guide (`ai_tools.json`, edit it freely).
 
 If a source fails (for example Reddit refusing servers), the radar continues with the others.
 
@@ -110,6 +116,7 @@ If a source fails (for example Reddit refusing servers), the radar continues wit
 | 📅 | event reminder (7 days, 2 days and on the day) |
 | 📊 | top trends every 3 hours |
 | 🧠 | Claude briefing |
+| 🎬 NEW AI MODEL | a new open AI video / image / voice model reached the top 5 on Hugging Face |
 
 "also: …" means several trends about the same story were grouped into one notification.
 
@@ -191,6 +198,20 @@ python trend_radar.py --test
 (sends a real example notification)
 
 The local Windows radar (`INSTALL.cmd` / `UNINSTALL.cmd`) is optional now – the cloud and the desktop app replace it.
+
+---
+
+### What costs what
+
+| Part | Cost |
+|---|---|
+| GitHub Actions (radar), GitHub Pages (dashboard), the download page | free (public repository) |
+| ntfy (phone notifications) | free |
+| Desktop app | free |
+| Claude briefing routine (2 runs a day) | uses your Claude plan's usage – pause or delete it at https://claude.ai/code/routines |
+
+Note: GitHub runs scheduled jobs "best effort" – when GitHub is busy, the 15-minute check can run less often
+(seen: about once an hour). Notifications still arrive, just later.
 
 ---
 

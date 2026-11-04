@@ -1,0 +1,48 @@
+{
+  "_help": "Guide shown in the dashboard tab 'AI tools'. Researched November 2026 - prices and free plans change often, always check the official site. Edit freely.",
+  "groups": [
+    {
+      "title": "Video - online (best quality)",
+      "tools": [
+        {"name": "Seedance 2.5 (ByteDance)", "note": "Often ranked best for photorealistic clips. Pay per second via APIs (e.g. fal); free daily quota reported - check.", "url": "https://www.google.com/search?q=Seedance+2.5"},
+        {"name": "Kling (Kuaishou)", "note": "Strong quality / price. Daily free credits (personal use only on the free plan). Check if Kling 4.0 is out.", "url": "https://klingai.com/"},
+        {"name": "Veo 3.1 (Google)", "note": "Top quality, video with sound. Paid - through Google AI plans / Gemini.", "url": "https://deepmind.google/models/veo/"},
+        {"name": "Hailuo (MiniMax)", "note": "Good motion, free credits for personal use.", "url": "https://hailuoai.video/"},
+        {"name": "Runway", "note": "Editing tools + generation, popular with creators. Paid plans.", "url": "https://runwayml.com/"},
+        {"name": "Pika", "note": "Fast, fun effects. New open Pika-H3 models trend on Hugging Face.", "url": "https://pika.art/"},
+        {"name": "Luma Dream Machine", "note": "Cinematic camera moves.", "url": "https://lumalabs.ai/"},
+        {"name": "Sora (OpenAI)", "note": "Discontinued in 2026 (app closed April, API September).", "url": "https://www.google.com/search?q=Sora+discontinued"}
+      ]
+    },
+    {
+      "title": "Video - free on your own PC (open models)",
+      "tools": [
+        {"name": "ComfyUI", "note": "Free app to run the open models below on your PC (NVIDIA GPU recommended).", "url": "https://www.comfy.org/"},
+        {"name": "LTX-2.x (Lightricks)", "note": "Open, video + synchronized audio, day-one ComfyUI support. LTX-2.5 is #1 trending on Hugging Face now.", "url": "https://huggingface.co/Lightricks"},
+        {"name": "Wan 2.2 (Alibaba)", "note": "Open (Apache 2.0), mature. Newer Wan 2.5 / 2.6 are closed (online only).", "url": "https://huggingface.co/Wan-AI"},
+        {"name": "HunyuanVideo 1.5 (Tencent)", "note": "Open (Tencent licence), can run on ~16 GB GPUs with offloading.", "url": "https://huggingface.co/tencent"}
+      ]
+    },
+    {
+      "title": "Images",
+      "tools": [
+        {"name": "Nano Banana (Google Gemini)", "note": "Reported as the most generous free image generator (daily free images).", "url": "https://gemini.google.com/"},
+        {"name": "FLUX (Black Forest Labs)", "note": "Open models, run locally in ComfyUI; cheap via APIs.", "url": "https://huggingface.co/black-forest-labs"},
+        {"name": "Qwen-Image (Alibaba)", "note": "Open, trending on Hugging Face (Qwen-Image 2.1).", "url": "https://huggingface.co/Qwen"},
+        {"name": "Seedream (ByteDance)", "note": "ByteDance image model, sister of Seedance.", "url": "https://www.google.com/search?q=Seedream+ByteDance"},
+        {"name": "Ideogram", "note": "Best when text must be readable in the image (thumbnails!).", "url": "https://ideogram.ai/"},
+        {"name": "Leonardo.ai", "note": "Rich free tier.", "url": "https://leonardo.ai/"},
+        {"name": "Midjourney", "note": "Artistic quality, paid only (from about $10/month).", "url": "https://www.midjourney.com/"}
+      ]
+    },
+    {
+      "title": "Voice & music",
+      "tools": [
+        {"name": "Kokoro-82M", "note": "Tiny open text-to-speech model, runs on any PC.", "url": "https://huggingface.co/hexgrad/Kokoro-82M"},
+        {"name": "Fish Audio", "note": "Open voice models (e.g. drama-3, trending).", "url": "https://huggingface.co/fishaudio"},
+        {"name": "ElevenLabs", "note": "Best-known voice / dubbing service, paid with a free tier.", "url": "https://elevenlabs.io/"},
+        {"name": "Suno", "note": "AI music / songs.", "url": "https://suno.com/"}
+      ]
+    }
+  ]
+}
