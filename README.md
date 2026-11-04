@@ -101,6 +101,20 @@ Ila bghiti Telegram wla Discord f blast (wla m3a) ntfy: 3mer `telegram_bot_token
 
 ---
 
+## 3b. App dyal PC o Mac (Trend Radar Desktop)
+
+Nzelha mn: **https://github.com/fatimazahra789078/trend-radar/releases/latest**
+
+| PC | Fichier | Kifach |
+|---|---|---|
+| Windows | `TrendRadar-Setup-x.exe` | installer. Ila tla3 "Windows protected your PC" → **More info → Run anyway** |
+| Windows (bla installation) | `TrendRadar-Portable-x.exe` | double-click, t9der t7ttha f clé USB |
+| Mac (Intel + M1/M2/M3/M4) | `TrendRadar-mac.dmg` | jerr l'app l **Applications** → l'awel mra: click limen → **Open** → **Open**. Ila gal "damaged": f Terminal `xattr -cr "/Applications/Trend Radar.app"` |
+
+F l'awel lancement kat7el **Settings**: colli topic dyalk, khtar channels (mtalan **USA only**), Save.
+L'app kat werik dashboard f window dyalha, kat b9a f tray / menu bar, o kat seft notifications dyal Windows / Mac (7ta li fatouk mlli kan PC f veille).
+Ila zedti chi 7aja f `desktop/`, 3awd tbniha: GitHub → **Actions** → **Desktop app** → **Run workflow**.
+
 ## 4. Anwa3 dyal notifications
 
 | Icon | Ma3nah |
