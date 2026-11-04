@@ -7,50 +7,70 @@
 <style>
 :root{--bg:#0a0f1d;--panel:#111a2e;--line:#23304f;--text:#e8edf7;--muted:#8e9bb8;--accent:#ff7a50;--ok:#38d996}
 *{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--text);font:14px/1.5 "Segoe UI",system-ui,-apple-system,Arial,sans-serif;padding:22px}
-h1{font-size:19px;margin:0 0 4px;display:flex;align-items:center;gap:10px}
+body{margin:0;background:var(--bg);color:var(--text);font:14px/1.5 "Segoe UI",system-ui,-apple-system,Arial,sans-serif;padding:20px 22px 90px}
+h1{font-size:19px;margin:0 0 2px;display:flex;align-items:center;gap:10px}
 h1 img{width:28px;height:28px}
-.sub{color:var(--muted);margin:0 0 18px;font-size:12.5px}
-.box{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:14px 16px;margin-bottom:14px}
-label.t{display:block;font-weight:700;margin-bottom:6px}
-.hint{color:var(--muted);font-size:12.5px;margin:6px 0 0}
+.sub{color:var(--muted);margin:0 0 16px;font-size:12.5px}
+.box{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:14px 16px;margin-bottom:12px}
+.box h2{font-size:14.5px;margin:0 0 2px;display:flex;align-items:center;gap:8px}
+.box h2 .quick{margin-left:auto;display:flex;gap:6px}
+.hint{color:var(--muted);font-size:12.5px;margin:2px 0 8px}
 .row{display:flex;gap:8px}
 input[type=text],input[type=password],input[type=url]{flex:1;width:100%;background:#0d1424;border:1px solid var(--line);color:var(--text);border-radius:10px;padding:9px 11px;font:inherit}
 input:focus{outline:2px solid var(--accent);outline-offset:-1px}
-.ch{display:flex;gap:10px;align-items:flex-start;padding:7px 0;border-top:1px solid var(--line)}
-.ch:first-of-type{border-top:0}
-.ch input{margin-top:3px;width:16px;height:16px;accent-color:var(--accent)}
-.ch small{display:block;color:var(--muted)}
-button{border:1px solid var(--line);background:#172240;color:var(--text);border-radius:10px;padding:9px 14px;font:inherit;font-weight:600;cursor:pointer}
+.opt{display:flex;gap:10px;align-items:flex-start;padding:6px 0}
+.opt input{margin-top:3px;width:16px;height:16px;accent-color:var(--accent);flex:none}
+.opt small{display:block;color:var(--muted)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:0 14px}
+button{border:1px solid var(--line);background:#172240;color:var(--text);border-radius:10px;padding:8px 13px;font:inherit;font-weight:600;cursor:pointer}
+button.small{padding:3px 9px;font-size:12px;border-radius:8px;font-weight:600}
 button.primary{background:var(--accent);border-color:var(--accent);color:#fff}
-.actions{display:flex;gap:10px;justify-content:flex-end;margin-top:6px}
+.bar{position:fixed;left:0;right:0;bottom:0;background:color-mix(in srgb,var(--bg) 92%,transparent);border-top:1px solid var(--line);padding:12px 22px;display:flex;gap:10px;justify-content:flex-end;backdrop-filter:blur(8px)}
 .msg{color:var(--ok);font-weight:600;margin-right:auto;align-self:center}
 code{background:#1b2746;border-radius:5px;padding:1px 6px}
 </style>
 </head>
 <body>
-<h1><img src="build/icon.png" alt="">Trend Radar</h1>
+<h1><img src="build/icon.png" alt="">Trend Radar settings</h1>
 <p class="sub" id="ver"></p>
 
 <div class="box">
-  <label class="t" for="topic">Your ntfy topic (secret)</label>
+  <h2>Your ntfy topic (secret)</h2>
+  <p class="hint">The same topic as in the ntfy phone app (it starts with <code>trendradar-</code>). It is saved only on this computer.</p>
   <div class="row"><input type="password" id="topic" placeholder="trendradar-..." autocomplete="off" spellcheck="false"><button id="show" type="button">Show</button></div>
-  <p class="hint">Nafs topic li f l'app ntfy dyal telephone (kaybda b <code>trendradar-</code>). Kayb9a ghir f had PC.</p>
 </div>
 
 <div class="box">
-  <label class="t">Notifications to show on this computer</label>
-  <div id="channels"></div>
-  <p class="hint">Bghiti ghir USA? Khtar "USA only" bo7dha o 7iyed "Everything".</p>
+  <h2>How many notifications?</h2>
+  <p class="hint">Start with "Very important only" - you can always see everything in the dashboard.</p>
+  <div id="importance"></div>
 </div>
 
 <div class="box">
-  <label class="t" for="url">Dashboard address</label>
+  <h2>Countries <span class="quick"><button class="small" data-q="c:all">All</button><button class="small" data-q="c:us">USA only</button><button class="small" data-q="c:eu">Europe</button><button class="small" data-q="c:none">None</button></span></h2>
+  <p class="hint">Only news that is trending in these countries.</p>
+  <div class="grid" id="countries"></div>
+</div>
+
+<div class="box">
+  <h2>Topics <span class="quick"><button class="small" data-q="t:all">All</button><button class="small" data-q="t:none">None</button></span></h2>
+  <p class="hint">Which kinds of news. Alerts without a topic (e.g. watchlist) always pass.</p>
+  <div class="grid" id="categories"></div>
+</div>
+
+<div class="box">
+  <h2>Types of alerts <span class="quick"><button class="small" data-q="y:all">All</button><button class="small" data-q="y:big">Only the big ones</button></span></h2>
+  <div class="grid" id="types"></div>
+</div>
+
+<div class="box">
+  <h2>App</h2>
+  <p class="hint">Dashboard address</p>
   <input type="url" id="url" spellcheck="false">
-  <div class="ch" style="border:0;margin-top:8px"><input type="checkbox" id="autostart"><div>Start with the computer<small>Kaybda bo7do f tray / menu bar, o kayseft notifications.</small></div></div>
+  <div class="opt" style="margin-top:8px"><input type="checkbox" id="autostart"><label for="autostart">Start with the computer<small>Runs quietly in the tray / menu bar and shows notifications.</small></label></div>
 </div>
 
-<div class="actions">
+<div class="bar">
   <span class="msg" id="msg"></span>
   <button id="test" type="button">Test notification</button>
   <button id="save" class="primary" type="button">Save</button>
@@ -58,21 +78,48 @@ code{background:#1b2746;border-radius:5px;padding:1px 6px}
 
 <script>
 const $ = (s) => document.querySelector(s);
+const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+const BIG = ["BREAKING", "JUST IN", "HOT", "REPEATING", "DISASTER", "BRIEFING", "SUMMARY"];
+const EUROPE = ["de", "gb", "fr", "it", "es", "eu"];
+const boxes = (id, items, chosen) => {
+  $("#" + id).innerHTML = items.map(([v, l, h], i) => `<div class="opt"><input type="checkbox" id="${id}${i}" value="${esc(v)}" ${chosen.includes(v) ? "checked" : ""}>
+    <label for="${id}${i}">${esc(l)}${h ? `<small>${esc(h)}</small>` : ""}</label></div>`).join("");
+};
+const checked = (id) => [...document.querySelectorAll(`#${id} input:checked`)].map((i) => i.value);
+const setAll = (id, fn) => document.querySelectorAll(`#${id} input`).forEach((i) => (i.checked = fn(i.value)));
+
 (async () => {
   const c = await window.tr.get();
+  const L = c.lists;
   $("#ver").textContent = `Desktop app v${c.version} · ${c.platform === "darwin" ? "macOS" : c.platform === "win32" ? "Windows" : c.platform}`;
   $("#topic").value = c.topic || "";
   $("#url").value = c.url || "";
   $("#autostart").checked = !!c.autostart;
-  $("#channels").innerHTML = c.channelsList.map(([v, l]) => `
-    <div class="ch"><input type="checkbox" value="${v}" ${c.channels.includes(v) ? "checked" : ""} id="c${v || "all"}">
-    <label for="c${v || "all"}">${l}<small>${v ? "topic + " + v : "topic"}</small></label></div>`).join("");
+  $("#importance").innerHTML = L.IMPORTANCE.map(([p, l, h]) => `<div class="opt"><input type="radio" name="imp" id="imp${p}" value="${p}" ${c.minPriority === p ? "checked" : ""}>
+    <label for="imp${p}">${esc(l)}<small>${esc(h)}</small></label></div>`).join("");
+  boxes("countries", L.COUNTRIES, c.countries);
+  boxes("categories", L.CATEGORIES.map((x) => [x, x]), c.categories);
+  boxes("types", L.TYPES, c.types);
 })();
+
+document.addEventListener("click", (e) => {
+  const q = e.target.dataset && e.target.dataset.q;
+  if (!q) return;
+  if (q === "c:all") setAll("countries", () => true);
+  if (q === "c:none") setAll("countries", () => false);
+  if (q === "c:us") setAll("countries", (v) => v === "us");
+  if (q === "c:eu") setAll("countries", (v) => EUROPE.includes(v));
+  if (q === "t:all") setAll("categories", () => true);
+  if (q === "t:none") setAll("categories", () => false);
+  if (q === "y:all") setAll("types", () => true);
+  if (q === "y:big") setAll("types", (v) => BIG.includes(v));
+});
 $("#show").onclick = () => { const t = $("#topic"); t.type = t.type === "password" ? "text" : "password"; $("#show").textContent = t.type === "password" ? "Show" : "Hide"; };
 $("#test").onclick = async () => { await window.tr.test(); $("#msg").textContent = "Test sent"; };
 $("#save").onclick = async () => {
-  const channels = [...document.querySelectorAll("#channels input:checked")].map((i) => i.value);
-  await window.tr.save({ topic: $("#topic").value, channels, url: $("#url").value, autostart: $("#autostart").checked });
+  const imp = document.querySelector("input[name=imp]:checked");
+  await window.tr.save({ topic: $("#topic").value, minPriority: imp ? Number(imp.value) : 4, countries: checked("countries"),
+                         categories: checked("categories"), types: checked("types"), url: $("#url").value, autostart: $("#autostart").checked });
   $("#msg").textContent = "Saved ✓";
   setTimeout(() => window.close(), 700);
 };

@@ -1312,12 +1312,24 @@ def cache_picture(url):
     return p.as_uri()
 
 
+# Importance (= ntfy priority) decides who gets an alert:
+#   5 urgent (breaking, red disasters) · 4 very important (hot, just in, repeating, big finals, briefing)
+#   3 trending / normal · 2 low (digest, music charts, reminders)
+KIND_LABEL = {"disaster": "DISASTER", "watch": "WATCHLIST", "music": "MUSIC CHART", "event": "EVENT",
+              "digest": "DIGEST", "catchup": "SUMMARY", "briefing": "BRIEFING"}
+KIND_PRIORITY = {"music": 2, "digest": 2, "catchup": 4, "briefing": 4}
+
+
 def mk_alert(title, line2="", line3="", url=None, actions=None, img=None, long=False, tag=None, priority=3,
              short=None, kind="info", **phone):
-    """phone: optional push_text, countries, category, pic_url for the ntfy notification."""
+    """phone: optional push_text, countries, category, pic_url, label for the ntfy notification."""
+    priority = KIND_PRIORITY.get(kind, priority)
+    label = phone.pop("label", None) or (("LIVE" if "LIVE" in title else "SPORTS RESULT") if kind == "sport"
+                                         else KIND_LABEL.get(kind))
     return {"title": title[:150], "line2": line2 or "", "line3": line3 or "", "url": url or DASH_LINK,
             "actions": actions or [("Dashboard", DASH_LINK)], "img": img, "long": long,
-            "tag": (tag or sid(title))[:16], "priority": priority, "short": short or title, "kind": kind, **phone}
+            "tag": (tag or sid(title))[:16], "priority": priority, "short": short or title, "kind": kind,
+            "label": label, **phone}
 
 
 def research_links(t):
@@ -1390,18 +1402,25 @@ CHANNEL_FILTERS = {
     "-de": ("Germany", lambda cs: any(c in DACH for c in cs)),
     "-eu": ("Europe", lambda cs: any(c in EU_SET for c in cs)),
 }
-CHANNEL_HASH = {"": "", "-us": "#us", "-de": "#de", "-eu": "#eu", "-sports": "#sports", "-disasters": "#disasters"}
+CHANNEL_HASH = {"": "", "-all": "", "-us": "#us", "-de": "#de", "-eu": "#eu", "-sports": "#sports",
+                "-disasters": "#disasters"}
 
 
-def channels_for(a):
-    """'' = everything; '-us' USA only; '-de' Germany/Austria/Switzerland; '-eu' Europe; '-sports'; '-disasters'."""
+def channels_for(a, cfg):
+    """Phone channels (your topic + ending):
+    ''  = VERY IMPORTANT only (breaking, hot, just in, repeating, big disasters, briefing)
+    '-all' = everything · '-us' / '-de' / '-eu' = that country, trending and up · '-sports' · '-disasters'."""
     if a.get("channels"):
         return a["channels"]
-    cs = a.get("countries") or []
-    ch = [""] + [suf for suf, (_, keep) in CHANNEL_FILTERS.items() if keep(cs)]
+    pr, cs = a["priority"], a.get("countries") or []
+    ch = ["-all"]
+    if pr >= cfg.get("phone_important_priority", 4):
+        ch.append("")
+    if pr >= cfg.get("phone_country_min_priority", 3):
+        ch += [suf for suf, (_, keep) in CHANNEL_FILTERS.items() if keep(cs)]
     if a.get("category") == "Sports":
         ch.append("-sports")
-    if a.get("category") == "Natural disasters" or a["kind"] == "disaster" or "BREAKING" in a["title"]:
+    if a.get("category") == "Natural disasters" or a["kind"] == "disaster" or a.get("label") == "BREAKING":
         ch.append("-disasters")
     return ch
 
@@ -1482,10 +1501,13 @@ def topic_alert(t, reason, related=()):
     links = research_links(t)
     url = (t["breaking"]["url"] if reason == "breaking" else t["url"]) or links["news"]
     actions = [("Open", url), ("YouTube", links["youtube"]), ("Dashboard", DASH_LINK)]
+    pr = (5 if reason == "breaking" else 4 if (t["tier"] == 2 or reason in ("justin", "repeat"))
+          else 2 if reason == "spread" else 3)
+    label = {"breaking": "BREAKING", "justin": "JUST IN", "repeat": "REPEATING", "spread": "SPREADING",
+             "hot": "HOT"}.get(reason) or ("HOT" if t["tier"] == 2 else "TOP NEWS" if t["story"] else "TRENDING")
     a = mk_alert(title, line2, line3, url, actions, img=cache_picture(t.get("picture")),
                  long=(t["tier"] == 2 or reason in ("breaking", "justin")), tag=t["id"],
-                 priority=5 if reason == "breaking" else 4 if (t["tier"] == 2 or reason == "justin") else 3,
-                 short=t["name"], kind="topic")
+                 priority=pr, short=t["name"], kind="topic", label=label)
     a.update(push_text=phone_text(t, reason, related), countries=t["countries"], category=t.get("category"),
              pic_url=t.get("picture") or "")
     return a
@@ -1548,7 +1570,7 @@ def watch_alerts(signals, topics, state, cfg, now, quiet, since=None):
         first.sort(key=lambda x: -x[1])
         out.append(mk_alert("\u2B50 Watchlist is on", " · ".join(f"{t} ({n}{'+' if n >= 40 else ''})" for t, n in first[:6]),
                             "Articles today. New ones will be sent automatically.", DASH_LINK, tag="watchinit",
-                            short="watchlist", kind="watch"))
+                            short="watchlist", kind="watch", priority=2))
     if missed:
         missed.sort(key=lambda x: -x[1])
         lab = lambda n: f"{n}{'+' if n >= 40 else ''}"  # noqa: E731
@@ -1679,7 +1701,7 @@ def event_alerts(events, state, cfg, now, quiet):
             line2 = f"{d:%a %d %b} · {ev.get('region', '')} · {ev.get('category', '')}" + \
                     (" (date not 100% sure)" if ev.get("approx") else "")
             out.append(mk_alert(f"\U0001F4C5 {when}: {ev['title']}", line2, ev.get("note", ""), ev.get("url") or DASH_LINK,
-                                tag="e" + sid(key), short=ev["title"], kind="event",
+                                tag="e" + sid(key), short=ev["title"], kind="event", priority=3 if left == 0 else 2,
                                 countries=[ev.get("region", "")], category=ev.get("category")))
             sent[key] = now.isoformat()
     for k in [k for k in sent if k.split("|")[0] < (today - timedelta(days=30)).isoformat()]:
@@ -1700,7 +1722,7 @@ def digest_alert(topics, state, cfg, now, quiet):
     state["last_digest"] = now.isoformat()
     items = [f"{i}. {t['name']} ({'/'.join(t['countries'][:2])})" for i, t in enumerate(top, 1)]
     a = mk_alert("\U0001F4CA Top trends right now", " · ".join(items[:3]), " · ".join(items[3:]), DASH_LINK,
-                 tag="digest", short="digest", kind="digest", channels=[""])
+                 tag="digest", short="digest", kind="digest", channels=["-all"])
     a["push_text"] = "\n".join(short_line(i, t) for i, t in enumerate(top, 1))
     out = [a]
     # the same digest for each country channel (phone only), e.g. "Top trends USA"
@@ -1809,7 +1831,7 @@ def push_remote(alerts, cfg, force=False):
         msg = a.get("push_text") or "\n".join(x for x in (a["line2"], a["line3"]) if x) or " "
         url = a["url"] if a["url"].startswith("http") else online
         try:
-            for ch in (channels_for(a) if topic and cfg.get("phone_channels", True) else [""]):
+            for ch in (channels_for(a, cfg) if topic and cfg.get("phone_channels", True) else [""]):
                 if not topic:
                     break
                 dash = online + CHANNEL_HASH.get(ch, "") if online else ""
@@ -1818,6 +1840,8 @@ def push_remote(alerts, cfg, force=False):
                 tags = [FLAG_TAG[c] for c in a.get("countries") or [] if c in FLAG_TAG][:4]
                 if a.get("category") and a["category"] != "General":
                     tags.append(a["category"])
+                if a.get("label"):
+                    tags.append(a["label"])     # HOT, BREAKING, REPEATING... (the desktop app filters on these)
                 if tags:
                     body["tags"] = tags
                 click = url if a["url"].startswith("http") else dash

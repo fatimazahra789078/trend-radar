@@ -11,7 +11,9 @@
   "_cloud_help": "The cloud copy (GitHub Actions) runs every 15 min even when the PC is off and sends to the phone. Claude writes a briefing twice a day (briefing_url).",
   "push_min_tier": 1,
   "phone_channels": true,
-  "_channels_help": "Phone channels in the ntfy app = your topic + an ending: (nothing) = everything, -us = USA only, -de = Germany/Austria/Switzerland, -eu = Europe, -sports = sports, -disasters = natural disasters + breaking. Subscribe only to the ones you want.",
+  "phone_important_priority": 4,
+  "phone_country_min_priority": 3,
+  "_channels_help": "Phone channels in the ntfy app = your topic + an ending: (nothing) = VERY IMPORTANT only (breaking, hot, just in, repeating, big disasters, briefing), -all = everything, -us = USA, -de = Germany/Austria/Switzerland, -eu = Europe (these 3: trending and up), -sports = sports, -disasters = natural disasters + breaking.",
   "disasters": {"enabled": true, "quake_world_mag": 6.0, "quake_europe_mag": 5.0, "quake_country_mag": 4.5,
                 "gdacs_levels": ["Orange", "Red"], "max_toasts": 3},
   "_disasters_help": "Earthquake from M6.0 anywhere, M5.0 in Europe, M4.5 inside your countries; GDACS orange/red alerts; US warnings (tornado, hurricane, extreme...).",
@@ -117,6 +119,7 @@
              "horoskop", "horoscope", "oroscopo", "horóscopo", "lotto", "eurojackpot", "powerball numbers", "superenalotto", "loto", "euromillions", "wordle", "connections hint",
              "bbc news", "bbc", "cnn", "fox news", "orf", "rainews24", "rai news", "tgcom24", "tagesschau", "spiegel", "bild", "n tv", "ntv", "welt", "zdf", "ard", "t online", "srf", "nos",
              "le monde", "franceinfo", "bfmtv", "repubblica", "corriere", "el pais", "marca", "as", "rtve",
+             "america", "usa", "eeuu", "estados unidos", "etats unis", "stati uniti", "united states", "deutschland", "germany", "europa", "europe", "uk", "england",
              "google", "youtube", "facebook", "instagram", "gmail", "amazon", "whatsapp", "chatgpt", "translate", "google translate", "wetter morgen"],
 
   "event_reminder_days": [7, 2, 0]

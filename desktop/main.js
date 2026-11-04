@@ -1,7 +1,8 @@
 // Trend Radar desktop app (Windows + macOS).
 // - shows the online dashboard in its own window
 // - lives in the tray / menu bar and starts with the computer
-// - listens to your ntfy channels and shows native notifications (also the ones missed while asleep)
+// - listens to your ntfy topic and shows native notifications, filtered by YOUR choices:
+//   importance, countries, topics and types (also the ones missed while the computer slept)
 // The radar itself runs in the cloud (GitHub Actions), so this app needs nothing else installed.
 const { app, BrowserWindow, Tray, Menu, Notification, shell, ipcMain, nativeImage, powerMonitor } = require("electron");
 const path = require("path");
@@ -11,17 +12,30 @@ const crypto = require("crypto");
 
 const DEFAULT_URL = "https://fatimazahra789078.github.io/trend-radar/";
 const DEFAULT_SERVER = "https://ntfy.sh";
-const CHANNELS = [
-  ["", "Everything"], ["-us", "USA only"], ["-de", "Germany / Austria / Switzerland"],
-  ["-eu", "Europe (UK, France, Italy, Spain)"], ["-sports", "Sports"], ["-disasters", "Natural disasters + breaking"],
-];
 const FLAGS = { us: "🇺🇸", de: "🇩🇪", gb: "🇬🇧", fr: "🇫🇷", it: "🇮🇹", es: "🇪🇸", eu: "🇪🇺" };
+const COUNTRIES = [["us", "🇺🇸 USA"], ["de", "🇩🇪 Germany / Austria / Switzerland"], ["gb", "🇬🇧 UK"], ["fr", "🇫🇷 France"],
+                   ["it", "🇮🇹 Italy"], ["es", "🇪🇸 Spain"], ["eu", "🇪🇺 Europe-wide"], ["world", "🌐 Rest of the world / no country"]];
+const CATEGORIES = ["Politics", "World & conflicts", "Natural disasters", "Crime & accidents", "Sports", "Movies & TV",
+                    "Music", "Gaming", "Tech & AI", "Business", "Celebs & viral"];
+const TYPES = [
+  ["BREAKING", "Breaking news (trusted sources)"], ["JUST IN", "Just in (4+ news sites in the last hour)"],
+  ["HOT", "Hot trends"], ["REPEATING", "Trends that keep coming back (day 2, 3, 5, 7)"], ["TRENDING", "Trending"],
+  ["TOP NEWS", "Top news stories"], ["DISASTER", "Natural disasters (quakes, storms, floods...)"],
+  ["SPORTS RESULT", "Results of big games"], ["LIVE", "Big games starting"], ["WATCHLIST", "Your watchlist words"],
+  ["BRIEFING", "Claude briefing (09:00 and 18:00)"], ["DIGEST", "Top trends every 3 hours"],
+  ["MUSIC CHART", "Music charts (new #1, new top 10)"], ["EVENT", "Upcoming event reminders"],
+  ["SPREADING", "A trend reaches a new country"], ["SUMMARY", "While you were away"],
+];
+const IMPORTANCE = [[4, "Very important only", "Breaking, hot, just in, repeating trends, big disasters, briefing"],
+                    [3, "Important + trending", "Also normal trends, top news, sports results, watchlist"],
+                    [1, "Everything", "Also digests, music charts, reminders"]];
+const COUNTRYLESS_OK = ["WATCHLIST", "BRIEFING", "DIGEST", "SUMMARY"];
 const ICON = path.join(__dirname, "build", "icon.png");
 const START_HIDDEN = process.argv.includes("--hidden");
 
 let win = null, settingsWin = null, tray = null, cfg = {}, req = null, retryMs = 5000, retryTimer = null;
 let quitting = false, pausedUntil = 0, connected = false;
-const recent = new Map(); // de-duplicate the same alert coming from 2 channels
+const recent = new Map();
 
 // ---------------------------------------------------------------- settings
 const cfgFile = () => path.join(app.getPath("userData"), "settings.json");
@@ -29,7 +43,10 @@ function loadCfg() {
   try { cfg = JSON.parse(fs.readFileSync(cfgFile(), "utf8")); } catch { cfg = {}; }
   cfg.url = cfg.url || DEFAULT_URL;
   cfg.server = cfg.server || DEFAULT_SERVER;
-  cfg.channels = Array.isArray(cfg.channels) && cfg.channels.length ? cfg.channels : [""];
+  if (![1, 3, 4].includes(cfg.minPriority)) cfg.minPriority = 4;           // default: very important only
+  if (!Array.isArray(cfg.countries) || !cfg.countries.length) cfg.countries = COUNTRIES.map(([v]) => v);
+  if (!Array.isArray(cfg.categories) || !cfg.categories.length) cfg.categories = [...CATEGORIES];
+  if (!Array.isArray(cfg.types) || !cfg.types.length) cfg.types = TYPES.map(([v]) => v);
   if (cfg.autostart === undefined) cfg.autostart = true;
   if (!app.isPackaged && process.env.TR_TEST_TOPIC) { cfg.topic = process.env.TR_TEST_TOPIC; cfg.__test = true; } // developer test only
 }
@@ -42,8 +59,28 @@ function applyAutostart() {
   app.setLoginItemSettings({ openAtLogin: !!cfg.autostart, openAsHidden: true, args: ["--hidden"] });
 }
 
+// ---------------------------------------------------------------- the filter
+function passes(ev) {
+  const tags = ev.tags || [];
+  const label = tags.find((t) => TYPES.some(([v]) => v === t)) || "";
+  const cat = tags.find((t) => CATEGORIES.includes(t)) || "";
+  const flags = tags.filter((t) => FLAGS[t]);
+  if ((ev.priority || 3) < cfg.minPriority) return false;
+  if (label && !cfg.types.includes(label)) return false;
+  if (cat && !cfg.categories.includes(cat)) return false;
+  if (flags.length) return flags.some((f) => cfg.countries.includes(f));
+  return cfg.countries.includes("world") || COUNTRYLESS_OK.includes(label);
+}
+
 // ---------------------------------------------------------------- windows
-function dashboardUrl(hash) { return cfg.url.replace(/#.*$/, "") + (hash ? "#" + hash : ""); }
+function defaultHash() {
+  const only = cfg.countries.filter((c) => c !== "world");
+  return only.length === 1 ? only[0] : "";
+}
+function dashboardUrl(hash) {
+  const h = hash === undefined ? defaultHash() : hash;
+  return cfg.url.replace(/#.*$/, "") + (h ? "#" + h : "");
+}
 
 function createWindow(show = true) {
   win = new BrowserWindow({
@@ -53,10 +90,9 @@ function createWindow(show = true) {
   });
   win.webContents.setWindowOpenHandler(({ url }) => { if (/^https?:/.test(url)) shell.openExternal(url); return { action: "deny" }; });
   win.webContents.on("will-navigate", (e, url) => {
-    const home = new URL(cfg.url);
-    try { if (new URL(url).origin !== home.origin) { e.preventDefault(); shell.openExternal(url); } } catch {}
+    try { if (new URL(url).origin !== new URL(cfg.url).origin) { e.preventDefault(); shell.openExternal(url); } } catch {}
   });
-  win.webContents.on("did-fail-load", (_e, code, _d, url, isMain) => {
+  win.webContents.on("did-fail-load", (_e, code, _d, _url, isMain) => {
     if (!isMain || code === -3) return;
     win.loadFile(path.join(__dirname, "offline.html"));
     setTimeout(() => win && !win.isDestroyed() && win.loadURL(dashboardUrl()), 20000);
@@ -75,31 +111,48 @@ function showDashboard(hash) {
 function openSettings() {
   if (settingsWin && !settingsWin.isDestroyed()) { settingsWin.show(); settingsWin.focus(); return; }
   settingsWin = new BrowserWindow({
-    width: 560, height: 720, resizable: true, title: "Trend Radar - Settings", backgroundColor: "#0a0f1d", icon: ICON,
-    autoHideMenuBar: true, parent: win && win.isVisible() ? win : undefined,
+    width: 640, height: 860, resizable: true, title: "Trend Radar - Settings", backgroundColor: "#0a0f1d", icon: ICON,
+    autoHideMenuBar: true,
     webPreferences: { preload: path.join(__dirname, "preload.js"), contextIsolation: true, sandbox: true },
   });
   settingsWin.loadFile(path.join(__dirname, "settings.html"));
 }
 
 // ---------------------------------------------------------------- tray / menu bar
+function setQuick(change) {
+  Object.assign(cfg, change); saveCfg(); buildTray();
+  if (change.countries && win && !win.isDestroyed()) win.loadURL(dashboardUrl());
+}
 function buildTray() {
-  const img = nativeImage.createFromPath(ICON).resize({ width: process.platform === "darwin" ? 18 : 16, height: process.platform === "darwin" ? 18 : 16 });
+  const size = process.platform === "darwin" ? 18 : 16;
+  const img = nativeImage.createFromPath(ICON).resize({ width: size, height: size });
   if (!tray) {
     tray = new Tray(img);
     tray.setToolTip("Trend Radar");
     tray.on("click", () => showDashboard());
   }
   const paused = Date.now() < pausedUntil;
+  const only = (list) => cfg.countries.length === list.length && list.every((c) => cfg.countries.includes(c));
+  const all = COUNTRIES.map(([v]) => v);
   tray.setContextMenu(Menu.buildFromTemplate([
     { label: "Open Trend Radar", click: () => showDashboard() },
     { type: "separator" },
-    { label: "🇺🇸 USA only", click: () => showDashboard("us") },
     { label: "💡 Video ideas", click: () => showDashboard("ideas") },
     { label: "🌍 Disasters", click: () => showDashboard("disasters") },
     { label: "⚽ Sports", click: () => showDashboard("sports") },
     { type: "separator" },
-    { label: cfg.topic ? (connected ? "● Notifications on" : "○ Connecting...") : "⚠ Set your topic in Settings", enabled: false },
+    { label: "Notify me about", submenu: IMPORTANCE.map(([p, l]) => ({ label: l, type: "radio", checked: cfg.minPriority === p, click: () => setQuick({ minPriority: p }) })) },
+    { label: "Countries", submenu: [
+      { label: "All countries", type: "radio", checked: only(all), click: () => setQuick({ countries: all }) },
+      { label: "🇺🇸 USA only", type: "radio", checked: only(["us"]), click: () => setQuick({ countries: ["us"] }) },
+      { label: "🇩🇪 Germany only", type: "radio", checked: only(["de"]), click: () => setQuick({ countries: ["de"] }) },
+      { label: "🇪🇺 Europe only", type: "radio", checked: only(["de", "gb", "fr", "it", "es", "eu"]), click: () => setQuick({ countries: ["de", "gb", "fr", "it", "es", "eu"] }) },
+      { label: "🇺🇸 + 🇩🇪 USA and Germany", type: "radio", checked: only(["us", "de"]), click: () => setQuick({ countries: ["us", "de"] }) },
+      { type: "separator" },
+      { label: "More choices in Settings...", click: openSettings },
+    ] },
+    { type: "separator" },
+    { label: cfg.topic ? (connected ? "● Connected" : "○ Connecting...") : "⚠ Set your topic in Settings", enabled: false },
     paused ? { label: "Resume notifications", click: () => { pausedUntil = 0; buildTray(); } }
            : { label: "Pause notifications for 1 hour", click: () => { pausedUntil = Date.now() + 3600e3; buildTray(); } },
     { label: "Settings...", click: openSettings },
@@ -109,19 +162,16 @@ function buildTray() {
 }
 
 // ---------------------------------------------------------------- notifications (ntfy stream)
-function topicsParam() {
-  return cfg.channels.map((s) => cfg.topic + s).join(",");
-}
-
 function connect() {
   clearTimeout(retryTimer);
   if (req) { try { req.destroy(); } catch {} req = null; }
   connected = false;
   if (!cfg.topic) { buildTray(); return; }
-  // since = last message we showed -> messages that came while the PC slept are shown too (ntfy keeps 12h)
+  // "-all" = every alert; the filter above decides what you see.
+  // since = last message we saw -> alerts that came while the computer slept are shown too (ntfy keeps 12h)
   const since = cfg.lastTime ? String(cfg.lastTime + 1) : "2m";
-  const url = `${cfg.server.replace(/\/$/, "")}/${topicsParam()}/json?since=${encodeURIComponent(since)}`;
-  req = https.get(url, { headers: { "User-Agent": "TrendRadar-Desktop/1.0" } }, (res) => {
+  const url = `${cfg.server.replace(/\/$/, "")}/${encodeURIComponent(cfg.topic + "-all")}/json?since=${encodeURIComponent(since)}`;
+  req = https.get(url, { headers: { "User-Agent": "TrendRadar-Desktop/1.1" } }, (res) => {
     if (res.statusCode !== 200) { res.resume(); return scheduleRetry(); }
     connected = true; retryMs = 5000; buildTray();
     let buf = "";
@@ -157,12 +207,15 @@ function handleMessage(ev) {
   for (const [k, t] of recent) if (now - t > 15 * 60e3) recent.delete(k);
   if (recent.has(key)) return;
   recent.set(key, now);
-  if (now < pausedUntil) return;
-  const flags = (ev.tags || []).map((t) => FLAGS[t]).filter(Boolean).join("");
-  const label = (ev.tags || []).find((t) => !FLAGS[t]);
+  const ok = now >= pausedUntil && passes(ev);
+  if (process.env.TR_DEBUG) console.log(`[filter] ${ok ? "SHOW" : "skip"} p=${ev.priority} tags=${(ev.tags || []).join(",")} ${ev.title}`);
+  if (!ok) return;
+  const tags = ev.tags || [];
+  const flags = tags.map((t) => FLAGS[t]).filter(Boolean).join("");
+  const extra = tags.filter((t) => !FLAGS[t]).join(" · ");
   notify({
     title: (flags ? flags + " " : "") + (ev.title || "Trend Radar"),
-    body: (ev.message || "") + (label ? `\n[${label}]` : ""),
+    body: (ev.message || "") + (extra ? `\n[${extra}]` : ""),
     click: ev.click, urgent: (ev.priority || 3) >= 5,
   });
 }
@@ -175,19 +228,25 @@ function notify({ title, body, click, urgent }) {
 }
 
 // ---------------------------------------------------------------- IPC for the settings window
-ipcMain.handle("cfg:get", () => ({ ...cfg, channelsList: CHANNELS, version: app.getVersion(), platform: process.platform }));
+ipcMain.handle("cfg:get", () => ({ ...cfg, lists: { COUNTRIES, CATEGORIES, TYPES, IMPORTANCE }, version: app.getVersion(), platform: process.platform }));
 ipcMain.handle("cfg:save", (_e, c) => {
+  const pick = (arr, allowed) => (Array.isArray(arr) ? arr.filter((v) => allowed.includes(v)) : []);
   cfg.topic = String(c.topic || "").trim();
-  cfg.channels = (c.channels || []).filter((s) => CHANNELS.some(([v]) => v === s));
-  if (!cfg.channels.length) cfg.channels = [""];
+  cfg.minPriority = [1, 3, 4].includes(Number(c.minPriority)) ? Number(c.minPriority) : 4;
+  cfg.countries = pick(c.countries, COUNTRIES.map(([v]) => v));
+  cfg.categories = pick(c.categories, CATEGORIES);
+  cfg.types = pick(c.types, TYPES.map(([v]) => v));
+  if (!cfg.countries.length) cfg.countries = COUNTRIES.map(([v]) => v);
+  if (!cfg.categories.length) cfg.categories = [...CATEGORIES];
+  if (!cfg.types.length) cfg.types = TYPES.map(([v]) => v);
   cfg.url = String(c.url || DEFAULT_URL).trim() || DEFAULT_URL;
   cfg.autostart = !!c.autostart;
-  saveCfg(); applyAutostart(); connect();
+  saveCfg(); applyAutostart(); connect(); buildTray();
   if (win && !win.isDestroyed()) win.loadURL(dashboardUrl());
   return true;
 });
 ipcMain.handle("notify:test", () => {
-  notify({ title: "🇺🇸🇩🇪 🔥 HOT: Trend Radar works!", body: "📰 This is how a trend notification looks.\n🌍 USA, Germany · Politics\n🕒 since 2h · 12 articles in the last hour" });
+  notify({ title: "🇺🇸🇩🇪 🔥 HOT: Trend Radar works!", body: "📰 This is how a trend notification looks.\n🌍 USA, Germany · Politics\n🕒 since 2h · 12 articles in the last hour\n[Politics · HOT]" });
   return true;
 });
 
