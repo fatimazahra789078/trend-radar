@@ -67,10 +67,23 @@ code{background:#1b2746;border-radius:5px;padding:1px 6px}
 </div>
 
 <div class="box" id="ai" style="border-color:var(--accent)">
-  <h2>🧠 AI briefing (Google Gemini - free) - put your API key here</h2>
-  <p class="hint">The app writes a short briefing with the 5 best video ideas at your times. Get a free key with your Gmail at
-    <a href="#" id="studio">aistudio.google.com/apikey</a> → "Create API key". The key is saved only on this computer.</p>
-  <div class="row"><input type="password" id="gkey" placeholder="AIza..." autocomplete="off" spellcheck="false"><button id="gshow" type="button">Show</button></div>
+  <h2>🧠 Briefing - AI engine and API keys</h2>
+  <p class="hint">The app writes a briefing with the 5 best video ideas at your times. <b>No key is needed</b>: "No AI" and "Ollama" are free without any account.</p>
+  <p class="hint" style="margin:0 0 4px">AI engine</p>
+  <select id="engine"></select>
+  <div id="f-gemini" class="eng" style="margin-top:10px">
+    <p class="hint">Free key with your Gmail: <a href="#" data-open="https://aistudio.google.com/apikey">aistudio.google.com/apikey</a> → "Create API key". Saved only on this computer.</p>
+    <div class="row"><input type="password" id="gkey" placeholder="Gemini API key (AIza...)" autocomplete="off" spellcheck="false"><button id="gshow" type="button">Show</button></div>
+  </div>
+  <div id="f-openai" class="eng" style="margin-top:10px">
+    <p class="hint">Key from <a href="#" data-open="https://platform.openai.com/api-keys">platform.openai.com/api-keys</a> (paid per use, separate from a ChatGPT subscription).</p>
+    <div class="row"><input type="password" id="okey" placeholder="OpenAI API key (sk-...)" autocomplete="off" spellcheck="false"><button id="oshow" type="button">Show</button></div>
+  </div>
+  <div id="f-ollama" class="eng" style="margin-top:10px">
+    <p class="hint">1. Install <a href="#" data-open="https://ollama.com/download">Ollama</a> (free). 2. In a terminal run <code>ollama pull llama3.2</code> (about 2 GB, once). 3. Keep Ollama running. Works offline, no account.</p>
+    <input type="text" id="omodel" placeholder="Model (empty = the first one installed, e.g. llama3.2)" spellcheck="false">
+  </div>
+  <div id="f-none" class="eng" style="margin-top:10px"><p class="hint">Picks the 5 best topics with the radar's score and writes them with headlines, titles and hashtags. Free, instant, no account.</p></div>
   <div class="grid" style="margin-top:10px">
     <div><p class="hint" style="margin:0 0 4px">Language</p><select id="glang"></select></div>
     <div><p class="hint" style="margin:0 0 4px">Times (your computer's time)</p>
@@ -118,17 +131,28 @@ const setAll = (id, fn) => document.querySelectorAll(`#${id} input`).forEach((i)
   boxes("categories", L.CATEGORIES.map((x) => [x, x]), c.categories);
   boxes("types", L.TYPES, c.types);
   $("#gkey").value = c.geminiKey || "";
+  $("#okey").value = c.openaiKey || "";
+  $("#omodel").value = c.ollamaModel || "";
+  $("#engine").innerHTML = L.ENGINES.map(([v, l]) => `<option value="${v}">${esc(l)}</option>`).join("");
+  $("#engine").value = c.aiEngine || (c.geminiKey ? "gemini" : "none");
+  showEngine();
   $("#glang").innerHTML = L.BRIEF_LANGS.map((l) => `<option ${l === c.briefLang ? "selected" : ""}>${esc(l)}</option>`).join("");
   $("#t1").value = (c.briefTimes || [])[0] || "";
   $("#t2").value = (c.briefTimes || [])[1] || "";
   $("#gauto").checked = c.briefAuto !== false;
   if (location.hash === "#ai") { $("#ai").scrollIntoView(); $("#gkey").focus(); }
 })();
-$("#studio").onclick = (e) => { e.preventDefault(); window.tr.open("https://aistudio.google.com/apikey"); };
-$("#gshow").onclick = () => { const t = $("#gkey"); t.type = t.type === "password" ? "text" : "password"; $("#gshow").textContent = t.type === "password" ? "Show" : "Hide"; };
+function showEngine() { const e = $("#engine").value; document.querySelectorAll(".eng").forEach((d) => (d.style.display = d.id === "f-" + e ? "" : "none")); }
+$("#engine").onchange = showEngine;
+document.addEventListener("click", (e) => { const u = e.target.dataset && e.target.dataset.open; if (u) { e.preventDefault(); window.tr.open(u); } });
+const toggle = (inp, btn) => () => { const t = $(inp); t.type = t.type === "password" ? "text" : "password"; $(btn).textContent = t.type === "password" ? "Show" : "Hide"; };
+$("#gshow").onclick = toggle("#gkey", "#gshow");
+$("#oshow").onclick = toggle("#okey", "#oshow");
+const aiFields = () => ({ aiEngine: $("#engine").value, geminiKey: $("#gkey").value, openaiKey: $("#okey").value,
+                          ollamaModel: $("#omodel").value, briefLang: $("#glang").value });
 $("#gnow").onclick = async () => {
-  $("#gmsg").textContent = "Writing... (10-40 seconds)";
-  const r = await window.tr.briefNow({ geminiKey: $("#gkey").value, briefLang: $("#glang").value });
+  $("#gmsg").textContent = "Writing... (a few seconds, up to 1 minute with AI)";
+  const r = await window.tr.briefNow(aiFields());
   $("#gmsg").textContent = r.msg;
 };
 
@@ -150,7 +174,7 @@ $("#save").onclick = async () => {
   const imp = document.querySelector("input[name=imp]:checked");
   await window.tr.save({ topic: $("#topic").value, minPriority: imp ? Number(imp.value) : 4, countries: checked("countries"),
                          categories: checked("categories"), types: checked("types"), url: $("#url").value, autostart: $("#autostart").checked,
-                         geminiKey: $("#gkey").value, briefLang: $("#glang").value, briefAuto: $("#gauto").checked,
+                         ...aiFields(), briefAuto: $("#gauto").checked,
                          briefTimes: [$("#t1").value, $("#t2").value].filter(Boolean) });
   $("#msg").textContent = "Saved ✓";
   setTimeout(() => window.close(), 700);
