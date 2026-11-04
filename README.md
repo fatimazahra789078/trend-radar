@@ -76,6 +76,25 @@ Trend Radar (PC dyalk)  ──►  serveur ntfy.sh  ──►  app ntfy (telepho
 | **Mac / Windows (akhor)** | ma kaynach app 3adia: 7el **https://ntfy.sh/app** f Chrome / Edge / Safari → **+ Subscribe** → kteb topic → 9bel "notifications". F Chrome / Edge t9der dir "Install app" (icon f bar dyal adresse) bach twli b7al app. |
 | **Had PC Windows** | ma m7tajch ntfy – Trend Radar deja kayseft notifications dyal Windows. |
 
+### Channels f telephone (filter: USA bo7dha, Almania, Europe, sport, kawarit)
+
+F l'app ntfy, kol channel = topic dyalk + **nihaya**. Dir **+** o subscribe **ghir l li bghiti**:
+
+| Channel | Kteb f ntfy | Chno kayjik |
+|---|---|---|
+| Kolchi | `topic dyalk` | ga3 notifications |
+| 🇺🇸 **USA bo7dha** | `topic dyalk` + **`-us`** | ghir li fih USA (+ résumé "Top trends USA" kol 3 s3at) |
+| 🇩🇪 Almania | + `-de` | Almania / Austria / Switzerland |
+| 🇪🇺 Europe | + `-eu` | UK, France, Italia, Spain... |
+| ⚽ Sport | + `-sports` | natayej o trends dyal sport |
+| 🌍 Kawarit + breaking | + `-disasters` | zalazil, a3asir, fayadanat, 7ra2e9, vulkan, breaking |
+
+Mtalan bach tchof **ghir USA**: subscribe l `trendradar-...-us` (b nafs r9m dyalk) o ma tsubscribich l "kolchi" (bach ma ytkerrouch).
+Bouton **Dashboard** f kol notification kay7el dashboard **3la nafs l'filtre** (USA, disasters...).
+
+### Dashboard b7al app f telephone
+7el dashboard online f Chrome (Android) wla Safari (iPhone) → menu → **"Add to Home screen"**. Ghaytla3 lik icon **Trend Radar** f telephone, o kayt7el b7al app (bla barre dyal browser).
+
 ⚠️ ntfy kayseft ghir mlli **PC dyal Trend Radar ch3el**. Ila PC tafi, mlli tch3lo kayjik "While you were away" (f PC o f telephone).
 
 Ila bghiti Telegram wla Discord f blast (wla m3a) ntfy: 3mer `telegram_bot_token` + `telegram_chat_id` wla `discord_webhook` f `config.json`.
@@ -94,6 +113,9 @@ Ila bghiti Telegram wla Discord f blast (wla m3a) ntfy: 3mer `telegram_bot_token
 | 📰 TOP NEWS | khbar kbir f top news wakha mazal ma wlach recherche |
 | ⭐ WATCHLIST | khbar jdid 3la kelma mn list dyalk (max mra kol 6 s3at l kol kelma) |
 | ⚡ SPIKING | kelma mn watchlist fiha 10+ articles f 2 s3at (daghya) |
+| 🌍 EARTHQUAKE M6.1 | zalzal: M6+ f l3alam, M5+ f Europe, M4.5+ f bldan dyalk (USGS + EMSC) – ch7al hadi, 3m9, tsunami |
+| 🌀 / 🌊 / 🔥 / 🌋 RED · ORANGE ALERT | kawarit kbar mn GDACS (UN): a3asir, fayadanat, 7ra2e9, vulkan, jafaf |
+| ⚠️ USA: Tornado Warning x5 | tanbihat rasmiya dyal l'jaww f USA (tornado, hurricane, extreme...) |
 | 🏆 FINAL / 🔴 LIVE | natija dyal match kbir (playoffs, Super Bowl, finals, teams dyalk) |
 | 🎵 | #1 jdid wla song jdida dkhlat top 10 (US / DE) |
 | 📅 | event 9rib (9bel b 7 ayam, 2 ayam, o nhar l'event) |
@@ -117,6 +139,7 @@ Ila bghiti Telegram wla Discord f blast (wla m3a) ntfy: 3mer `telegram_bot_token
   
   F kol fikra: formats (chno t9der tsowr), titres EN/DE/FR/IT/ES, hashtags, o **wa9t l'posting b wa9t l'Maghrib**.
 * **Top news**: chno kol blad kat hder 3lih daba (Almania / USA / UK / France / Italia / Spain), b category, o **ch7al hadi khrej kol khbar** ("16 min ago").
+* **🌍 Disasters**: kawarit tabi3iya: akhbar 3la kawarit, zalazil dyal 24 sa3a, tanbihat GDACS (red / orange), tanbihat l'jaww f USA, NASA (7ra2e9, a3asir, vulkan).
 * **Watchlist**: akhir akhbar 3la kol kelma dyalk.
 * **Sports**: live, big games jayin, natayej.
 * **Charts**: top songs USA + Almania, top movies, stocks trending, Hacker News.

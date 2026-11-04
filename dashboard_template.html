@@ -5,6 +5,13 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Trend Radar</title>
 <link rel="icon" href="icon.png">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icon-512.png">
+<meta name="theme-color" content="#0a0f1d">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Trend Radar">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <style>
 :root{
   --bg:#0a0f1d; --panel:#111a2e; --panel2:#172240; --line:#23304f; --text:#e8edf7; --muted:#8e9bb8;
@@ -110,6 +117,22 @@ footer{color:var(--muted);font-size:12px;margin-top:28px;line-height:1.8}
 .src.bad{color:var(--hot)}
 .hint{color:var(--muted);font-size:12.5px;margin:-4px 0 12px}
 code{background:var(--chip);border-radius:5px;padding:1px 6px}
+/* phone: like an app */
+@media (max-width:640px){
+  .wrap{padding:0 12px 40px}
+  .top{padding:10px 0 4px;gap:6px 12px}
+  .clocks{display:none}
+  .status{font-size:11.5px;width:100%}
+  .bar{flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;margin:12px -12px;padding:0 12px}
+  .bar::-webkit-scrollbar{display:none}
+  .chipbtn,.bar select{flex:none}
+  .bar .search{min-width:150px}
+  .grid,.cols,.sites{grid-template-columns:1fr}
+  .card{padding:12px}
+  .head h3{font-size:16px}
+  .tab{padding:10px 10px}
+  .links a{padding:7px 11px;font-size:13px}
+}
 .away{border-color:var(--accent);margin-top:16px}
 .cols3{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px}
 .cols3 ol{margin:6px 0 0}
@@ -138,6 +161,7 @@ const store = {
   set(k, v){ try { localStorage.setItem("tr_"+k, JSON.stringify(v)); } catch(e){} }
 };
 const FOCUS = ["US","DE","GB","FR","IT","ES"], DACH = ["DE","AT","CH"], EUROPE = ["GB","FR","IT","ES","NL","AT","CH","EU"];
+const SENSITIVE = ["Crime & accidents", "Natural disasters", "World & conflicts"];
 const isJustIn = t => t.just_in || (t.first_pub_h != null ? t.first_pub_h <= 1.5 : t.age_h < 1);
 const isRepeat = t => t.days_seen >= 2 || t.hours_seen >= 6;
 const startedH = t => t.first_pub_h != null ? Math.max(t.first_pub_h, t.age_h || 0) : t.age_h;
@@ -175,7 +199,9 @@ function tabs(){
     sports: (DATA.sports || []).filter(g => g.state === "in").length || (DATA.sports || []).length,
     charts: "", events: DATA.events.filter(e => e.date >= today).length, sites: "", history: (DATA.alerts||[]).length };
   n.ideas = "";
-  const T = [["trends","Trends"],["ideas","&#128161; Ideas"],["news","Top news"],["watch","Watchlist"],["sports", (DATA.sports||[]).some(g=>g.state==="in") ? "Sports &#128308;" : "Sports"],
+  const D = DATA.disasters || {};
+  n.disasters = (D.quakes || []).filter(q => q.big).length + (D.gdacs || []).filter(g => g.level === "Red" || g.level === "Orange").length || "";
+  const T = [["trends","Trends"],["ideas","&#128161; Ideas"],["news","Top news"],["disasters","&#127757; Disasters"],["watch","Watchlist"],["sports", (DATA.sports||[]).some(g=>g.state==="in") ? "Sports &#128308;" : "Sports"],
              ["charts","Charts"],["events","Upcoming"],["sites","Best sites"],["history","Sent"]];
   $("#tabs").innerHTML = T.map(([id,l]) => `<button class="tab" role="tab" data-tab="${id}" aria-selected="${state.tab===id}">${l}${n[id]!==""?`<span class="n">${n[id]}</span>`:""}</button>`).join("");
   $("#tabs").onclick = e => { const b = e.target.closest(".tab"); if (!b) return; state.tab = b.dataset.tab; store.set("tab", state.tab); tabs(); render(); window.scrollTo(0,0); };
@@ -186,7 +212,8 @@ const IDEAS = {
   "Sports": [["The moment everyone is talking about: %s","%s: Alle Reaktionen"],["%s - what happens next?","%s: Was jetzt passiert"]],
   "Politics": [["%s: what it means for you","%s: Was das für Deutschland bedeutet"],["%s explained in 60 seconds","%s in 60 Sekunden erklärt"]],
   "World & conflicts": [["%s: what we know so far","%s: Was wir bisher wissen"],["%s explained on a map","%s auf der Karte erklärt"]],
-  "Crime & disasters": [["%s: verified facts only","%s: Die gesicherten Fakten"],["%s - what we know and what we don't","%s: Was bekannt ist - und was nicht"]],
+  "Crime & accidents": [["%s: verified facts only","%s: Die gesicherten Fakten"],["%s - what we know and what we don't","%s: Was bekannt ist - und was nicht"]],
+  "Natural disasters": [["%s: what is happening right now","%s: Was gerade passiert"],["%s on the map: where, how strong, what's next","%s auf der Karte: wo, wie stark, wie geht es weiter"]],
   "Movies & TV": [["%s: everything we know","%s: Alles, was wir wissen"],["%s - release, trailer, cast","%s: Start, Trailer, Cast"]],
   "Music": [["Why everyone is listening to %s","Warum gerade alle %s hören"],["%s: the story behind the hit","%s: Die Geschichte hinter dem Hit"]],
   "Gaming": [["%s: everything you need to know","%s: Alles, was du wissen musst"],["%s - first reactions","%s: Erste Reaktionen"]],
@@ -220,7 +247,7 @@ function ideas(t){
   return `<details><summary>Video ideas</summary><div class="idea">${titlesFor(t).map(([l, s]) =>
     `<p><span class="muted">${l}:</span> ${esc(s)}</p>`).join("")}
     <p class="muted">${esc(hashtagsFor(t))}</p>
-    ${["Crime & disasters","World & conflicts"].includes(t.category) ? `<p class="muted">Sensitive topic: only say what 2+ trusted sources confirm.</p>` : ""}</div></details>`;
+    ${SENSITIVE.includes(t.category) ? `<p class="muted">Sensitive topic: only say what 2+ trusted sources confirm.</p>` : ""}</div></details>`;
 }
 function freshLine(t){
   const bits = [];
@@ -307,12 +334,13 @@ function renderTrends(){
 
 /* ---------- Ideas: what to film now to get views ---------- */
 const CATW = {"Celebs & viral":1.3,"Movies & TV":1.25,"Gaming":1.25,"Music":1.2,"Sports":1.15,"Tech & AI":1.1,"General":1,
-              "Business":1,"Politics":0.95,"World & conflicts":0.9,"Crime & disasters":0.85};
+              "Business":1,"Politics":0.95,"World & conflicts":0.9,"Natural disasters":1.05,"Crime & accidents":0.85};
 const FORMATS = {
   "Sports": ["Reaction short: the key moment in 30s", "3 things you missed", "What it means for the next game / the table"],
   "Politics": ["Explained in 60 seconds", "What changes for you (USA vs Europe)", "Map or timeline video"],
   "World & conflicts": ["What we know so far (verified only)", "Map explainer", "Why Europe / the US cares"],
-  "Crime & disasters": ["Timeline of verified facts", "What we know / what we don't know", "No speculation: show your sources"],
+  "Crime & accidents": ["Timeline of verified facts", "What we know / what we don't know", "No speculation: show your sources"],
+  "Natural disasters": ["Map: where it hits and how strong", "Live update short (what changed in the last hours)", "How to stay safe / how to help (official sources only)"],
   "Movies & TV": ["Trailer breakdown", "Everything we know: date, cast, story", "Ranking / fan theories"],
   "Music": ["The story behind the song", "Use the sound in a trend video", "Lyrics meaning or reaction"],
   "Gaming": ["First look / leaks", "Price, date, platforms in 30s", "Easter eggs and tips"],
@@ -345,7 +373,7 @@ function ideaCard(t, i){
     <div class="idea"><p><b>Titles</b></p>${titlesFor(t).slice(0, 6).map(([l, s]) => `<p><span class="muted">${l}:</span> ${esc(s)}</p>`).join("")}
       <p class="muted">${esc(hashtagsFor(t))}</p></div>
     ${post ? `<div class="meta">&#128336; Post (Morocco time): ${esc(post)}</div>` : ""}
-    ${["Crime & disasters","World & conflicts"].includes(t.category) ? `<div class="meta">Sensitive: only say what 2+ trusted sources confirm.</div>` : ""}
+    ${SENSITIVE.includes(t.category) ? `<div class="meta">Sensitive: only say what 2+ trusted sources confirm.</div>` : ""}
     <div class="links">${A(L.youtube,"Check YouTube")}${A(L.tiktok,"Check TikTok")}${A(L.news,"News")}${A(L.trends,"Trend graph")}</div>
   </article>`;
 }
@@ -371,6 +399,30 @@ function renderIdeas(){
         return `<div class="ev ${left<=3?"soon":""}"><div class="d">${new Date(e.date + "T00:00:00").toLocaleDateString("en-GB",{day:"2-digit",month:"short"})}<small>${left===0?"today":left===1?"tomorrow":"in "+left+" days"}</small></div>
         <div class="t">${esc(e.title)}<small>Ideas: "${esc(e.title)} - everything you need to know" · countdown short · predictions · "what time / where to watch"</small></div><span class="cd">${esc(e.category||"")}</span></div>`; }).join("")}</div></section>` : ""}
     ${now.length + multi.length + longT.length ? "" : `<div class="empty">No strong ideas right now - check again later.</div>`}`;
+}
+
+/* ---------- Natural disasters ---------- */
+const DICON = {earthquake:"&#127757;", cyclone:"&#127744;", flood:"&#127754;", volcano:"&#127755;", drought:"&#9728;&#65039;",
+               wildfire:"&#128293;", tsunami:"&#127754;", storm:"&#127786;&#65039;"};
+function renderDisasters(){
+  const D = DATA.disasters || {};
+  const news = DATA.topics.filter(t => t.category === "Natural disasters").slice(0, 6);
+  const lvl = l => l === "Red" ? `<span class="badge b-hot">Red</span>` : l === "Orange" ? `<span class="badge b-trend">Orange</span>` : `<span class="badge b-low">${esc(l)}</span>`;
+  const quakes = (D.quakes || []).map(q => `<div class="ev ${q.big ? "soon" : ""}"><div class="d">M${Number(q.mag).toFixed(1)}<small>${ago(hoursFrom(q.time))} ago</small></div>
+      <div class="t">${A(q.u, esc(q.place))}${q.c ? ` <span class="cc focus">${esc(q.c)}</span>` : ""}${q.tsunami ? ` <span class="badge b-live">Tsunami flag</span>` : ""}${q.alert ? ` <span class="badge b-trend">PAGER ${esc(q.alert)}</span>` : ""}
+      <small>${q.depth != null ? "depth " + q.depth + " km · " : ""}${esc(q.src)}</small></div><span class="cd">${q.big ? "&#9733;" : ""}</span></div>`).join("");
+  const gd = (D.gdacs || []).map(g => `<div class="ev ${g.level === "Red" ? "live" : g.level === "Orange" ? "soon" : ""}"><div class="d">${DICON[g.type] || "&#9888;&#65039;"} ${esc(g.type)}<small>${ago(hoursFrom(g.time))} ago</small></div>
+      <div class="t">${A(g.u, esc(g.t))}</div><span class="cd">${esc(g.level)}</span></div>`).join("");
+  const nws = (D.nws || []).map(w => `<li><b>${esc(w.event)}</b> ×${w.n}${w.extreme ? ` <span class="badge b-live">Extreme</span>` : ""}<small>${esc(w.states.join(", "))} · ${esc(w.headline)}</small></li>`).join("");
+  const eo = (D.eonet || []).map(e => `<li>${DICON[e.type] || ""} ${A(e.u, esc(e.t))}<small>${esc(e.type)} · ${ago(hoursFrom(e.time))} ago</small></li>`).join("");
+  $("#main").innerHTML = `<p class="hint" style="margin-top:16px">Official data: USGS + EMSC (earthquakes), GDACS (UN global alerts: cyclones, floods, volcanoes, wildfires, droughts), NWS (US weather warnings), NASA EONET. You get a notification for strong quakes, GDACS orange/red and US warnings (tornado, hurricane, extreme...). Only say what official sources confirm.</p>
+    ${news.length ? `<section style="margin-top:6px"><h2 style="margin:0 0 10px;font-size:17px">&#128240; In the news now</h2><div class="grid">${news.map(card).join("")}</div></section>` : ""}
+    <div class="cols">
+      <section class="box"><h2>&#127757; Earthquakes (24h, M4.5+ world, M4+ Europe)</h2>${quakes || `<div class="muted">No strong earthquakes.</div>`}</section>
+      <section class="box"><h2>&#127744; GDACS alerts (now)</h2>${gd || `<div class="muted">No orange / red alerts.</div>`}</section>
+      <section class="box"><h2>&#9888;&#65039; USA weather warnings</h2>${nws ? `<ol>${nws}</ol>` : `<div class="muted">No severe warnings now.</div>`}</section>
+      <section class="box"><h2>&#128752; NASA EONET (fires, storms, volcanoes)</h2>${eo ? `<ol>${eo}</ol>` : `<div class="muted">Nothing open.</div>`}</section>
+    </div>`;
 }
 
 function renderHeadlines(){
@@ -466,7 +518,7 @@ function renderHistory(){
 
 function render(){
   $("#main").onclick = null;
-  ({trends: renderTrends, ideas: renderIdeas, news: renderHeadlines, watch: renderWatch, sports: renderSports, charts: renderCharts,
+  ({trends: renderTrends, ideas: renderIdeas, news: renderHeadlines, disasters: renderDisasters, watch: renderWatch, sports: renderSports, charts: renderCharts,
     events: renderEvents, sites: renderSites, history: renderHistory}[state.tab] || renderTrends)();
 }
 
@@ -486,7 +538,17 @@ let idle = Date.now();
 ["mousemove","keydown","scroll","click"].forEach(ev => addEventListener(ev, () => idle = Date.now(), {passive:true}));
 setInterval(() => { if (Date.now() - idle > 8*60000) location.reload(); }, 60000);
 
-if (DATA){ header(); tabs(); render(); footer(); }
+// links from phone notifications: ...#us  #de  #eu  #sports  #disasters  #ideas
+function fromHash(){
+  const h = (location.hash || "").slice(1).toLowerCase();
+  if (["us","de","eu","gb","fr","it","es"].includes(h)){ state.tab = "trends"; state.filter = h; state.cat = "all"; }
+  else if (["sports","disasters","ideas","news","watch","charts","events"].includes(h)) state.tab = h;
+  else return false;
+  store.set("tab", state.tab); store.set("filter", state.filter); return true;
+}
+addEventListener("hashchange", () => { if (fromHash()){ tabs(); render(); window.scrollTo(0,0); } });
+
+if (DATA){ fromHash(); header(); tabs(); render(); footer(); }
 else { $("#main").innerHTML = `<div class="empty">No data yet - run a check first.</div>`; }
 </script>
 </body>

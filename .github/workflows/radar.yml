@@ -69,7 +69,7 @@ jobs:
         run: |
           rm -rf site && mkdir site
           cp dashboard.html site/index.html
-          cp icon.png site/ 2>/dev/null || true
+          cp icon.png icon-512.png manifest.webmanifest site/ 2>/dev/null || true
           cp data/latest.json site/ 2>/dev/null || true
 
       - uses: actions/upload-pages-artifact@v3

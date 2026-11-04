@@ -121,7 +121,12 @@ TICKERS = {
 CATEGORIES = {
     "Politics": "election midterm senate congress governor white house trump biden harris vance obama democrat republican gop vote ballot wahl bundestag kanzler merz scholz afd cdu spd grune fdp minister parlament parliament koalition steinmeier election elezioni elecciones gouvernement governo gobierno macron meloni sanchez starmer ministre ministro premier",
     "World & conflicts": "war krieg ukraine russia russland israel gaza iran china putin selenskyj zelensky military militar army missile rakete nato sanction guerre guerra",
-    "Crime & disasters": "shooting shot killed dead death murder crash explosion fire earthquake flood hurricane storm tornado attack anschlag unfall tote mord brand erdbeben hochwasser unwetter police polizei arrest festnahme cyberangriff hackerangriff accident incidente incendie incendio seisme terremoto attentat attentato morto muerto meurtre omicidio asesinato polizia policia inondation alluvione",
+    "Natural disasters": "earthquake quake tsunami hurricane typhoon cyclone tornado flood flooding wildfire bushfire volcano eruption landslide mudslide avalanche blizzard heatwave drought storm tropical "
+                         "erdbeben beben hochwasser uberschwemmung unwetter sturm orkan waldbrand vulkan lawine hitzewelle durre "
+                         "seisme tremblement inondation tempete ouragan canicule secheresse eruption "
+                         "terremoto sisma alluvione inondazione frana tromba uragano siccita "
+                         "sismo huracan inundacion dana borrasca riada incendio forestal",
+    "Crime & accidents": "shooting shot killed dead death murder crash explosion attack anschlag unfall tote mord brand police polizei arrest festnahme cyberangriff hackerangriff accident incidente attentat attentato morto muerto meurtre omicidio asesinato polizia policia derailment entgleisung",
     "Sports": "nfl nba mlb nhl ufc wwe mls super bowl touchdown quarterback playoff bundesliga champions league premier league fussball football soccer goal coach trainer transfer olympic tennis formel f1 grand prix boxing boxen spieltag bayern dortmund calcio futbol ligue serie liga partita partido gol juventus milan inter napoli madrid barcelona psg",
     "Tech & AI": "ai ki ia openai chatgpt gemini anthropic claude apple iphone ipad microsoft nvidia tesla spacex musk meta tiktok instagram app software robot chip smartphone samsung google android",
     "Business": "stock market dow nasdaq aktie borse dax earning ipo economy wirtschaft inflation fed zinsen price preis tariff zoll bitcoin crypto bank layoff bourse borsa bolsa economie economia",
@@ -164,14 +169,14 @@ def save_json(path, obj):
     os.replace(tmp, path)
 
 
-def fetch(url, timeout=20):
-    req = urllib.request.Request(url, headers={"User-Agent": UA, "Accept-Language": "en-US,en;q=0.9,de;q=0.8"})
+def fetch(url, timeout=20, ua=None):
+    req = urllib.request.Request(url, headers={"User-Agent": ua or UA, "Accept-Language": "en-US,en;q=0.9,de;q=0.8"})
     with urllib.request.urlopen(req, timeout=timeout) as r:
         return r.read()
 
 
-def fetch_json(url, timeout=20):
-    return json.loads(fetch(url, timeout))
+def fetch_json(url, timeout=20, ua=None):
+    return json.loads(fetch(url, timeout, ua))
 
 
 def post_json(url, body, timeout=15):
@@ -502,6 +507,222 @@ def src_youtube(cc, key):
     return out
 
 
+# --------------------------------------------------------------------------- natural disasters
+
+APP_UA = "TrendRadar/1.0 (personal trend monitor)"   # weather.gov asks for an app name
+US_ABBR = ("AL AK AZ AR CA CO CT DE FL GA HI ID IL IN IA KS KY LA ME MD MA MI MN MS MO MT NE NV NH NJ NM NY NC ND OH OK "
+           "OR PA RI SC SD TN TX UT VT VA WA WV WI WY PR").split()
+US_WORDS = ("alaska", "hawaii", "puerto rico", "california", "nevada", "oklahoma", "texas", "washington", "oregon", "idaho",
+            "montana", "utah", "wyoming", "arkansas", "tennessee", "missouri", "new mexico", "arizona", "colorado")
+COUNTRY_BY_NAME = {"united states": "US", "usa": "US", "germany": "DE", "united kingdom": "GB", "uk": "GB", "england": "GB",
+                   "scotland": "GB", "wales": "GB", "france": "FR", "italy": "IT", "sicily": "IT", "spain": "ES",
+                   "canary islands": "ES", "austria": "AT", "switzerland": "CH"}
+EUROPE_WORDS = ("greece", "turkey", "portugal", "iceland", "croatia", "albania", "romania", "bulgaria", "serbia", "bosnia",
+                "montenegro", "slovenia", "ireland", "norway", "sweden", "finland", "poland", "czech", "slovakia", "hungary",
+                "cyprus", "malta", "crete", "aegean", "adriatic", "ionian", "tyrrhenian", "balkan", "dodecanese",
+                "macedonia", "netherlands", "belgium", "denmark", "azores", "europe", "mediterranean")
+GDACS_TYPES = {"EQ": "earthquake", "TC": "cyclone", "FL": "flood", "VO": "volcano", "DR": "drought", "WF": "wildfire",
+               "TS": "tsunami"}
+DIS_ICON = {"earthquake": "\U0001F30D", "cyclone": "\U0001F300", "flood": "\U0001F30A", "volcano": "\U0001F30B",
+            "drought": "☀️", "wildfire": "\U0001F525", "tsunami": "\U0001F30A", "storm": "\U0001F32A️",
+            "us_weather": "⚠️"}
+NWS_EVENTS = ("Tornado Warning", "Tornado Emergency", "Hurricane Warning", "Tropical Storm Warning", "Storm Surge Warning",
+              "Tsunami Warning", "Blizzard Warning", "Ice Storm Warning", "Extreme Heat Warning", "Excessive Heat Warning",
+              "Flash Flood Emergency", "Extreme Wind Warning", "Earthquake Warning", "Volcano Warning", "Dust Storm Warning")
+
+
+def place_country(place):
+    """'91 km ESE of Kyzyl-Eshme, Kyrgyzstan' -> '' ; '10 km SW of Ridgecrest, CA' -> 'US' ; 'SICILY, ITALY' -> 'IT'."""
+    p = (place or "").strip()
+    low = p.lower()
+    m = re.search(r",\s*([A-Z]{2})$", p)
+    if (m and m.group(1) in US_ABBR) or any(w in low for w in US_WORDS):
+        return "US"
+    for name, cc in COUNTRY_BY_NAME.items():
+        if re.search(rf"\b{name}\b", low):
+            return cc
+    return "EU" if any(w in low for w in EUROPE_WORDS) else ""
+
+
+def src_usgs():
+    d = fetch_json("https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/4.5_day.geojson", ua=APP_UA)
+    out = []
+    for f in d.get("features", []):
+        p = f.get("properties") or {}
+        c = (f.get("geometry") or {}).get("coordinates") or []
+        if not p.get("time"):
+            continue
+        out.append({"kind": "disaster", "dtype": "earthquake", "source": "USGS", "id": f.get("id"), "mag": p.get("mag") or 0,
+                    "term": p.get("place") or p.get("title") or "", "time": datetime.fromtimestamp(p["time"] / 1000, timezone.utc).isoformat(),
+                    "alert": p.get("alert"), "tsunami": bool(p.get("tsunami")), "felt": p.get("felt"),
+                    "depth": round(c[2]) if len(c) > 2 and c[2] is not None else None, "url": p.get("url") or "",
+                    "country": place_country(p.get("place"))})
+    return out
+
+
+def src_emsc():
+    """European-Mediterranean quakes (often in Italian / Greek / Turkish news even when small)."""
+    d = fetch_json("https://www.seismicportal.eu/fdsnws/event/1/query?limit=50&minmag=4&format=json", ua=APP_UA)
+    out = []
+    for f in d.get("features", []):
+        p = f.get("properties") or {}
+        place = (p.get("flynn_region") or "").title()
+        cc = place_country(place)
+        if cc not in ("IT", "ES", "FR", "DE", "GB", "AT", "CH", "EU") or not p.get("time"):
+            continue
+        unid = p.get("unid") or f.get("id")
+        out.append({"kind": "disaster", "dtype": "earthquake", "source": "EMSC", "id": f"emsc{unid}", "mag": p.get("mag") or 0,
+                    "term": place, "time": parse_date(p["time"]), "alert": None, "tsunami": False, "felt": None,
+                    "depth": round(p["depth"]) if p.get("depth") is not None else None,
+                    "url": f"https://www.seismicportal.eu/eventdetails.html?unid={unid}", "country": cc})
+    return out
+
+
+def src_gdacs():
+    root = ET.fromstring(fetch("https://www.gdacs.org/xml/rss.xml", timeout=30, ua=APP_UA))
+    G = "{http://www.gdacs.org}"
+    out = []
+    for it in root.iter("item"):
+        if (it.findtext(G + "iscurrent") or "").lower() != "true":
+            continue
+        country = it.findtext(G + "country") or ""
+        etype = it.findtext(G + "eventtype") or ""
+        out.append({"kind": "disaster", "dtype": GDACS_TYPES.get(etype, etype.lower()), "source": "GDACS",
+                    "id": f"{etype}{it.findtext(G + 'eventid')}", "level": it.findtext(G + "alertlevel") or "",
+                    "term": html.unescape(it.findtext("title") or ""), "place": country,
+                    "time": parse_date(it.findtext("pubDate")), "url": it.findtext("link") or "",
+                    "severity": html.unescape(it.findtext(G + "severity") or ""),
+                    "country": place_country(country) if country else ""})
+    return out
+
+
+def src_nws():
+    d = fetch_json("https://api.weather.gov/alerts/active?status=actual&severity=Extreme,Severe", timeout=30, ua=APP_UA)
+    out = []
+    for f in d.get("features", []):
+        p = f.get("properties") or {}
+        ev = p.get("event") or ""
+        if p.get("severity") != "Extreme" and ev not in NWS_EVENTS:
+            continue
+        states = sorted({s.strip()[-2:] for s in (p.get("areaDesc") or "").split(";") if "," in s})
+        out.append({"kind": "disaster", "dtype": "us_weather", "source": "NWS", "id": p.get("id") or f.get("id"),
+                    "event": ev, "severity": p.get("severity"), "term": p.get("headline") or ev,
+                    "area": p.get("areaDesc") or "", "states": states, "time": parse_date(p.get("sent")),
+                    "url": "https://alerts.weather.gov/", "country": "US"})
+    return out
+
+
+def src_eonet():
+    d = fetch_json("https://eonet.gsfc.nasa.gov/api/v3/events?status=open&limit=40&days=3", timeout=30, ua=APP_UA)
+    kinds = {"Wildfires": "wildfire", "Severe Storms": "storm", "Volcanoes": "volcano", "Floods": "flood",
+             "Earthquakes": "earthquake", "Landslides": "flood", "Sea and Lake Ice": "", "Snow": "storm"}
+    out = []
+    for e in d.get("events", []):
+        cat = (e.get("categories") or [{}])[0].get("title", "")
+        if not kinds.get(cat):
+            continue
+        geo = e.get("geometry") or [{}]
+        src = (e.get("sources") or [{}])[0].get("url") or e.get("link", "")
+        out.append({"kind": "disaster", "dtype": kinds[cat], "source": "NASA EONET", "id": e.get("id"),
+                    "term": e.get("title", ""), "time": parse_date(geo[-1].get("date")), "url": src, "country": ""})
+    return out
+
+
+def disaster_alerts(signals, state, cfg, now, quiet):
+    """Earthquakes, cyclones, floods, wildfires, volcanoes, US weather warnings -> alerts + dashboard data."""
+    dc = {"quake_world_mag": 6.0, "quake_europe_mag": 5.0, "quake_country_mag": 4.5, "gdacs_levels": ["Orange", "Red"]}
+    dc.update(cfg.get("disasters") or {})
+    seen = state.setdefault("disasters", {})
+    dis = [s for s in signals if s["kind"] == "disaster"]
+    out = []
+    focus = set(FOCUS) | {"AT", "CH"}
+
+    # earthquakes (USGS + EMSC, without doubles)
+    quakes = []
+    for q in sorted((s for s in dis if s["source"] in ("USGS", "EMSC")), key=lambda s: s["source"] != "USGS"):
+        if any(abs(hours_since(q["time"], datetime.fromisoformat(o["time"])) or 0) < 0.03 and abs(q["mag"] - o["mag"]) < 0.4
+               for o in quakes if q.get("time") and o.get("time")):
+            continue
+        quakes.append(q)
+    for q in quakes:
+        age = hours_since(q["time"], now)
+        cc = q["country"]
+        big = (q["mag"] >= dc["quake_world_mag"] or (cc in focus and q["mag"] >= dc["quake_country_mag"])
+               or (cc == "EU" and q["mag"] >= dc["quake_europe_mag"]) or q["alert"] in ("yellow", "orange", "red") or q["tsunami"])
+        q["big"] = bool(big)
+        key = "eq:" + str(q["id"])
+        if not big or age > 12 or key in seen:
+            continue
+        seen[key] = now.isoformat()
+        pr = 5 if (q["mag"] >= 7 or q["tsunami"] or q["alert"] in ("orange", "red")) else 4 if (q["mag"] >= 6 or cc in focus) else 3
+        if quiet and pr < 4:
+            continue
+        lines = [f"\U0001F552 {fmt_age(age)} ago" + (f" · depth {q['depth']} km" if q.get("depth") is not None else "") + f" · {q['source']}"]
+        if q["tsunami"]:
+            lines.append("\U0001F30A Tsunami flag - check official warnings")
+        if q["alert"]:
+            lines.append(f"\U0001F6A6 Impact alert (PAGER): {q['alert']}")
+        if q.get("felt"):
+            lines.append(f"\U0001F465 {q['felt']} people reported feeling it")
+        out.append(mk_alert(f"\U0001F30D EARTHQUAKE M{q['mag']:.1f} · {q['term']}", lines[0], " · ".join(lines[1:]), q["url"],
+                            tag="eq" + sid(key), priority=pr, short=f"M{q['mag']:.1f} {q['term']}", kind="disaster",
+                            countries=[cc] if cc else [], category="Natural disasters", push_text="\n".join(lines),
+                            long=pr >= 4))
+    # GDACS orange / red (UN global disaster alerts)
+    for g in (s for s in dis if s["source"] == "GDACS"):
+        key = f"gd:{g['id']}:{g['level']}"
+        if g["level"] not in dc["gdacs_levels"] or key in seen:
+            continue
+        seen[key] = now.isoformat()
+        pr = 5 if g["level"] == "Red" else 4
+        icon = DIS_ICON.get(g["dtype"], "⚠️")
+        lines = [f"\U0001F4CD {g['place'] or 'see map'} · \U0001F552 {fmt_age(hours_since(g['time'], now))} ago"]
+        if g.get("severity"):
+            lines.append(g["severity"][:160])
+        out.append(mk_alert(f"{icon} {g['level'].upper()} ALERT · {g['term']}"[:150], lines[0], " · ".join(lines[1:]), g["url"],
+                            tag="gd" + sid(key), priority=pr, short=g["term"][:60], kind="disaster",
+                            countries=[g["country"]] if g["country"] else [], category="Natural disasters",
+                            push_text="\n".join(lines), long=True))
+    # US weather warnings, one alert per type (e.g. "Tornado Warning x5 · OK, KS")
+    groups = {}
+    for w in (s for s in dis if s["source"] == "NWS"):
+        groups.setdefault(w["event"], []).append(w)
+    nws_summary = []
+    for ev, ws in sorted(groups.items(), key=lambda kv: -len(kv[1])):
+        states = sorted({s for w in ws for s in w["states"]})
+        nws_summary.append({"event": ev, "n": len(ws), "states": states, "extreme": any(w["severity"] == "Extreme" for w in ws),
+                            "headline": ws[0]["term"]})
+        key = f"nws:{ev}"
+        last = seen.get(key)
+        prev_n = seen.get(key + ":n", 0)
+        if last and hours_since(last, now) < 6 and len(ws) < 2 * max(1, prev_n):
+            continue
+        seen[key] = now.isoformat()
+        seen[key + ":n"] = len(ws)
+        pr = 5 if ("Emergency" in ev or any(w["severity"] == "Extreme" for w in ws)) else 4
+        where = ", ".join(states[:8]) + (f" +{len(states) - 8}" if len(states) > 8 else "")
+        out.append(mk_alert(f"⚠️ USA: {ev}" + (f" x{len(ws)}" if len(ws) > 1 else ""), f"\U0001F4CD {where}",
+                            ws[0]["term"][:150], "https://alerts.weather.gov/", tag="nw" + sid(ev), priority=pr,
+                            short=f"US {ev}", kind="disaster", countries=["US"], category="Natural disasters",
+                            push_text=f"\U0001F4CD {where}\n{ws[0]['term'][:300]}", long=True))
+    for k in [k for k, v in seen.items() if not k.endswith(":n") and hours_since(v, now) > 7 * 24]:
+        seen.pop(k, None)
+        seen.pop(k + ":n", None)
+    out.sort(key=lambda a: -a["priority"])
+    data = {
+        "quakes": [{"mag": q["mag"], "place": q["term"], "time": q["time"], "u": q["url"], "c": q["country"], "big": q.get("big"),
+                    "tsunami": q["tsunami"], "alert": q["alert"], "src": q["source"], "depth": q.get("depth")}
+                   for q in sorted(quakes, key=lambda q: -q["mag"]) if hours_since(q["time"], now) <= 24][:40],
+        "gdacs": [{"level": g["level"], "type": g["dtype"], "t": g["term"], "u": g["url"], "time": g["time"], "c": g["country"]}
+                  for g in sorted((s for s in dis if s["source"] == "GDACS"),
+                                  key=lambda g: ({"Red": 0, "Orange": 1}.get(g["level"], 2), g["time"] or ""))
+                  if g["level"] in ("Red", "Orange") or g["country"] in focus][:40],
+        "nws": nws_summary[:20],
+        "eonet": [{"type": e["dtype"], "t": e["term"], "u": e["url"], "time": e["time"]} for e in dis if e["source"] == "NASA EONET"][:30],
+    }
+    return out, data
+
+
 def collect(cfg, state, gap_h=0.0):
     # (name, function, args, cache minutes). Slow sources are cached, and a source that fails
     # falls back to its last good result for up to 6 hours. One broken source never stops the rest.
@@ -544,6 +765,10 @@ def collect(cfg, state, gap_h=0.0):
             jobs.append((f"YouTube {cc}", src_youtube, (cc, cfg["youtube_api_key"]), 60))
     if cfg.get("briefing_url"):
         jobs.append(("Claude briefing", src_briefing, (cfg["briefing_url"],), 10))
+    if (cfg.get("disasters") or {}).get("enabled", True):
+        jobs += [("USGS earthquakes", src_usgs, (), 0), ("EMSC earthquakes Europe", src_emsc, (), 0),
+                 ("GDACS disaster alerts", src_gdacs, (), 20), ("NWS US weather alerts", src_nws, (), 0),
+                 ("NASA EONET", src_eonet, (), 60)]
 
     cache = state.setdefault("cache", {})
     signals, health, todo = [], [], []
@@ -633,7 +858,7 @@ def build_topics(signals, cfg, now):
     cw = cfg.get("country_weight", {})
     terms, heads = [], []
     for s in signals:
-        if s["kind"] in ("sport", "movie_chart", "watch", "briefing"):
+        if s["kind"] in ("sport", "movie_chart", "watch", "briefing", "disaster"):
             continue
         s["key"] = norm(s["term"])
         s["toks"] = s["key"].split()
@@ -1158,6 +1383,27 @@ def plan_topic_alerts(topics, cfg, now):
 
 
 FLAG_TAG = {"US": "us", "DE": "de", "GB": "gb", "FR": "fr", "IT": "it", "ES": "es", "EU": "eu"}  # ntfy shows flags
+EU_SET = {"GB", "FR", "IT", "ES", "EU", "NL", "AT", "CH"}
+# phone channels = your topic + suffix. Subscribe in ntfy only to the ones you want (e.g. USA only).
+CHANNEL_FILTERS = {
+    "-us": ("USA", lambda cs: "US" in cs),
+    "-de": ("Germany", lambda cs: any(c in DACH for c in cs)),
+    "-eu": ("Europe", lambda cs: any(c in EU_SET for c in cs)),
+}
+CHANNEL_HASH = {"": "", "-us": "#us", "-de": "#de", "-eu": "#eu", "-sports": "#sports", "-disasters": "#disasters"}
+
+
+def channels_for(a):
+    """'' = everything; '-us' USA only; '-de' Germany/Austria/Switzerland; '-eu' Europe; '-sports'; '-disasters'."""
+    if a.get("channels"):
+        return a["channels"]
+    cs = a.get("countries") or []
+    ch = [""] + [suf for suf, (_, keep) in CHANNEL_FILTERS.items() if keep(cs)]
+    if a.get("category") == "Sports":
+        ch.append("-sports")
+    if a.get("category") == "Natural disasters" or a["kind"] == "disaster" or "BREAKING" in a["title"]:
+        ch.append("-disasters")
+    return ch
 
 
 def country_list(cs, n=4):
@@ -1454,9 +1700,17 @@ def digest_alert(topics, state, cfg, now, quiet):
     state["last_digest"] = now.isoformat()
     items = [f"{i}. {t['name']} ({'/'.join(t['countries'][:2])})" for i, t in enumerate(top, 1)]
     a = mk_alert("\U0001F4CA Top trends right now", " · ".join(items[:3]), " · ".join(items[3:]), DASH_LINK,
-                 tag="digest", short="digest", kind="digest")
+                 tag="digest", short="digest", kind="digest", channels=[""])
     a["push_text"] = "\n".join(short_line(i, t) for i, t in enumerate(top, 1))
-    return a
+    out = [a]
+    # the same digest for each country channel (phone only), e.g. "Top trends USA"
+    for suffix, (label, keep) in CHANNEL_FILTERS.items():
+        sel = [t for t in topics if not t["story"] and keep(t["countries"])][:6]
+        if sel:
+            out.append(mk_alert(f"\U0001F4CA Top trends {label}", "", "", DASH_LINK, tag="digest" + suffix,
+                                short="digest", kind="digest", channels=[suffix], phone_only=True,
+                                push_text="\n".join(short_line(i, t) for i, t in enumerate(sel, 1))))
+    return out
 
 
 def catchup_alerts(topics, queue, s_alerts, w_alerts, m_alerts, e_alerts, state, now, gap_h, since):
@@ -1555,23 +1809,27 @@ def push_remote(alerts, cfg, force=False):
         msg = a.get("push_text") or "\n".join(x for x in (a["line2"], a["line3"]) if x) or " "
         url = a["url"] if a["url"].startswith("http") else online
         try:
-            if topic:
-                body = {"topic": topic, "title": a["title"][:250], "message": msg[:3800], "priority": a["priority"]}
+            for ch in (channels_for(a) if topic and cfg.get("phone_channels", True) else [""]):
+                if not topic:
+                    break
+                dash = online + CHANNEL_HASH.get(ch, "") if online else ""
+                body = {"topic": topic + ch, "title": a["title"][:250], "message": msg[:3800], "priority": a["priority"]}
                 # flags in front of the title + the category as a small label
                 tags = [FLAG_TAG[c] for c in a.get("countries") or [] if c in FLAG_TAG][:4]
                 if a.get("category") and a["category"] != "General":
                     tags.append(a["category"])
                 if tags:
                     body["tags"] = tags
-                if url:
-                    body["click"] = url
+                click = url if a["url"].startswith("http") else dash
+                if click:
+                    body["click"] = click
                 acts = []
                 for label, u in a["actions"]:
-                    u = online if u.startswith(PROTO + "://") else u
+                    u = dash if u.startswith(PROTO + "://") else u
                     if u.startswith("http") and len(acts) < 3 and all(x["label"] != label for x in acts):
                         acts.append({"action": "view", "label": label, "url": u, "clear": True})
-                if online and len(acts) < 3 and all(x["label"] != "Dashboard" for x in acts):
-                    acts.append({"action": "view", "label": "Dashboard", "url": online, "clear": True})
+                if dash and len(acts) < 3 and all(x["label"] != "Dashboard" for x in acts):
+                    acts.append({"action": "view", "label": "Dashboard", "url": dash, "clear": True})
                 if acts:
                     body["actions"] = acts
                 if (a.get("pic_url") or "").startswith("http"):
@@ -1600,10 +1858,10 @@ def deliver(alerts, state, cfg, now, dry):
         for a in alerts:
             log(f"[would notify] {a['title']} | {a['line2'][:90]}")
         return
-    show_toasts(alerts)
+    show_toasts([a for a in alerts if not a.get("phone_only")])
     push_remote([a for a in alerts if a["kind"] != "more"], cfg)
     hist = state.setdefault("alert_log", [])
-    for a in alerts:
+    for a in (a for a in alerts if not a.get("phone_only")):
         hist.append({"at": now.isoformat(), "title": a["title"], "url": a["url"], "kind": a["kind"]})
     state["alert_log"] = hist[-150:]
     log(f"notified {len(alerts)}: " + " | ".join(a["title"] for a in alerts))
@@ -1784,6 +2042,7 @@ def render_dashboard(topics, health, events, cfg, now, signals, watch_summary, g
         "hot": cfg["hot_score"], "trend": cfg["trend_score"],
         "ntfy": "" if CLOUD else cfg.get("ntfy_topic", ""),   # the public online dashboard never shows the secret topic
         "briefing": state.get("briefing"), "cloud": CLOUD, "online_url": cfg.get("online_dashboard", ""),
+        "disasters": state.get("disaster_data") or {},
         "catchup": state.get("catchup") if hours_since((state.get("catchup") or {}).get("at"), now) < 12 else None,
     }
     blob = json.dumps(data, ensure_ascii=False).replace("</", "<\\/")
@@ -1936,14 +2195,16 @@ def run_check(dry=False, report=False, sim_gap=None, preview=False):
         m_alerts = music_alerts(signals, state, cfg, now, quiet)
         events = sorted(load_json(ROOT / "events.json", {}).get("events", []), key=lambda e: e.get("date", ""))
         e_alerts = event_alerts(events, state, cfg, now, quiet)
+        d_alerts, dis_data = disaster_alerts(signals, state, cfg, now, quiet)
+        d_alerts = fold(d_alerts, (cfg.get("disasters") or {}).get("max_toasts", 3), "\U0001F30D Disasters")
         if catchup:
-            alerts = catchup_alerts(topics, queue, s_alerts, w_alerts, m_alerts, e_alerts, state, now, gap_h, last_ok)
+            alerts = d_alerts + catchup_alerts(topics, queue, s_alerts, w_alerts, m_alerts, e_alerts, state, now, gap_h, last_ok)
             state["last_digest"] = now.isoformat()
         else:
             extras = fold(w_alerts + fold(s_alerts, cfg.get("max_sports_toasts", 2), "\U0001F3C6 Results") + m_alerts
                           + e_alerts, cfg["max_extra_toasts"], "\u2B50 Updates")
             dg = digest_alert(topics, state, cfg, now, quiet)
-            alerts = topic_alerts + extras + ([dg] if dg else [])
+            alerts = d_alerts + topic_alerts + extras + (dg if dg else [])
         br = briefing_alert(signals, state, now)
         if br:
             alerts.append(br)
@@ -1951,6 +2212,7 @@ def run_check(dry=False, report=False, sim_gap=None, preview=False):
         if not dry:
             mark_topics([(t, r) for t, r, _ in queue] + also, now)
 
+        state["disaster_data"] = dis_data
         render_dashboard(topics, health, events, cfg, now, signals, watch_summary, games, state)
         export_latest(topics, signals, watch_summary, games, events, now)
         state["last_run"] = state["last_ok_run"] = now.isoformat()
@@ -1982,13 +2244,22 @@ def open_dashboard():
 
 
 def make_icon():
-    """Draw a small radar icon (PNG + ICO) with the standard library."""
-    size = 256
+    """Radar icon: icon.png (256), icon-512.png (phone home screen) and icon.ico (desktop)."""
+    png = _radar_png(256)
+    (ROOT / "icon.png").write_bytes(png)
+    (ROOT / "icon-512.png").write_bytes(_radar_png(512))
+    ico = struct.pack("<HHH", 0, 1, 1) + struct.pack("<BBBBHHII", 0, 0, 0, 0, 1, 32, len(png), 22) + png
+    (ROOT / "icon.ico").write_bytes(ico)
+
+
+def _radar_png(size):
+    k = 256 / size   # draw in a 256x256 space, at any size
     rows = []
-    cx = cy = size / 2
-    for y in range(size):
+    cx = cy = 128
+    for py in range(size):
         row = bytearray([0])
-        for x in range(size):
+        for px in range(size):
+            x, y = (px + 0.5) * k - 0.5, (py + 0.5) * k - 0.5
             dx, dy = x - cx + 0.5, y - cy + 0.5
             r = math.hypot(dx, dy)
             a, col = 0, (0, 0, 0)
@@ -1996,8 +2267,8 @@ def make_icon():
                 a, col = 255, (15, 23, 42)
                 sweep = ((math.degrees(math.atan2(dy, dx)) + 360) % 360 - 230) % 360
                 if sweep < 70 and r < 112:
-                    k = 1 - sweep / 70
-                    col = tuple(int(c0 + (c1 - c0) * k * 0.85) for c0, c1 in zip(col, (255, 77, 77)))
+                    fade = 1 - sweep / 70
+                    col = tuple(int(c0 + (c1 - c0) * fade * 0.85) for c0, c1 in zip(col, (255, 77, 77)))
                 for ring in (36, 74, 112):
                     if abs(r - ring) < 3:
                         col = (255, 120, 80)
@@ -2012,11 +2283,8 @@ def make_icon():
 
     def chunk(tag, body):
         return struct.pack(">I", len(body)) + tag + body + struct.pack(">I", zlib.crc32(tag + body) & 0xFFFFFFFF)
-    png = (b"\x89PNG\r\n\x1a\n" + chunk(b"IHDR", struct.pack(">IIBBBBB", size, size, 8, 6, 0, 0, 0))
-           + chunk(b"IDAT", zlib.compress(b"".join(rows), 9)) + chunk(b"IEND", b""))
-    (ROOT / "icon.png").write_bytes(png)
-    ico = struct.pack("<HHH", 0, 1, 1) + struct.pack("<BBBBHHII", 0, 0, 0, 0, 1, 32, len(png), 22) + png
-    (ROOT / "icon.ico").write_bytes(ico)
+    return (b"\x89PNG\r\n\x1a\n" + chunk(b"IHDR", struct.pack(">IIBBBBB", size, size, 8, 6, 0, 0, 0))
+            + chunk(b"IDAT", zlib.compress(b"".join(rows), 9)) + chunk(b"IEND", b""))
 
 
 def test_alert():
