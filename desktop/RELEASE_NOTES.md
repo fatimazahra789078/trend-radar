@@ -3,9 +3,11 @@
 Trends, breaking news, sports and natural disasters for the USA, Germany and Europe – in its own window, with notifications.
 The radar runs in the cloud 24/7; this app shows it and notifies you. Nothing else to install.
 
-**New in 1.1:** you choose what you get – importance (very important only / + trending / everything), countries
-(e.g. USA only), topics (politics, sports, movies, disasters...) and alert types (breaking, hot, repeating trends...).
-Quick switches are in the tray / menu bar menu.
+**New in 1.3:** Settings has a **🧠 AI & API key** box at the top (Ctrl+, / Cmd+,). Choose the briefing engine:
+No AI (free, no key), Ollama (free, on your computer), Google Gemini (free key) or OpenAI. The app also tells you when a new version is out.
+1.3.1: the AI & API key box is now the second box in Settings, with jump links at the top, and the window fits small Mac screens.
+
+You choose what you get: importance, countries (e.g. USA only), topics and alert types.
 
 ### Windows
 - **TrendRadar-Setup-x.y.z.exe** → install (Start menu + desktop icon, starts with Windows).

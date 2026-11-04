@@ -4,7 +4,7 @@
 // - listens to your ntfy topic and shows native notifications, filtered by YOUR choices:
 //   importance, countries, topics and types (also the ones missed while the computer slept)
 // The radar itself runs in the cloud (GitHub Actions), so this app needs nothing else installed.
-const { app, BrowserWindow, Tray, Menu, Notification, shell, ipcMain, nativeImage, powerMonitor } = require("electron");
+const { app, BrowserWindow, Tray, Menu, Notification, shell, ipcMain, nativeImage, powerMonitor, screen } = require("electron");
 const path = require("path");
 const fs = require("fs");
 const https = require("https");
@@ -119,7 +119,7 @@ function openSettings(section) {
     settingsWin.show(); settingsWin.focus(); return;
   }
   settingsWin = new BrowserWindow({
-    width: 640, height: 860, resizable: true, title: "Trend Radar - Settings", backgroundColor: "#0a0f1d", icon: ICON,
+    width: 640, height: Math.min(860, screen.getPrimaryDisplay().workAreaSize.height - 40), resizable: true, title: "Trend Radar - Settings", backgroundColor: "#0a0f1d", icon: ICON,
     autoHideMenuBar: true,
     webPreferences: { preload: path.join(__dirname, "preload.js"), contextIsolation: true, sandbox: true },
   });
