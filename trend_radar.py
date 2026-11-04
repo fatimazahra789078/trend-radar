@@ -1088,10 +1088,11 @@ def cache_picture(url):
 
 
 def mk_alert(title, line2="", line3="", url=None, actions=None, img=None, long=False, tag=None, priority=3,
-             short=None, kind="info"):
+             short=None, kind="info", **phone):
+    """phone: optional push_text, countries, category, pic_url for the ntfy notification."""
     return {"title": title[:150], "line2": line2 or "", "line3": line3 or "", "url": url or DASH_LINK,
             "actions": actions or [("Dashboard", DASH_LINK)], "img": img, "long": long,
-            "tag": (tag or sid(title))[:16], "priority": priority, "short": short or title, "kind": kind}
+            "tag": (tag or sid(title))[:16], "priority": priority, "short": short or title, "kind": kind, **phone}
 
 
 def research_links(t):
@@ -1156,6 +1157,55 @@ def plan_topic_alerts(topics, cfg, now):
     return [(t, r, rel) for t, r, _, rel in grouped], also
 
 
+FLAG_TAG = {"US": "us", "DE": "de", "GB": "gb", "FR": "fr", "IT": "it", "ES": "es", "EU": "eu"}  # ntfy shows flags
+
+
+def country_list(cs, n=4):
+    names = [COUNTRY_NAMES.get(c, c) for c in cs]
+    return ", ".join(names[:n]) + (f" +{len(names) - n}" if len(names) > n else "")
+
+
+def phone_text(t, reason, related=()):
+    """Clear, short lines for the phone (ntfy) instead of the dense PC line."""
+    lines = []
+    if reason == "breaking" and t["breaking"]:
+        b = t["breaking"]
+        lines.append(f"\U0001F6A8 {b['term']} ({b.get('outlet') or b['source']})")
+        lines.append("✅ confirmed by several sources" if t["outlets"] >= 2 else "⏳ verification pending")
+    elif t["context"] and not t["story"]:
+        lines.append(f"\U0001F4F0 {t['context']}")
+    elif t["story"]:
+        lines.append(f"\U0001F4F0 {t['context']}")
+    cat = f" · {t['category']}" if t.get("category") and t["category"] != "General" else ""
+    lines.append(f"\U0001F30D {country_list(t['countries'])}{cat}")
+    fresh = []
+    if t.get("first_pub_h") is not None:
+        fresh.append(f"since {fmt_age(t['first_pub_h'])}")
+    if t.get("recent1"):
+        fresh.append(f"{t['recent1']} articles in the last hour")
+    if reason == "repeat":
+        fresh.append(f"on the radar {t['hours_seen']}h / {t['days_seen']} days")
+    if fresh:
+        lines.append("\U0001F552 " + " · ".join(fresh))
+    sig = []
+    if t["gt"]:
+        sig.append(f"Google {fmt_traffic(max(m['traffic'] for m in t['gt']))}")
+    if t["x"]:
+        sig.append(f"X #{min(m['rank'] for m in t['x'])}")
+    if t["outlets"]:
+        sig.append(f"{t['outlets']} news sites")
+    if sig:
+        lines.append("\U0001F4C8 " + " · ".join(sig))
+    if related:
+        lines.append("➕ also: " + ", ".join(related[:5]))
+    return "\n".join(lines)
+
+
+def short_line(i, t):
+    since = f", since {fmt_age(t['first_pub_h'])}" if t.get("first_pub_h") is not None else ""
+    return f"{i}. {t['name']} ({country_list(t['countries'], 3)}{since})"
+
+
 def topic_alert(t, reason, related=()):
     rlab = {"hot": "HOT", "new": "TRENDING", "spread": "SPREADING", "breaking": "BREAKING", "justin": "JUST IN",
             "repeat": f"STILL TRENDING · DAY {t.get('days_seen', 2)}"}[reason]
@@ -1186,10 +1236,13 @@ def topic_alert(t, reason, related=()):
     links = research_links(t)
     url = (t["breaking"]["url"] if reason == "breaking" else t["url"]) or links["news"]
     actions = [("Open", url), ("YouTube", links["youtube"]), ("Dashboard", DASH_LINK)]
-    return mk_alert(title, line2, line3, url, actions, img=cache_picture(t.get("picture")),
-                    long=(t["tier"] == 2 or reason in ("breaking", "justin")), tag=t["id"],
-                    priority=5 if reason == "breaking" else 4 if (t["tier"] == 2 or reason == "justin") else 3,
-                    short=t["name"], kind="topic")
+    a = mk_alert(title, line2, line3, url, actions, img=cache_picture(t.get("picture")),
+                 long=(t["tier"] == 2 or reason in ("breaking", "justin")), tag=t["id"],
+                 priority=5 if reason == "breaking" else 4 if (t["tier"] == 2 or reason == "justin") else 3,
+                 short=t["name"], kind="topic")
+    a.update(push_text=phone_text(t, reason, related), countries=t["countries"], category=t.get("category"),
+             pic_url=t.get("picture") or "")
+    return a
 
 
 def watch_alerts(signals, topics, state, cfg, now, quiet, since=None):
@@ -1322,12 +1375,15 @@ def sports_alerts(signals, state, cfg, now, quiet, window_h=15):
             if -1 < hrs < window_h and not quiet:
                 out.append(mk_alert(f"\U0001F3C6 FINAL · {g['league']}: {g['score_text']}", note or g["detail"],
                                     "", g["url"], tag="s" + g["id"], short=g["score_text"], kind="sport",
-                                    priority=4 if g["big"] in ("special", "playoffs") else 3))
+                                    priority=4 if g["big"] in ("special", "playoffs") else 3,
+                                    countries=[g["country"]], category="Sports",
+                                    push_text=f"⚽ {g['score_text']}\n\U0001F3C1 {note or g['detail']}"))
         elif g["state"] == "in" and g["big"] in ("special", "playoffs", "ufc") and not rec.get("live"):
             rec["live"] = now.isoformat()
             if not quiet:
                 out.append(mk_alert(f"\U0001F534 LIVE NOW · {g['league']}: {g['score_text']}", note or g["detail"],
-                                    "", g["url"], tag="l" + g["id"], short=g["score_text"], kind="sport", priority=4))
+                                    "", g["url"], tag="l" + g["id"], short=g["score_text"], kind="sport", priority=4,
+                                    countries=[g["country"]], category="Sports"))
     for k in [k for k, v in st.items() if hours_since(parse_date(v.get("date")), now) > 96]:
         del st[k]
     return out, games
@@ -1347,12 +1403,16 @@ def music_alerts(signals, state, cfg, now, quiet):
             if ids[0] != prev["top"][0]:
                 r = rows[0]
                 out.append(mk_alert(f"\U0001F3B5 New #1 in {where}: {r['song']}", r["artist"], "Apple Music top songs",
-                                    r["url"], img=cache_picture(r.get("art")), tag="m1" + cc, short=r["song"], kind="music"))
+                                    r["url"], img=cache_picture(r.get("art")), tag="m1" + cc, short=r["song"], kind="music",
+                                    countries=[cc], category="Music", pic_url=r.get("art", ""),
+                                    push_text=f"\U0001F3A4 {r['artist']}\n\U0001F947 New #1 on Apple Music {where}"))
             for r in rows[1:10]:
                 if r["id"] not in prev["top"]:
                     out.append(mk_alert(f"\U0001F3B5 New in {where} top 10: #{r['rank']} {r['song']}", r["artist"],
                                         "Straight into the top 10", r["url"], img=cache_picture(r.get("art")),
-                                        tag="m" + r["id"], short=r["song"], kind="music"))
+                                        tag="m" + r["id"], short=r["song"], kind="music",
+                                        countries=[cc], category="Music", pic_url=r.get("art", ""),
+                                        push_text=f"\U0001F3A4 {r['artist']}\n\U0001F680 Straight into the top 10 ({where})"))
         st[cc] = {"top": ids, "ts": now.isoformat()}
     return out[:3]
 
@@ -1373,7 +1433,8 @@ def event_alerts(events, state, cfg, now, quiet):
             line2 = f"{d:%a %d %b} · {ev.get('region', '')} · {ev.get('category', '')}" + \
                     (" (date not 100% sure)" if ev.get("approx") else "")
             out.append(mk_alert(f"\U0001F4C5 {when}: {ev['title']}", line2, ev.get("note", ""), ev.get("url") or DASH_LINK,
-                                tag="e" + sid(key), short=ev["title"], kind="event"))
+                                tag="e" + sid(key), short=ev["title"], kind="event",
+                                countries=[ev.get("region", "")], category=ev.get("category")))
             sent[key] = now.isoformat()
     for k in [k for k in sent if k.split("|")[0] < (today - timedelta(days=30)).isoformat()]:
         del sent[k]
@@ -1394,7 +1455,7 @@ def digest_alert(topics, state, cfg, now, quiet):
     items = [f"{i}. {t['name']} ({'/'.join(t['countries'][:2])})" for i, t in enumerate(top, 1)]
     a = mk_alert("\U0001F4CA Top trends right now", " · ".join(items[:3]), " · ".join(items[3:]), DASH_LINK,
                  tag="digest", short="digest", kind="digest")
-    a["push_text"] = "\n".join(f"{i}. {t['name']} - {summary_line(t)}" for i, t in enumerate(top, 1))
+    a["push_text"] = "\n".join(short_line(i, t) for i, t in enumerate(top, 1))
     return a
 
 
@@ -1405,7 +1466,7 @@ def catchup_alerts(topics, queue, s_alerts, w_alerts, m_alerts, e_alerts, state,
     items = [f"{i}. {t['name']} ({'/'.join(t['countries'][:2])})" for i, t in enumerate(top, 1)]
     a = mk_alert(f"\U0001F4E5 While you were away ({gap}): top trends", " · ".join(items[:4]), " · ".join(items[4:8]),
                  DASH_LINK, tag="catchup", priority=4, short="catch-up", kind="catchup")
-    a["push_text"] = "\n".join(f"{i}. {t['name']} - {summary_line(t)}" for i, t in enumerate(top, 1))
+    a["push_text"] = "\n".join(short_line(i, t) for i, t in enumerate(top, 1))
     alerts = [a]
     # breaking news of the last 2 hours still gets its own notification
     alerts += [topic_alert(t, r, rel) for t, r, rel in queue if r == "breaking"][:2]
@@ -1486,18 +1547,38 @@ def push_remote(alerts, cfg, force=False):
         return 0
     topic = (cfg.get("ntfy_topic") or "").strip()
     server = (cfg.get("ntfy_server") or "https://ntfy.sh").rstrip("/")
+    online = (cfg.get("online_dashboard") or "").strip()
     tg_token, tg_chat = cfg.get("telegram_bot_token"), cfg.get("telegram_chat_id")
     discord = cfg.get("discord_webhook")
     sent = 0
     for a in alerts:
         msg = a.get("push_text") or "\n".join(x for x in (a["line2"], a["line3"]) if x) or " "
-        url = a["url"] if a["url"].startswith("http") else ""
+        url = a["url"] if a["url"].startswith("http") else online
         try:
             if topic:
-                body = {"topic": topic, "title": a["title"][:250], "message": msg[:3500], "priority": a["priority"]}
+                body = {"topic": topic, "title": a["title"][:250], "message": msg[:3800], "priority": a["priority"]}
+                # flags in front of the title + the category as a small label
+                tags = [FLAG_TAG[c] for c in a.get("countries") or [] if c in FLAG_TAG][:4]
+                if a.get("category") and a["category"] != "General":
+                    tags.append(a["category"])
+                if tags:
+                    body["tags"] = tags
                 if url:
                     body["click"] = url
-                    body["actions"] = [{"action": "view", "label": "Open", "url": url}]
+                acts = []
+                for label, u in a["actions"]:
+                    u = online if u.startswith(PROTO + "://") else u
+                    if u.startswith("http") and len(acts) < 3 and all(x["label"] != label for x in acts):
+                        acts.append({"action": "view", "label": label, "url": u, "clear": True})
+                if online and len(acts) < 3 and all(x["label"] != "Dashboard" for x in acts):
+                    acts.append({"action": "view", "label": "Dashboard", "url": online, "clear": True})
+                if acts:
+                    body["actions"] = acts
+                if (a.get("pic_url") or "").startswith("http"):
+                    body["attach"] = a["pic_url"]       # the news picture shows in the notification
+                    body["filename"] = "trend.jpg"
+                if online:
+                    body["icon"] = online.rstrip("/") + "/icon.png"
                 post_json(server, body)
                 sent += 1
             if tg_token and tg_chat:
@@ -1783,7 +1864,10 @@ def briefing_alert(signals, state, now):
     a = mk_alert("\U0001F9E0 " + first[:110], " · ".join(re.sub(r"^[#*\-\d. ]+", "", ln) for ln in body[:2])[:180],
                  "Full briefing: dashboard > Ideas", DASH_LINK, tag="brief" + h[:8], priority=3, short="briefing",
                  kind="briefing")
-    a["push_text"] = "\n".join(body)[:3800]
+    # phone: plain lines (no markdown symbols)
+    clean = [re.sub(r"\*\*|__|`", "", re.sub(r"^#+\s*", "", ln)) for ln in body]
+    a["push_text"] = "\n".join(clean)[:3800]
+    a["category"] = "Briefing"
     return a
 
 
@@ -1800,7 +1884,7 @@ def acquire_lock():
         return False
 
 
-def run_check(dry=False, report=False, sim_gap=None):
+def run_check(dry=False, report=False, sim_gap=None, preview=False):
     if not acquire_lock():
         log("another check is running - skip")
         return
@@ -1836,6 +1920,14 @@ def run_check(dry=False, report=False, sim_gap=None):
         topics.sort(key=lambda t: -t["score"])
 
         queue, also = plan_topic_alerts(topics, cfg, now)
+        if preview:  # --test: show how a real notification looks (top trend right now), save nothing
+            top = next((t for t in topics if not t["story"]), None)
+            if top:
+                a = topic_alert(top, "new")
+                ok = show_toasts([a])
+                pushed = push_remote([a], cfg, force=True)
+                log(f"test sent: {a['title']} (PC: {'ok' if ok else 'FAILED'}, phone pushes: {pushed})")
+            return
         n = cfg["max_toasts_per_run"]
         topic_alerts = fold([topic_alert(t, r, rel) for t, r, rel in queue[:n]] +
                             [mk_alert("", short=t["name"]) for t, r, rel in queue[n:]], n, "\U0001F4CA Trends")
@@ -1954,7 +2046,7 @@ def main():
         if a.make_icon:
             make_icon()
         elif a.test:
-            test_alert()
+            run_check(dry=True, preview=True)
         elif a.handle:
             if "refresh" in a.handle:
                 run_check()
