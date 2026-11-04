@@ -4,6 +4,11 @@ name: Desktop app
 
 on:
   workflow_dispatch:
+    inputs:
+      public:
+        description: "Public download page (false = private draft only you can see)"
+        type: boolean
+        default: true
   push:
     tags: ["desktop-v*"]
 
@@ -69,5 +74,7 @@ jobs:
         run: |
           VERSION=$(node -p "require('./desktop/package.json').version")
           TAG="desktop-v${VERSION}-${{ github.run_number }}"
+          MODE="--latest"
+          if [ "${{ github.event.inputs.public }}" = "false" ]; then MODE="--draft"; fi
           gh release create "$TAG" files/* --repo "${{ github.repository }}" \
-            --title "Trend Radar desktop app v${VERSION}" --notes-file desktop/RELEASE_NOTES.md --latest
+            --title "Trend Radar desktop app v${VERSION}" --notes-file desktop/RELEASE_NOTES.md $MODE
