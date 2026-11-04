@@ -1,0 +1,55 @@
+{
+  "name": "trend-radar-desktop",
+  "productName": "Trend Radar",
+  "version": "1.0.0",
+  "description": "Trend Radar - trends, breaking news, sports and natural disasters for the USA, Germany and Europe",
+  "main": "main.js",
+  "author": "Trend Radar",
+  "license": "MIT",
+  "private": true,
+  "scripts": {
+    "start": "electron .",
+    "dist:win": "electron-builder --win nsis portable --x64 --publish never",
+    "dist:mac": "electron-builder --mac dir --universal --publish never"
+  },
+  "devDependencies": {
+    "electron": "^38.0.0",
+    "electron-builder": "^26.0.12"
+  },
+  "build": {
+    "appId": "com.trendradar.desktop",
+    "productName": "Trend Radar",
+    "directories": {
+      "buildResources": "build",
+      "output": "dist"
+    },
+    "files": [
+      "main.js",
+      "preload.js",
+      "settings.html",
+      "offline.html",
+      "build/icon.png"
+    ],
+    "win": {
+      "icon": "build/icon.png"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "shortcutName": "Trend Radar",
+      "artifactName": "TrendRadar-Setup-${version}.exe"
+    },
+    "portable": {
+      "artifactName": "TrendRadar-Portable-${version}.exe"
+    },
+    "mac": {
+      "icon": "build/icon.png",
+      "category": "public.app-category.news",
+      "identity": null,
+      "target": [
+        "dir"
+      ]
+    }
+  }
+}

@@ -1,0 +1,73 @@
+# Builds the Trend Radar desktop app for Windows (.exe) and macOS (.dmg, Intel + Apple Silicon)
+# and publishes them on a GitHub Release (download page). Run it from the Actions tab.
+name: Desktop app
+
+on:
+  workflow_dispatch:
+  push:
+    tags: ["desktop-v*"]
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+    defaults:
+      run:
+        working-directory: desktop
+        shell: bash
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - run: npm ci --no-fund --no-audit
+
+      - name: Build Windows installer + portable
+        if: runner.os == 'Windows'
+        run: |
+          npx electron-builder --win nsis portable --x64 --publish never
+          mkdir -p out && cp dist/*.exe out/
+
+      - name: Build macOS app (universal) + dmg
+        if: runner.os == 'macOS'
+        run: |
+          npx electron-builder --mac dir --universal --publish never
+          APP="$(ls -d dist/mac-universal/*.app | head -1)"
+          # no Apple certificate: sign "ad-hoc" so it runs on Apple Silicon
+          codesign --force --deep --sign - "$APP"
+          mkdir -p out dmgroot
+          cp -R "$APP" dmgroot/
+          ln -s /Applications dmgroot/Applications
+          hdiutil create -volname "Trend Radar" -srcfolder dmgroot -ov -format UDZO "out/TrendRadar-mac.dmg"
+          ditto -c -k --keepParent "$APP" "out/TrendRadar-mac.zip"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: TrendRadar-${{ runner.os }}
+          path: desktop/out/*
+
+  release:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          path: files
+          merge-multiple: true
+      - name: Publish the download page
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          VERSION=$(node -p "require('./desktop/package.json').version")
+          TAG="desktop-v${VERSION}-${{ github.run_number }}"
+          gh release create "$TAG" files/* --repo "${{ github.repository }}" \
+            --title "Trend Radar desktop app v${VERSION}" --notes-file desktop/RELEASE_NOTES.md --latest

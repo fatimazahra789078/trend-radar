@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline'; img-src 'self' data:">
+<title>Trend Radar - Settings</title>
+<style>
+:root{--bg:#0a0f1d;--panel:#111a2e;--line:#23304f;--text:#e8edf7;--muted:#8e9bb8;--accent:#ff7a50;--ok:#38d996}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font:14px/1.5 "Segoe UI",system-ui,-apple-system,Arial,sans-serif;padding:22px}
+h1{font-size:19px;margin:0 0 4px;display:flex;align-items:center;gap:10px}
+h1 img{width:28px;height:28px}
+.sub{color:var(--muted);margin:0 0 18px;font-size:12.5px}
+.box{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:14px 16px;margin-bottom:14px}
+label.t{display:block;font-weight:700;margin-bottom:6px}
+.hint{color:var(--muted);font-size:12.5px;margin:6px 0 0}
+.row{display:flex;gap:8px}
+input[type=text],input[type=password],input[type=url]{flex:1;width:100%;background:#0d1424;border:1px solid var(--line);color:var(--text);border-radius:10px;padding:9px 11px;font:inherit}
+input:focus{outline:2px solid var(--accent);outline-offset:-1px}
+.ch{display:flex;gap:10px;align-items:flex-start;padding:7px 0;border-top:1px solid var(--line)}
+.ch:first-of-type{border-top:0}
+.ch input{margin-top:3px;width:16px;height:16px;accent-color:var(--accent)}
+.ch small{display:block;color:var(--muted)}
+button{border:1px solid var(--line);background:#172240;color:var(--text);border-radius:10px;padding:9px 14px;font:inherit;font-weight:600;cursor:pointer}
+button.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+.actions{display:flex;gap:10px;justify-content:flex-end;margin-top:6px}
+.msg{color:var(--ok);font-weight:600;margin-right:auto;align-self:center}
+code{background:#1b2746;border-radius:5px;padding:1px 6px}
+</style>
+</head>
+<body>
+<h1><img src="build/icon.png" alt="">Trend Radar</h1>
+<p class="sub" id="ver"></p>
+
+<div class="box">
+  <label class="t" for="topic">Your ntfy topic (secret)</label>
+  <div class="row"><input type="password" id="topic" placeholder="trendradar-..." autocomplete="off" spellcheck="false"><button id="show" type="button">Show</button></div>
+  <p class="hint">Nafs topic li f l'app ntfy dyal telephone (kaybda b <code>trendradar-</code>). Kayb9a ghir f had PC.</p>
+</div>
+
+<div class="box">
+  <label class="t">Notifications to show on this computer</label>
+  <div id="channels"></div>
+  <p class="hint">Bghiti ghir USA? Khtar "USA only" bo7dha o 7iyed "Everything".</p>
+</div>
+
+<div class="box">
+  <label class="t" for="url">Dashboard address</label>
+  <input type="url" id="url" spellcheck="false">
+  <div class="ch" style="border:0;margin-top:8px"><input type="checkbox" id="autostart"><div>Start with the computer<small>Kaybda bo7do f tray / menu bar, o kayseft notifications.</small></div></div>
+</div>
+
+<div class="actions">
+  <span class="msg" id="msg"></span>
+  <button id="test" type="button">Test notification</button>
+  <button id="save" class="primary" type="button">Save</button>
+</div>
+
+<script>
+const $ = (s) => document.querySelector(s);
+(async () => {
+  const c = await window.tr.get();
+  $("#ver").textContent = `Desktop app v${c.version} · ${c.platform === "darwin" ? "macOS" : c.platform === "win32" ? "Windows" : c.platform}`;
+  $("#topic").value = c.topic || "";
+  $("#url").value = c.url || "";
+  $("#autostart").checked = !!c.autostart;
+  $("#channels").innerHTML = c.channelsList.map(([v, l]) => `
+    <div class="ch"><input type="checkbox" value="${v}" ${c.channels.includes(v) ? "checked" : ""} id="c${v || "all"}">
+    <label for="c${v || "all"}">${l}<small>${v ? "topic + " + v : "topic"}</small></label></div>`).join("");
+})();
+$("#show").onclick = () => { const t = $("#topic"); t.type = t.type === "password" ? "text" : "password"; $("#show").textContent = t.type === "password" ? "Show" : "Hide"; };
+$("#test").onclick = async () => { await window.tr.test(); $("#msg").textContent = "Test sent"; };
+$("#save").onclick = async () => {
+  const channels = [...document.querySelectorAll("#channels input:checked")].map((i) => i.value);
+  await window.tr.save({ topic: $("#topic").value, channels, url: $("#url").value, autostart: $("#autostart").checked });
+  $("#msg").textContent = "Saved ✓";
+  setTimeout(() => window.close(), 700);
+};
+</script>
+</body>
+</html>
