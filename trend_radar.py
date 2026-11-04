@@ -2168,7 +2168,7 @@ def render_dashboard(topics, health, events, cfg, now, signals, watch_summary, g
 
 SECRET_ENV = {"NTFY_TOPIC": "ntfy_topic", "TELEGRAM_BOT_TOKEN": "telegram_bot_token",
               "TELEGRAM_CHAT_ID": "telegram_chat_id", "DISCORD_WEBHOOK": "discord_webhook",
-              "YOUTUBE_API_KEY": "youtube_api_key"}
+              "YOUTUBE_API_KEY": "youtube_api_key", "GEMINI_API_KEY": "gemini_api_key"}
 
 
 def load_config():
@@ -2186,8 +2186,114 @@ def load_config():
     return cfg
 
 
+GEMINI_API = "https://generativelanguage.googleapis.com/v1beta"
+
+
+def _gemini(path, key, body=None, timeout=90):
+    req = urllib.request.Request(f"{GEMINI_API}/{path}", data=json.dumps(body).encode("utf-8") if body else None,
+                                 method="POST" if body else "GET",
+                                 headers={"Content-Type": "application/json", "x-goog-api-key": key})
+    with urllib.request.urlopen(req, timeout=timeout) as r:
+        return json.loads(r.read())
+
+
+def gemini_model(key, wanted=""):
+    """Use the configured model, else the newest free 'flash' model the key can use."""
+    if wanted:
+        return wanted if wanted.startswith("models/") else "models/" + wanted
+    try:
+        names = [m["name"] for m in _gemini("models?pageSize=200", key).get("models", [])
+                 if "generateContent" in m.get("supportedGenerationMethods", [])]
+    except Exception:  # noqa: BLE001
+        return "models/gemini-2.5-flash"
+    best = None
+    for n in names:
+        mm = re.match(r"models/gemini-(\d+(?:\.\d+)?)-flash(-[a-z0-9.-]+)?$", n)
+        if not mm or re.search(r"lite|image|tts|audio|live|exp|thinking|8b", n):
+            continue
+        rank = (float(mm.group(1)), 0 if mm.group(2) else 1)   # newest version, then the stable name
+        if not best or rank > best[0]:
+            best = (rank, n)
+    return best[1] if best else "models/gemini-2.5-flash"
+
+
+BRIEFING_PROMPT = """You write the "Trend Radar" briefing for a video creator in Morocco who makes short trend videos
+for audiences in the USA, Germany, UK, France, Italy and Spain. Below is a JSON snapshot of what is trending now.
+Use ONLY this data - never invent facts, numbers, results, quotes or dates.
+
+Choose the 5 best topics for a video right now. Prefer: just_in, high score, new (small first_pub_h = hours since the
+first article), many articles in the last hour (recent1), trending in several audience countries, and categories that
+bring views (celebs, movies & TV, music, gaming, sports, tech, AI tools, natural disasters). At most 2 politics topics.
+Never list the same story twice.
+
+Write in {language}. Plain text with simple markdown, max 3500 characters. Exact format:
+# Briefing {when}
+Then for each topic:
+## <n>. <name> - <category> - <countries> - since <time since the first article>
+- What happened: 1-2 sentences, only facts from the headlines
+- Confirmed / not yet: what several headlines confirm, what is still unclear
+- Titles: EN: ... | DE: ... | plus one FR, IT or ES title if it trends there
+- 30s hook: one sentence to open the video
+- Hashtags: 5
+- Source: the best headline url
+Then "## Coming up" with at most 3 items from events_next_14_days (date + one video idea each),
+then "## Watchlist" with one line per watchlist term with today >= 5 (term, count, top headline).
+For death, crime, war or disasters: only what 2 or more headlines say, otherwise write "verification pending".
+
+DATA:
+{data}"""
+
+
+def maybe_gemini_briefing(snap, signals, state, cfg, now, force=False):
+    """Free AI briefing with Google Gemini (key from Google AI Studio), at the configured hours (UTC)."""
+    bc = cfg.get("briefing") or {}
+    key = (cfg.get("gemini_api_key") or "").strip()
+    if not key or bc.get("provider", "gemini") != "gemini":
+        return
+    utc = now.astimezone(timezone.utc)
+    hours = sorted(bc.get("hours_utc", [8, 17]))
+    due = [h for h in hours if utc.hour >= h]
+    slot = f"{utc:%Y-%m-%d}-{due[-1]}" if due else None
+    if not force and (not slot or state.get("gemini_slot") == slot or utc.hour - due[-1] >= 3):
+        return
+    tries = state.setdefault("gemini_tries", {})
+    if not force and tries.get(slot, 0) >= 3:
+        return
+    tries[slot or "force"] = tries.get(slot or "force", 0) + 1
+    small = dict(snap)
+    small["trends"] = [{k: v for k, v in t.items() if k != "related"} | {"news": t["news"][:3]} for t in snap["trends"][:20]]
+    small["stories"] = snap["stories"][:6]
+    small["headlines_by_country"] = {c: v[:5] for c, v in snap["headlines_by_country"].items()}
+    when = now.strftime("%d %B %H:%M") + " (Morocco)"
+    prompt = BRIEFING_PROMPT.format(language=bc.get("language", "English"), when=when,
+                                    data=json.dumps(small, ensure_ascii=False)[:60000])
+    model = gemini_model(key, bc.get("model", ""))
+    try:
+        d = _gemini(f"{model}:generateContent", key, {"contents": [{"role": "user", "parts": [{"text": prompt}]}],
+                                                       "generationConfig": {"temperature": 0.4, "maxOutputTokens": 8192}})
+        parts = (d.get("candidates") or [{}])[0].get("content", {}).get("parts", [])
+        text = "".join(p.get("text", "") for p in parts if not p.get("thought")).strip()
+    except urllib.error.HTTPError as e:
+        log(f"gemini briefing failed: HTTP {e.code} {e.read()[:200]!r}")
+        return
+    except Exception as e:  # noqa: BLE001
+        log(f"gemini briefing failed: {type(e).__name__}: {str(e)[:150]}")
+        return
+    if not text:
+        log("gemini briefing: empty answer")
+        return
+    text = re.sub(r"^```(?:markdown)?\s*|\s*```$", "", text).strip()
+    if not text.startswith("#"):
+        text = f"# Briefing {when}\n" + text
+    state["gemini_slot"] = slot
+    (DATA / "briefing.md").write_text(text, encoding="utf-8")
+    signals.append({"kind": "briefing", "source": f"Gemini ({model.split('/')[-1]})", "country": "", "term": "briefing",
+                    "text": text, "rank": 1})
+    log(f"gemini briefing written with {model}")
+
+
 def export_latest(topics, signals, watch_summary, games, events, now):
-    """Small, clean snapshot of what is trending (read by the Claude briefing routine)."""
+    """Small, clean snapshot of what is trending (used by the AI briefing)."""
     def item(t):
         j = topic_json(t)
         return {k: j[k] for k in ("name", "category", "tier", "score", "story", "countries", "summary", "context",
@@ -2207,6 +2313,7 @@ def export_latest(topics, signals, watch_summary, games, events, now):
     }
     DATA.mkdir(exist_ok=True)
     LATEST_FILE.write_text(json.dumps(data, ensure_ascii=False, indent=1), encoding="utf-8")
+    return data
 
 
 def src_briefing(url):
@@ -2256,7 +2363,7 @@ def acquire_lock():
         return False
 
 
-def run_check(dry=False, report=False, sim_gap=None, preview=False):
+def run_check(dry=False, report=False, sim_gap=None, preview=False, brief_now=False):
     if not acquire_lock():
         log("another check is running - skip")
         return
@@ -2320,6 +2427,9 @@ def run_check(dry=False, report=False, sim_gap=None, preview=False):
                           + e_alerts, cfg["max_extra_toasts"], "\u2B50 Updates")
             dg = digest_alert(topics, state, cfg, now, quiet)
             alerts = d_alerts + topic_alerts + extras + (dg if dg else [])
+        if not dry or brief_now:
+            maybe_gemini_briefing(export_latest(topics, signals, watch_summary, games, events, now),
+                                  signals, state, cfg, now, force=brief_now)
         br = briefing_alert(signals, state, now)
         if br:
             alerts.append(br)
@@ -2425,6 +2535,7 @@ def main():
     ap.add_argument("--make-icon", action="store_true")
     ap.add_argument("--handle", help="trendradar:// link from a notification")
     ap.add_argument("--simulate-gap", type=float, help=argparse.SUPPRESS)
+    ap.add_argument("--briefing-now", action="store_true", help="normal check + write the Gemini briefing now")
     a = ap.parse_args()
     try:
         if a.make_icon:
@@ -2438,7 +2549,8 @@ def main():
         elif a.show:
             open_dashboard()
         else:
-            run_check(dry=a.report or bool(a.simulate_gap), report=a.report, sim_gap=a.simulate_gap)
+            run_check(dry=a.report or bool(a.simulate_gap), report=a.report, sim_gap=a.simulate_gap,
+                      brief_now=a.briefing_now)
             if a.open:
                 open_dashboard()
     except Exception:  # noqa: BLE001

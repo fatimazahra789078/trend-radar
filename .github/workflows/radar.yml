@@ -8,6 +8,11 @@ on:
   schedule:
     - cron: "*/15 * * * *"
   workflow_dispatch:
+    inputs:
+      briefing_now:
+        description: "Also write the Gemini briefing now"
+        type: boolean
+        default: false
 
 concurrency:
   group: trend-radar
@@ -47,7 +52,9 @@ jobs:
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
           DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
           YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
-        run: python trend_radar.py
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: |
+          if [ "${{ github.event.inputs.briefing_now }}" = "true" ]; then python trend_radar.py --briefing-now; else python trend_radar.py; fi
 
       - name: Save memory to the data branch
         if: always()
