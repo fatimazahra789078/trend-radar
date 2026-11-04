@@ -1,7 +1,7 @@
 {
   "name": "trend-radar-desktop",
   "productName": "Trend Radar",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "Trend Radar - trends, breaking news, sports and natural disasters for the USA, Germany and Europe",
   "main": "main.js",
   "author": "Trend Radar",

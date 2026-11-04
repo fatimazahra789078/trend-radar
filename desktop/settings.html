@@ -66,8 +66,8 @@ code{background:#1b2746;border-radius:5px;padding:1px 6px}
   <div class="grid" id="types"></div>
 </div>
 
-<div class="box">
-  <h2>🧠 AI briefing (Google Gemini - free)</h2>
+<div class="box" id="ai" style="border-color:var(--accent)">
+  <h2>🧠 AI briefing (Google Gemini - free) - put your API key here</h2>
   <p class="hint">The app writes a short briefing with the 5 best video ideas at your times. Get a free key with your Gmail at
     <a href="#" id="studio">aistudio.google.com/apikey</a> → "Create API key". The key is saved only on this computer.</p>
   <div class="row"><input type="password" id="gkey" placeholder="AIza..." autocomplete="off" spellcheck="false"><button id="gshow" type="button">Show</button></div>
@@ -122,6 +122,7 @@ const setAll = (id, fn) => document.querySelectorAll(`#${id} input`).forEach((i)
   $("#t1").value = (c.briefTimes || [])[0] || "";
   $("#t2").value = (c.briefTimes || [])[1] || "";
   $("#gauto").checked = c.briefAuto !== false;
+  if (location.hash === "#ai") { $("#ai").scrollIntoView(); $("#gkey").focus(); }
 })();
 $("#studio").onclick = (e) => { e.preventDefault(); window.tr.open("https://aistudio.google.com/apikey"); };
 $("#gshow").onclick = () => { const t = $("#gkey"); t.type = t.type === "password" ? "text" : "password"; $("#gshow").textContent = t.type === "password" ? "Show" : "Hide"; };

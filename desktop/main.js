@@ -89,7 +89,7 @@ function dashboardUrl(hash) {
 function createWindow(show = true) {
   win = new BrowserWindow({
     width: 1300, height: 880, minWidth: 380, minHeight: 500, show: false, title: "Trend Radar",
-    backgroundColor: "#0a0f1d", icon: ICON, autoHideMenuBar: true,
+    backgroundColor: "#0a0f1d", icon: ICON, autoHideMenuBar: false,
     webPreferences: { contextIsolation: true, sandbox: true, nodeIntegration: false },
   });
   win.webContents.setWindowOpenHandler(({ url }) => { if (/^https?:/.test(url)) shell.openExternal(url); return { action: "deny" }; });
@@ -112,14 +112,19 @@ function showDashboard(hash) {
   win.show(); win.focus();
 }
 
-function openSettings() {
-  if (settingsWin && !settingsWin.isDestroyed()) { settingsWin.show(); settingsWin.focus(); return; }
+function openSettings(section) {
+  const target = typeof section === "string" ? section : "";
+  if (settingsWin && !settingsWin.isDestroyed()) {
+    if (target) settingsWin.webContents.executeJavaScript(`document.getElementById(${JSON.stringify(target)})?.scrollIntoView()`).catch(() => {});
+    settingsWin.show(); settingsWin.focus(); return;
+  }
   settingsWin = new BrowserWindow({
     width: 640, height: 860, resizable: true, title: "Trend Radar - Settings", backgroundColor: "#0a0f1d", icon: ICON,
     autoHideMenuBar: true,
     webPreferences: { preload: path.join(__dirname, "preload.js"), contextIsolation: true, sandbox: true },
   });
-  settingsWin.loadFile(path.join(__dirname, "settings.html"));
+  settingsWin.removeMenu();
+  settingsWin.loadFile(path.join(__dirname, "settings.html"), target ? { hash: target } : {});
 }
 
 // ---------------------------------------------------------------- tray / menu bar
@@ -328,6 +333,7 @@ function showBriefing() {
   briefWin = new BrowserWindow({ width: 760, height: 880, title: "Trend Radar - AI briefing", backgroundColor: "#0a0f1d", icon: ICON,
     autoHideMenuBar: true, webPreferences: { preload: path.join(__dirname, "preload.js"), contextIsolation: true, sandbox: true } });
   briefWin.webContents.setWindowOpenHandler(({ url }) => { if (/^https?:/.test(url)) shell.openExternal(url); return { action: "deny" }; });
+  briefWin.removeMenu();
   briefWin.loadFile(path.join(__dirname, "briefing.html"));
 }
 
@@ -390,17 +396,30 @@ if (!app.requestSingleInstanceLock()) {
   app.on("second-instance", () => showDashboard());
   app.whenReady().then(() => {
     app.setAppUserModelId(app.isPackaged ? "com.trendradar.desktop" : process.execPath);
-    if (process.platform === "darwin") {
-      Menu.setApplicationMenu(Menu.buildFromTemplate([{ role: "appMenu" }, { role: "editMenu" }, { role: "viewMenu" }, { role: "windowMenu" }]));
-    } else {
-      Menu.setApplicationMenu(null);
-    }
+    // a visible menu bar: Settings is always one click away (also Ctrl+, / Cmd+,)
+    const briefMenu = { label: "🧠 AI briefing", submenu: [
+      { label: "Write a briefing now", click: () => (cfg.geminiKey ? makeBriefing(true).then((r) => { if (!r.ok) notify({ title: "🧠 AI briefing", body: r.msg }); }) : openSettings("ai")) },
+      { label: "Show last briefing", click: showBriefing },
+      { label: "Gemini key and times...", click: () => openSettings("ai") },
+    ] };
+    const pages = { label: "Pages", submenu: [
+      { label: "All trends", click: () => showDashboard("") }, { label: "🇺🇸 USA", click: () => showDashboard("us") },
+      { label: "💡 Video ideas", click: () => showDashboard("ideas") }, { label: "🎬 AI tools", click: () => showDashboard("ai") },
+      { label: "🌍 Disasters", click: () => showDashboard("disasters") }, { label: "⚽ Sports", click: () => showDashboard("sports") },
+      { type: "separator" }, { label: "Reload", accelerator: "F5", click: () => win && win.reload() },
+    ] };
+    const settingsItem = { label: "⚙ Settings", accelerator: "CmdOrCtrl+,", click: () => openSettings() };
+    Menu.setApplicationMenu(Menu.buildFromTemplate(process.platform === "darwin"
+      ? [{ label: app.name, submenu: [{ role: "about" }, { type: "separator" }, { ...settingsItem, label: "Settings..." }, { type: "separator" }, { role: "quit" }] },
+         { role: "editMenu" }, pages, briefMenu, { role: "windowMenu" }]
+      : [settingsItem, briefMenu, pages, { label: "Quit", click: () => { quitting = true; app.quit(); } }]));
     loadCfg();
     applyAutostart();
     createWindow(!START_HIDDEN);
     buildTray();
     connect();
     if (!cfg.topic) openSettings();
+    else if (!cfg.geminiKey && !cfg.aiBoxShown) { cfg.aiBoxShown = true; saveCfg(); openSettings("ai"); }  // show the new Gemini box once
     powerMonitor.on("resume", () => setTimeout(connect, 3000));   // woke up from sleep -> catch up
     setInterval(briefTick, 5 * 60e3); setTimeout(briefTick, 60e3);
     if (!app.isPackaged && process.env.TR_BRIEF_NOW) {   // developer test only
