@@ -53,6 +53,7 @@ jobs:
           DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
           YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          GITHUB_TOKEN: ${{ github.token }}   # higher GitHub search limit (read-only, public data)
         run: |
           if [ "${{ github.event.inputs.briefing_now }}" = "true" ]; then python trend_radar.py --briefing-now; else python trend_radar.py; fi
 

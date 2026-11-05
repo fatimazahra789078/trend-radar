@@ -464,6 +464,123 @@ def ai_alerts(signals, state, cfg, now, quiet):
     return out, data
 
 
+# --------------------------------------------------------------------------- GitHub: trending + most-starred new repos
+GH_TOPIC_LABEL = {"text-to-video": "AI video", "video-generation": "AI video", "image-generation": "AI images",
+                  "comfyui": "ComfyUI", "text-to-speech": "AI voice", "ai-agents": "AI agents", "llm": "LLM tools",
+                  "mcp": "MCP / Claude tools", "automation": "Automation"}
+GH_AI_RE = re.compile(r"\b(ai|llm|gpt|agents?|diffusion|comfy\w*|video|image|tts|voice|speech|model|claude|gemini|openai|"
+                      r"ollama|rag|mcp|whisper|flux|sora|veo|kling|wan)\b", re.I)
+GH_BLOCK_RE = re.compile(r"nsfw|porn|hentai|uncensored|nude|onlyfans|crack|keygen|cheat|free-?robux|aimbot", re.I)
+GH_MEDIA_RE = re.compile(r"video|image|diffusion|comfy|tts|voice|speech|flux|sora|veo|kling|\bwan\b|avatar|lip.?sync|upscal", re.I)
+
+
+def gh_num(s):
+    s = re.sub(r"[^\d]", "", s or "")
+    return int(s) if s else 0
+
+
+def src_github_trending(since="daily"):
+    """github.com/trending: the repos that got the most stars today / this week (all languages)."""
+    h = fetch(f"https://github.com/trending?since={since}", timeout=25).decode("utf-8", "replace")
+    out = []
+    for rank, row in enumerate(re.split(r'<article class="Box-row"', h)[1:26], 1):
+        m = re.search(r'<h2[^>]*>\s*<a[^>]*href="/([^"/]+/[^"/]+)"', row)
+        if not m:
+            continue
+        rid = m.group(1)
+        if GH_BLOCK_RE.search(rid):
+            continue
+        desc = re.search(r'<p class="[^"]*col-9[^"]*">(.*?)</p>', row, re.S)
+        lang = re.search(r'itemprop="programmingLanguage">([^<]+)', row)
+        total = re.search(r'href="/[^"]+/stargazers"[^>]*>(.*?)</a>', row, re.S)
+        period = re.search(r"([\d,]+)\s+stars?\s+(today|this week|this month)", row)
+        out.append({"kind": "gh_repo", "source": "GitHub Trending", "country": "", "term": rid, "id": rid, "since": since,
+                    "rank": rank, "desc": html.unescape(re.sub(r"<[^>]+>|\s+", " ", desc.group(1))).strip()[:220] if desc else "",
+                    "lang": lang.group(1).strip() if lang else "", "stars": gh_num(re.sub(r"<[^>]+>", "", total.group(1))) if total else 0,
+                    "stars_period": gh_num(period.group(1)) if period else 0, "url": f"https://github.com/{rid}"})
+    return out
+
+
+def src_github_new(topic, days=30):
+    """GitHub search: repos created in the last `days` days with this topic, most stars first."""
+    since = (datetime.now(timezone.utc) - timedelta(days=days)).strftime("%Y-%m-%d")
+    url = ("https://api.github.com/search/repositories?q=" + urllib.parse.quote(f"topic:{topic} created:>{since} stars:>30")
+           + "&sort=stars&order=desc&per_page=10")
+    hdr = {"User-Agent": APP_UA, "Accept": "application/vnd.github+json"}
+    if os.environ.get("GITHUB_TOKEN"):   # in GitHub Actions: higher rate limit
+        hdr["Authorization"] = "Bearer " + os.environ["GITHUB_TOKEN"]
+    with urllib.request.urlopen(urllib.request.Request(url, headers=hdr), timeout=25) as r:
+        d = json.loads(r.read())
+    return [{"kind": "gh_new", "source": "GitHub search", "country": "", "term": it["full_name"], "id": it["full_name"],
+             "topic": topic, "rank": rank, "desc": (it.get("description") or "")[:220], "lang": it.get("language") or "",
+             "stars": it.get("stargazers_count") or 0, "created": parse_date(it.get("created_at")), "url": it["html_url"]}
+            for rank, it in enumerate([i for i in d.get("items") or []
+                                       if not GH_BLOCK_RE.search(i["full_name"] + " " + (i.get("description") or ""))], 1)]
+
+
+def gh_category(r):
+    txt = r["id"] + " " + r.get("desc", "")
+    return "AI video & image" if GH_MEDIA_RE.search(txt) else "Tech & AI"
+
+
+def github_alerts(signals, state, cfg, now, quiet):
+    """Repos that jump into GitHub Trending today (lots of new stars) and new AI repos that pass a star level."""
+    gc = cfg.get("github") or {}
+    seen = state.setdefault("gh_seen", {})
+    first_run = not seen
+    daily = sorted([s for s in signals if s["kind"] == "gh_repo" and s["since"] == "daily"], key=lambda r: r["rank"])
+    weekly = sorted([s for s in signals if s["kind"] == "gh_repo" and s["since"] == "weekly"], key=lambda r: r["rank"])
+    new = [s for s in signals if s["kind"] == "gh_new"]
+    fresh = []
+    for r in daily:
+        if r["id"] in seen:
+            continue
+        if r["rank"] <= gc.get("top_n", 10) and r["stars_period"] >= gc.get("min_stars_today", 300):
+            fresh.append(("trend", r))
+    by_id = {}
+    for r in new:
+        by_id.setdefault(r["id"], r)
+    for r in sorted(by_id.values(), key=lambda r: -r["stars"]):
+        if r["id"] not in seen and r["stars"] >= gc.get("min_stars_new_repo", 1000) and not any(f[1]["id"] == r["id"] for f in fresh):
+            fresh.append(("new", r))
+    for r in daily + list(by_id.values()):
+        seen.setdefault(r["id"], now.isoformat())
+    for k in [k for k, v in seen.items() if hours_since(v, now) > 60 * 24]:
+        del seen[k]
+    out = []
+    if gc.get("notify", True) and not quiet and fresh:
+        if first_run:
+            top = [r for _, r in fresh][:6]
+            out.append(mk_alert("⭐ GitHub repos trending now", ", ".join(r["id"] for r in top)[:200],
+                                "Most new stars today - see the AI tools tab", "https://github.com/trending", tag="ghinit",
+                                priority=3, short="GitHub trending", kind="github", category="Tech & AI",
+                                push_text="\n".join(f"⭐ {r['id']} · +{r['stars_period']:,} today" if r.get("stars_period")
+                                                    else f"⭐ {r['id']} · {r['stars']:,} stars" for r in top)))
+        else:
+            for why, r in fresh[:gc.get("max_alerts", 2)]:
+                ai = bool(GH_AI_RE.search(r["id"] + " " + r["desc"]))
+                if why == "trend":
+                    big = r["stars_period"] >= gc.get("big_stars_today", 1500)
+                    head = f"⭐ +{r['stars_period']:,} stars today · #{r['rank']} on GitHub Trending"
+                    title = f"⭐ GITHUB TRENDING: {r['id']}"
+                else:
+                    big = r["stars"] >= 3 * gc.get("min_stars_new_repo", 1000)
+                    head = f"\U0001F195 New repo ({(r.get('created') or '')[:10]}) · {r['stars']:,} stars · {GH_TOPIC_LABEL.get(r['topic'], r['topic'])}"
+                    title = f"\U0001F195 NEW ON GITHUB: {r['id']}"
+                lines = [head, r["desc"] or "(no description)",
+                         f"{r['stars']:,} stars total" + (f" · {r['lang']}" if r["lang"] else "") + (" · AI tool" if ai else "")]
+                out.append(mk_alert(title, lines[0], lines[1], r["url"], tag="gh" + sid(r["id"]),
+                                    priority=4 if big and ai else 3, short=r["id"], kind="github", category=gh_category(r),
+                                    push_text="\n".join(lines)))
+    slim = lambda r: {k: r.get(k) for k in ("id", "desc", "lang", "stars", "stars_period", "created", "url", "rank", "topic")}
+    data = {"daily": [slim(r) for r in daily], "weekly": [slim(r) for r in weekly], "new": {}}
+    for tp in gc.get("topics", list(GH_TOPIC_LABEL)):   # your topic order (AI video first)
+        lst = sorted([r for r in new if r["topic"] == tp], key=lambda r: -r["stars"])
+        if lst:
+            data["new"][tp] = [slim(r) for r in lst]
+    return out, data
+
+
 def src_wikipedia(lang, cc):
     data = None
     for back in (1, 2):
@@ -837,6 +954,12 @@ def collect(cfg, state, gap_h=0.0):
     if ac.get("enabled", True):
         for pipe in ac.get("hf_pipelines", list(HF_PIPE_LABEL)):
             jobs.append((f"Hugging Face {pipe}", src_hf, (pipe,), 60))
+    gc = cfg.get("github") or {}
+    if gc.get("enabled", True):
+        jobs += [("GitHub Trending today", src_github_trending, ("daily",), 50),
+                 ("GitHub Trending this week", src_github_trending, ("weekly",), 360)]
+        for topic in gc.get("topics", list(GH_TOPIC_LABEL)):
+            jobs.append((f"GitHub new repos: {topic}", src_github_new, (topic, gc.get("new_repo_days", 30)), 180))
     for path, label, cc in cfg.get("sports_leagues", []):
         jobs.append((f"ESPN {label}", src_espn, (path, label, cc), 0))
     for cc in cfg.get("music_countries", []):
@@ -943,7 +1066,7 @@ def build_topics(signals, cfg, now):
     cw = cfg.get("country_weight", {})
     terms, heads = [], []
     for s in signals:
-        if s["kind"] in ("sport", "movie_chart", "watch", "briefing", "disaster", "ai_model"):
+        if s["kind"] in ("sport", "movie_chart", "watch", "briefing", "disaster", "ai_model", "gh_repo", "gh_new"):
             continue
         s["key"] = norm(s["term"])
         s["toks"] = s["key"].split()
@@ -1401,7 +1524,8 @@ def cache_picture(url):
 #   5 urgent (breaking, red disasters) · 4 very important (hot, just in, repeating, big finals, briefing)
 #   3 trending / normal · 2 low (digest, music charts, reminders)
 KIND_LABEL = {"disaster": "DISASTER", "watch": "WATCHLIST", "music": "MUSIC CHART", "event": "EVENT",
-              "digest": "DIGEST", "catchup": "SUMMARY", "briefing": "BRIEFING", "ai": "AI MODEL"}
+              "digest": "DIGEST", "catchup": "SUMMARY", "briefing": "BRIEFING", "ai": "AI MODEL",
+              "github": "GITHUB"}
 KIND_PRIORITY = {"music": 2, "digest": 2, "catchup": 4, "briefing": 4}
 
 
@@ -1507,7 +1631,7 @@ def channels_for(a, cfg):
         ch.append("-sports")
     if a.get("category") == "Natural disasters" or a["kind"] == "disaster" or a.get("label") == "BREAKING":
         ch.append("-disasters")
-    if a.get("category") == "AI video & image" or a["kind"] == "ai":
+    if a.get("category") == "AI video & image" or a["kind"] in ("ai", "github"):
         ch.append("-ai")
     return ch
 
@@ -2155,6 +2279,7 @@ def render_dashboard(topics, health, events, cfg, now, signals, watch_summary, g
         "ntfy": "" if CLOUD else cfg.get("ntfy_topic", ""),   # the public online dashboard never shows the secret topic
         "briefing": state.get("briefing"), "cloud": CLOUD, "online_url": cfg.get("online_dashboard", ""),
         "disasters": state.get("disaster_data") or {},
+        "github": state.get("gh_data") or {},
         "ai": {"models": state.get("ai_data") or {}, "tools": load_json(ROOT / "ai_tools.json", {}).get("groups", [])},
         "catchup": state.get("catchup") if hours_since((state.get("catchup") or {}).get("at"), now) < 12 else None,
     }
@@ -2417,7 +2542,8 @@ def run_check(dry=False, report=False, sim_gap=None, preview=False, brief_now=Fa
         e_alerts = event_alerts(events, state, cfg, now, quiet)
         d_alerts, dis_data = disaster_alerts(signals, state, cfg, now, quiet)
         ai_new, ai_data = ai_alerts(signals, state, cfg, now, quiet)
-        e_alerts = ai_new + e_alerts
+        gh_new, gh_data = github_alerts(signals, state, cfg, now, quiet)
+        e_alerts = ai_new + gh_new + e_alerts
         d_alerts = fold(d_alerts, (cfg.get("disasters") or {}).get("max_toasts", 3), "\U0001F30D Disasters")
         if catchup:
             alerts = d_alerts + catchup_alerts(topics, queue, s_alerts, w_alerts, m_alerts, e_alerts, state, now, gap_h, last_ok)
@@ -2439,6 +2565,7 @@ def run_check(dry=False, report=False, sim_gap=None, preview=False, brief_now=Fa
 
         state["disaster_data"] = dis_data
         state["ai_data"] = ai_data
+        state["gh_data"] = gh_data
         render_dashboard(topics, health, events, cfg, now, signals, watch_summary, games, state)
         export_latest(topics, signals, watch_summary, games, events, now)
         state["last_run"] = state["last_ok_run"] = now.isoformat()

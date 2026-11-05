@@ -418,11 +418,20 @@ function renderAI(){
   const toolNews = tools.map(([term, w]) => `<section class="box"><h2>${esc(term)}</h2>
       <div class="row" style="margin-bottom:8px"><span class="cc">${w.n24}${w.n24 >= 40 ? "+" : ""} today</span><span class="cc ${w.n2 >= 5 ? "focus" : ""}">${w.n2} in 2h</span></div>
       <ol>${w.items.slice(0, 4).map(a => `<li>${A(a.u, esc(a.t))}<small>${esc(a.s)} · ${ago(hoursFrom(a.p))} ago</small></li>`).join("") || "<li class='muted'>No news in the last 24h</li>"}</ol></section>`).join("");
+  const G = DATA.github || {};
+  const ghRow = r => `<li>${A(r.url, esc(r.id))}${r.stars_period ? ` <span class="badge b-new">+${r.stars_period.toLocaleString("en-US")}</span>` : ""}
+      <small>${r.desc ? esc(r.desc) + "<br>" : ""}&#11088; ${fmtN(r.stars || 0)}${r.lang ? " · " + esc(r.lang) : ""}${r.created ? " · created " + new Date(r.created).toLocaleDateString("en-GB", {day:"2-digit", month:"short"}) : ""}</small></li>`;
+  const GHT = {"text-to-video":"&#127916; AI video","video-generation":"&#127909; Video generation","image-generation":"&#128444;&#65039; AI images","comfyui":"&#129513; ComfyUI","text-to-speech":"&#127908; AI voice","ai-agents":"&#129302; AI agents","llm":"&#129504; LLM tools","mcp":"&#128268; MCP / Claude tools","automation":"&#9881;&#65039; Automation"};
+  const ghTrend = [["daily", "&#11088; Most new stars today"], ["weekly", "&#128200; Most new stars this week"]].filter(([k]) => (G[k] || []).length)
+      .map(([k, h]) => `<section class="box"><h2>${h}</h2><ol>${G[k].slice(0, 12).map(ghRow).join("")}</ol></section>`).join("");
+  const ghNew = Object.entries(G.new || {}).map(([tp, list]) => `<section class="box"><h2>${GHT[tp] || esc(tp)} <small class="muted">new repos</small></h2><ol>${list.slice(0, 6).map(ghRow).join("")}</ol></section>`).join("");
   const guide = (AI.tools || []).map(g => `<section class="box"><h2>${esc(g.title)}</h2>${g.tools.map(x =>
       A(x.url, `<b>${esc(x.name)}</b><span>${esc(x.note)}</span>`, "site")).join("")}</section>`).join("");
-  $("#main").innerHTML = `<p class="hint" style="margin-top:16px">AI video, image and voice tools: news, new open models trending on Hugging Face (most run free on your own PC with ComfyUI), and a guide. You get an "AI MODEL" notification when a new model reaches the top. Phone channel: your topic + <code>-ai</code>.</p>
+  $("#main").innerHTML = `<p class="hint" style="margin-top:16px">AI video, image and voice tools: news, new open models trending on Hugging Face (most run free on your own PC with ComfyUI), GitHub repos everyone is starring, and a guide. You get an "AI MODEL" notification when a new model reaches the top and a "GITHUB" notification when a repo jumps into GitHub Trending. Phone channel: your topic + <code>-ai</code>.</p>
     ${news.length ? `<section style="margin-top:6px"><h2 style="margin:0 0 10px;font-size:17px">&#128240; AI video &amp; image in the news</h2><div class="grid">${news.map(card).join("")}</div></section>` : ""}
     <h2 style="margin:22px 0 4px;font-size:17px">&#129303; Trending open models (Hugging Face)</h2><div class="cols">${models || `<div class="muted">No data yet.</div>`}</div>
+    ${ghTrend ? `<h2 id="github" style="margin:22px 0 4px;font-size:17px">&#128025; GitHub trending - repos everyone is starring <small class="muted" style="font-size:12px">(+N = new stars)</small></h2><div class="cols">${ghTrend}</div>` : ""}
+    ${ghNew ? `<h2 style="margin:22px 0 4px;font-size:17px">&#127381; New AI repos with the most stars (last 30 days)</h2><div class="cols">${ghNew}</div>` : ""}
     ${toolNews ? `<h2 style="margin:22px 0 4px;font-size:17px">&#128225; Latest news per tool</h2><div class="cols">${toolNews}</div>` : ""}
     ${guide ? `<h2 style="margin:22px 0 4px;font-size:17px">&#129517; Tools guide <small class="muted" style="font-size:12px">(November 2026 - prices change, check the site)</small></h2><div class="sites">${guide}</div>` : ""}`;
 }

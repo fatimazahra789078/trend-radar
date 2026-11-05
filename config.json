@@ -122,6 +122,14 @@
   },
   "_ai_tools_help": "AI video / image / voice tools: each word in 'watch' gets its own news search (category 'AI video & image'). New open models trending on Hugging Face (top_n of each task, younger than new_model_days) make an 'AI MODEL' notification. Phone channel: your topic + -ai.",
 
+  "github": {
+    "enabled": true,
+    "topics": ["text-to-video", "video-generation", "image-generation", "comfyui", "text-to-speech", "ai-agents", "llm", "mcp"],
+    "notify": true, "top_n": 10, "min_stars_today": 300, "big_stars_today": 1500,
+    "min_stars_new_repo": 1000, "new_repo_days": 30, "max_alerts": 2
+  },
+  "_github_help": "GitHub: repos with the most new stars today (github.com/trending) and the most-starred new repos (last new_repo_days days) for each topic. A repo in the top_n of today's trending with min_stars_today new stars, or a new repo with min_stars_new_repo stars, makes a 'GITHUB' notification (very important if it is an AI tool with big_stars_today). Phone channel: your topic + -ai.",
+
   "music_countries": ["US", "DE", "GB", "FR", "IT", "ES"],
   "music_notifications": true,
   "stocks": true,

@@ -26,11 +26,13 @@ const TYPES = [
   ["MUSIC CHART", "Music charts (new #1, new top 10)"], ["EVENT", "Upcoming event reminders"],
   ["SPREADING", "A trend reaches a new country"], ["SUMMARY", "While you were away"],
   ["AI MODEL", "New AI video / image / voice model (Hugging Face)"], ["AI TOOLS", "News about AI tools (Seedance, Kling, Veo...)"],
+  ["GITHUB", "GitHub repos everyone is starring (trending + new AI tools)"],
 ];
+const NEW_TYPES = ["GITHUB"];   // types added after 1.3.1: switched on for people who saved their types before
 const IMPORTANCE = [[4, "Very important only", "Breaking, hot, just in, repeating trends, big disasters, briefing"],
                     [3, "Important + trending", "Also normal trends, top news, sports results, watchlist"],
                     [1, "Everything", "Also digests, music charts, reminders"]];
-const COUNTRYLESS_OK = ["WATCHLIST", "BRIEFING", "DIGEST", "SUMMARY", "AI MODEL", "AI TOOLS"];
+const COUNTRYLESS_OK = ["WATCHLIST", "BRIEFING", "DIGEST", "SUMMARY", "AI MODEL", "AI TOOLS", "GITHUB"];
 const ICON = path.join(__dirname, "build", "icon.png");
 const START_HIDDEN = process.argv.includes("--hidden");
 
@@ -48,6 +50,10 @@ function loadCfg() {
   if (!Array.isArray(cfg.countries) || !cfg.countries.length) cfg.countries = COUNTRIES.map(([v]) => v);
   if (!Array.isArray(cfg.categories) || !cfg.categories.length) cfg.categories = [...CATEGORIES];
   if (!Array.isArray(cfg.types) || !cfg.types.length) cfg.types = TYPES.map(([v]) => v);
+  // a new alert type is ON by default, also for people who saved their own choice of types before it existed
+  const known = Array.isArray(cfg.typesKnown) ? cfg.typesKnown : TYPES.map(([v]) => v).filter((v) => !NEW_TYPES.includes(v));
+  for (const [v] of TYPES) if (!known.includes(v) && !cfg.types.includes(v)) cfg.types.push(v);
+  cfg.typesKnown = TYPES.map(([v]) => v);
   if (cfg.autostart === undefined) cfg.autostart = true;
   if (cfg.briefAuto === undefined) cfg.briefAuto = true;
   if (!Array.isArray(cfg.briefTimes)) cfg.briefTimes = ["09:00", "18:00"];
@@ -149,7 +155,7 @@ function buildTray() {
     { label: "💡 Video ideas", click: () => showDashboard("ideas") },
     { label: "🌍 Disasters", click: () => showDashboard("disasters") },
     { label: "⚽ Sports", click: () => showDashboard("sports") },
-    { label: "🎬 AI tools", click: () => showDashboard("ai") },
+    { label: "🎬 AI tools & GitHub", click: () => showDashboard("ai") },
     { type: "separator" },
     { label: "🧠 Write briefing now", click: () => makeBriefing(true).then((r) => { if (!r.ok) notify({ title: "🧠 AI briefing", body: r.msg }); }) },
     { label: "🧠 Show last briefing", enabled: fs.existsSync(briefFile()), click: showBriefing },
@@ -521,7 +527,7 @@ if (!app.requestSingleInstanceLock()) {
     ] };
     const pages = { label: "Pages", submenu: [
       { label: "All trends", click: () => showDashboard("") }, { label: "🇺🇸 USA", click: () => showDashboard("us") },
-      { label: "💡 Video ideas", click: () => showDashboard("ideas") }, { label: "🎬 AI tools", click: () => showDashboard("ai") },
+      { label: "💡 Video ideas", click: () => showDashboard("ideas") }, { label: "🎬 AI tools & GitHub", click: () => showDashboard("ai") },
       { label: "🌍 Disasters", click: () => showDashboard("disasters") }, { label: "⚽ Sports", click: () => showDashboard("sports") },
       { type: "separator" }, { label: "Reload", accelerator: "F5", click: () => win && win.reload() },
       { label: "Check for updates", click: () => checkUpdate(true) },

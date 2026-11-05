@@ -64,7 +64,7 @@ Pick the **channels** you want (your topic + an ending):
 | `your-topic-eu` | Europe (UK, France, Italy, Spain…) – trending and up |
 | `your-topic-sports` | sports results and sports trends |
 | `your-topic-disasters` | natural disasters + breaking news |
-| `your-topic-ai` | AI video / image / voice tools: new models + news (Seedance, Kling, Veo, LTX, Wan...) |
+| `your-topic-ai` | AI video / image / voice tools: new models + news (Seedance, Kling, Veo, LTX, Wan...) + GitHub repos everyone is starring |
 
 Example – **USA only**: subscribe to `your-topic-us` and nothing else.
 On Android you can also set a *minimum priority* per subscription (urgent = 5, very important = 4, normal = 3, low = 2).
@@ -94,6 +94,10 @@ Tip: open the dashboard on the phone and choose **Add to Home screen** – it th
   Hugging Face** (text-to-video, image-to-video, text-to-image, text-to-speech – most run free on your own PC with
   ComfyUI) · TechCrunch AI, The Verge AI, The Decoder, Reddit r/aivideo. The dashboard tab **🎬 AI tools** also has a
   tools guide (`ai_tools.json`, edit it freely).
+- **GitHub:** the repos with the most new stars today and this week (github.com/trending, all languages) and the
+  most-starred **new** repos of the last 30 days for AI video, video generation, AI images, ComfyUI, AI voice, AI agents,
+  LLM tools and MCP / Claude tools (GitHub search). Shown in the **🎬 AI tools** tab. Change the topics and limits in
+  `config.json` → `github`. NSFW / cheat repos are filtered out.
 
 If a source fails (for example Reddit refusing servers), the radar continues with the others.
 
@@ -117,6 +121,7 @@ If a source fails (for example Reddit refusing servers), the radar continues wit
 | 📊 | top trends every 3 hours |
 | 🧠 | Claude briefing |
 | 🎬 NEW AI MODEL | a new open AI video / image / voice model reached the top 5 on Hugging Face |
+| ⭐ GITHUB TRENDING / 🆕 NEW ON GITHUB | a repo entered the top 10 of GitHub Trending with 300+ new stars today, or a repo younger than 30 days passed 1,000 stars (very important if it is an AI tool with 1,500+ stars today) |
 
 "also: …" means several trends about the same story were grouped into one notification.
 
