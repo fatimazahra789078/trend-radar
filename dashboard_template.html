@@ -206,7 +206,8 @@ function tabs(){
   n.disasters = (D.quakes || []).filter(q => q.big).length + (D.gdacs || []).filter(g => g.level === "Red" || g.level === "Orange").length || "";
   n.ai = "";
   n.today = "";
-  const T = [["today","&#127919; Make today"],["trends","Trends"],["ideas","&#128161; Ideas"],["news","Top news"],["disasters","&#127757; Disasters"],["ai","&#127916; AI tools"],["watch","Watchlist"],["sports", (DATA.sports||[]).some(g=>g.state==="in") ? "Sports &#128308;" : "Sports"],
+  n.github = ((DATA.github || {}).daily || []).length || "";
+  const T = [["today","&#127919; Make today"],["trends","Trends"],["ideas","&#128161; Ideas"],["news","Top news"],["disasters","&#127757; Disasters"],["ai","&#127916; AI tools"],["github","&#128025; GitHub"],["watch","Watchlist"],["sports", (DATA.sports||[]).some(g=>g.state==="in") ? "Sports &#128308;" : "Sports"],
              ["charts","Charts"],["events","Upcoming"],["sites","Best sites"],["history","Sent"]];
   $("#tabs").innerHTML = T.map(([id,l]) => `<button class="tab" role="tab" data-tab="${id}" aria-selected="${state.tab===id}">${l}${n[id]!==""?`<span class="n">${n[id]}</span>`:""}</button>`).join("");
   $("#tabs").onclick = e => { const b = e.target.closest(".tab"); if (!b) return; state.tab = b.dataset.tab; store.set("tab", state.tab); tabs(); render(); window.scrollTo(0,0); };
@@ -463,6 +464,23 @@ function renderToday(){
     ${P.yt_key ? `<p class="hint" style="margin-top:14px">YouTube quota today: ${(Q.used || 0).toLocaleString("en-US")} / ${(Q.limit || 0).toLocaleString("en-US")} units · ${Q.checks || 0} checks (free limit 10,000 a day, resets at midnight Pacific time).</p>` : ""}`;
 }
 
+/* ---------- GitHub: repos everyone is starring ---------- */
+function renderGitHub(){
+  const G = DATA.github || {};
+  const fmtN = n => n >= 1e6 ? (n/1e6).toFixed(1) + "M" : n >= 1e3 ? Math.round(n/1e3) + "K" : String(n);
+  const ghRow = r => `<li>${A(r.url, esc(r.id))}${r.stars_period ? ` <span class="badge b-new">+${r.stars_period.toLocaleString("en-US")}</span>` : ""}
+      <small>${r.desc ? esc(r.desc) + "<br>" : ""}&#11088; ${fmtN(r.stars || 0)}${r.lang ? " · " + esc(r.lang) : ""}${r.created ? " · created " + new Date(r.created).toLocaleDateString("en-GB", {day:"2-digit", month:"short"}) : ""}</small></li>`;
+  const GHT = {"text-to-video":"&#127916; AI video","video-generation":"&#127909; Video generation","image-generation":"&#128444;&#65039; AI images","comfyui":"&#129513; ComfyUI","text-to-speech":"&#127908; AI voice","ai-agents":"&#129302; AI agents","llm":"&#129504; LLM tools","mcp":"&#128268; MCP / Claude tools","automation":"&#9881;&#65039; Automation"};
+  const ghTrend = [["daily", "&#11088; Most new stars today"], ["weekly", "&#128200; Most new stars this week"]].filter(([k]) => (G[k] || []).length)
+      .map(([k, h]) => `<section class="box"><h2>${h}</h2><ol>${G[k].slice(0, 12).map(ghRow).join("")}</ol></section>`).join("");
+  const ghNew = Object.entries(G.new || {}).map(([tp, list]) => `<section class="box"><h2>${GHT[tp] || esc(tp)} <small class="muted">new repos</small></h2><ol>${list.slice(0, 6).map(ghRow).join("")}</ol></section>`).join("");
+  const q = state.q.trim().toLowerCase();
+  $("#main").innerHTML = `<p class="hint" style="margin-top:16px">Repos with the most <b>new stars</b> on GitHub (github.com/trending, all languages) and the most-starred <b>new</b> repos of the last 30 days for AI video, images, voice, ComfyUI, agents, LLM and MCP tools. <b>+N</b> = new stars today / this week. You get a "GITHUB" notification when a repo jumps into the top 10 with 300+ new stars. Phone channel: your topic + <code>-ai</code>.</p>
+    ${ghTrend ? `<h2 style="margin:18px 0 4px;font-size:17px">&#11088; GitHub trending</h2><div class="cols">${ghTrend}</div>` : `<div class="empty">No GitHub data yet - it appears after the next check.</div>`}
+    ${ghNew ? `<h2 style="margin:22px 0 4px;font-size:17px">&#127381; New AI repos with the most stars (last 30 days)</h2><div class="cols">${ghNew}</div>` : ""}
+    <div class="links" style="margin-top:16px">${A("https://github.com/trending", "GitHub trending")}${A("https://github.com/trending?since=weekly", "This week")}${A("https://github.com/topics/text-to-video", "Topic: text-to-video")}${A("https://github.com/topics/comfyui", "Topic: ComfyUI")}</div>`;
+}
+
 /* ---------- AI tools (video / image / voice) ---------- */
 const PIPE = {"text-to-video":"&#127916; Text to video","image-to-video":"&#127902;&#65039; Image to video","text-to-image":"&#128444;&#65039; Text to image","text-to-speech":"&#127908; Voice (text to speech)"};
 function renderAI(){
@@ -477,20 +495,12 @@ function renderAI(){
   const toolNews = tools.map(([term, w]) => `<section class="box"><h2>${esc(term)}</h2>
       <div class="row" style="margin-bottom:8px"><span class="cc">${w.n24}${w.n24 >= 40 ? "+" : ""} today</span><span class="cc ${w.n2 >= 5 ? "focus" : ""}">${w.n2} in 2h</span></div>
       <ol>${w.items.slice(0, 4).map(a => `<li>${A(a.u, esc(a.t))}<small>${esc(a.s)} · ${ago(hoursFrom(a.p))} ago</small></li>`).join("") || "<li class='muted'>No news in the last 24h</li>"}</ol></section>`).join("");
-  const G = DATA.github || {};
-  const ghRow = r => `<li>${A(r.url, esc(r.id))}${r.stars_period ? ` <span class="badge b-new">+${r.stars_period.toLocaleString("en-US")}</span>` : ""}
-      <small>${r.desc ? esc(r.desc) + "<br>" : ""}&#11088; ${fmtN(r.stars || 0)}${r.lang ? " · " + esc(r.lang) : ""}${r.created ? " · created " + new Date(r.created).toLocaleDateString("en-GB", {day:"2-digit", month:"short"}) : ""}</small></li>`;
-  const GHT = {"text-to-video":"&#127916; AI video","video-generation":"&#127909; Video generation","image-generation":"&#128444;&#65039; AI images","comfyui":"&#129513; ComfyUI","text-to-speech":"&#127908; AI voice","ai-agents":"&#129302; AI agents","llm":"&#129504; LLM tools","mcp":"&#128268; MCP / Claude tools","automation":"&#9881;&#65039; Automation"};
-  const ghTrend = [["daily", "&#11088; Most new stars today"], ["weekly", "&#128200; Most new stars this week"]].filter(([k]) => (G[k] || []).length)
-      .map(([k, h]) => `<section class="box"><h2>${h}</h2><ol>${G[k].slice(0, 12).map(ghRow).join("")}</ol></section>`).join("");
-  const ghNew = Object.entries(G.new || {}).map(([tp, list]) => `<section class="box"><h2>${GHT[tp] || esc(tp)} <small class="muted">new repos</small></h2><ol>${list.slice(0, 6).map(ghRow).join("")}</ol></section>`).join("");
   const guide = (AI.tools || []).map(g => `<section class="box"><h2>${esc(g.title)}</h2>${g.tools.map(x =>
       A(x.url, `<b>${esc(x.name)}</b><span>${esc(x.note)}</span>`, "site")).join("")}</section>`).join("");
   $("#main").innerHTML = `<p class="hint" style="margin-top:16px">AI video, image and voice tools: news, new open models trending on Hugging Face (most run free on your own PC with ComfyUI), GitHub repos everyone is starring, and a guide. You get an "AI MODEL" notification when a new model reaches the top and a "GITHUB" notification when a repo jumps into GitHub Trending. Phone channel: your topic + <code>-ai</code>.</p>
     ${news.length ? `<section style="margin-top:6px"><h2 style="margin:0 0 10px;font-size:17px">&#128240; AI video &amp; image in the news</h2><div class="grid">${news.map(card).join("")}</div></section>` : ""}
     <h2 style="margin:22px 0 4px;font-size:17px">&#129303; Trending open models (Hugging Face)</h2><div class="cols">${models || `<div class="muted">No data yet.</div>`}</div>
-    ${ghTrend ? `<h2 id="github" style="margin:22px 0 4px;font-size:17px">&#128025; GitHub trending - repos everyone is starring <small class="muted" style="font-size:12px">(+N = new stars)</small></h2><div class="cols">${ghTrend}</div>` : ""}
-    ${ghNew ? `<h2 style="margin:22px 0 4px;font-size:17px">&#127381; New AI repos with the most stars (last 30 days)</h2><div class="cols">${ghNew}</div>` : ""}
+    <section class="box away"><h2>&#128025; GitHub repos everyone is starring</h2><p class="hint" style="margin:4px 0 0">Now in their own tab: <a href="#github">&#128025; GitHub</a> (trending today / this week + the most-starred new AI repos).</p></section>
     ${toolNews ? `<h2 style="margin:22px 0 4px;font-size:17px">&#128225; Latest news per tool</h2><div class="cols">${toolNews}</div>` : ""}
     ${guide ? `<h2 style="margin:22px 0 4px;font-size:17px">&#129517; Tools guide <small class="muted" style="font-size:12px">(November 2026 - prices change, check the site)</small></h2><div class="sites">${guide}</div>` : ""}`;
 }
@@ -612,7 +622,7 @@ function renderHistory(){
 
 function render(){
   $("#main").onclick = null;
-  ({today: renderToday, trends: renderTrends, ideas: renderIdeas, news: renderHeadlines, disasters: renderDisasters, ai: renderAI, watch: renderWatch, sports: renderSports, charts: renderCharts,
+  ({today: renderToday, trends: renderTrends, ideas: renderIdeas, news: renderHeadlines, disasters: renderDisasters, ai: renderAI, github: renderGitHub, watch: renderWatch, sports: renderSports, charts: renderCharts,
     events: renderEvents, sites: renderSites, history: renderHistory}[state.tab] || renderTrends)();
 }
 
@@ -636,7 +646,7 @@ setInterval(() => { if (Date.now() - idle > 8*60000) location.reload(); }, 60000
 function fromHash(){
   const h = (location.hash || "").slice(1).toLowerCase();
   if (["us","de","eu","gb","fr","it","es"].includes(h)){ state.tab = "trends"; state.filter = h; state.cat = "all"; }
-  else if (["sports","disasters","ideas","news","watch","charts","events","ai","today"].includes(h)) state.tab = h;
+  else if (["sports","disasters","ideas","news","watch","charts","events","ai","today","github"].includes(h)) state.tab = h;
   else return false;
   store.set("tab", state.tab); store.set("filter", state.filter); return true;
 }

@@ -143,7 +143,7 @@ articles in the last hours + number of countries + how long it keeps coming back
 
 ## 5. Dashboard
 
-Online: **https://fatimazahra789078.github.io/trend-radar/** (add `#today`, `#us`, `#de`, `#eu`, `#disasters`,
+Online: **https://fatimazahra789078.github.io/trend-radar/** (add `#today`, `#github`, `#us`, `#de`, `#eu`, `#disasters`,
 `#sports`, `#ai` or `#ideas` to open a page directly).
 
 - **🎯 Make today** – which video to make **now**. Every topic gets a **video score** = trend strength × freshness ×
