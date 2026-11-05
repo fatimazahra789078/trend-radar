@@ -128,7 +128,8 @@
     "travel_from": ["US", "GB"], "travel_to": ["DE", "FR", "IT", "ES"],
     "travel_alerts": true, "travel_min_hours": 2, "max_travel_alerts": 1
   },
-  "youtube": {"daily_units": 9000, "max_checks_per_run": 8, "recheck_hours": 6},
+  "youtube": {"countries": ["US"], "daily_units": 9000, "max_checks_per_run": 8, "recheck_hours": 4},
+  "_youtube_check_help": "YouTube competition check. countries = where it checks (default only US, so the free quota is not spent on other countries). Add e.g. \"DE\" to check Germany too.",
   "_video_planner_help": "Which video to make now. Every topic gets a phase (rising / at the peak / falling) and a time window. 'Travel': trending in travel_from but not yet in travel_to (TRAVELING alert, make that language version first). With the YOUTUBE_API_KEY secret (free) the best candidates get a YouTube check: how many videos were uploaded about it in the last 24h (GO NOW / GOOD / BUSY / CROWDED). The free quota is 10,000 units a day; one check costs 101, the radar spreads ~85 checks over the day (daily_units). A 'TOP 3' notification comes at top3_hours_utc.",
   "github": {
     "enabled": true,

@@ -141,7 +141,14 @@ Online: **https://fatimazahra789078.github.io/trend-radar/** (add `#today`, `#us
   phase × YouTube competition × categories that get views (+ a bonus when it has not reached your other countries yet):
   - **Phase:** 🌱 rising (about 6–12 h left) · 🔥 at the peak (about 3–6 h left) · 📉 falling (only with a new angle)
   - **YouTube competition** (needs the free `YOUTUBE_API_KEY` secret): how many videos were uploaded about it in the
-    last 24 h – 🟢 GO NOW (≤5) · 🟢 GOOD (≤20) · 🟡 BUSY · 🔴 CROWDED (50+), plus the views per hour of the top videos
+    last 24 h – 🟢 GO NOW (≤5) · 🟢 GOOD (≤20) · 🟡 BUSY · 🔴 CROWDED (50+), plus the views per hour of the top videos.
+    Default: **USA only** (`config.json` → `youtube.countries`), so the free quota is not spent on other countries
+  - **TikTok / Instagram / Facebook:** these have no free public data API, so the radar reads the news instead
+    ("viral on TikTok", "Instagram Reels"…) and shows 📱 *In the news as big on*; one-click buttons open the same
+    search on YouTube (today), TikTok, Instagram and Facebook
+  - **Shared with friends:** the radar runs once in the cloud and everybody uses the same dashboard, phone channel and
+    desktop app – one YouTube key (added once by the owner) serves everyone; each person may add their own free Gemini
+    key in the app for the AI briefing
   - **People search:** what people type in the YouTube search box, in English and the country's language
   - **✈️ Travelling trends:** trending in the USA / UK, not yet in DE / FR / IT / ES, with the usual delay per country
   - ⚠️ **Sensitive** topics (death, war, crime…): YouTube may limit ads

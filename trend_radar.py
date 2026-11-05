@@ -1500,6 +1500,9 @@ TRAVEL_CATS = {"Movies & TV", "Music", "Gaming", "Tech & AI", "AI video & image"
 SENSITIVE_RE = re.compile(r"\b(dead|death|dies|died|killed|kills|shooting|shot|murder\w*|stabb\w*|war|attack\w*|terror\w*|"
                           r"suicide|abuse\w*|rape|overdose|drugs?|massacre|hostage|bomb\w*|tot|getötet|mord|anschlag|krieg|"
                           r"mort|tué|guerre|morto|ucciso|guerra|muerto|asesinado)\b", re.I)
+# news headlines that say a topic is big on TikTok / Instagram / Facebook (no API, no login needed)
+SOCIAL_RE = {"TikTok": re.compile(r"tik ?tok", re.I), "Instagram": re.compile(r"instagram|\binsta\b|\breels?\b", re.I),
+             "Facebook": re.compile(r"facebook", re.I), "Viral": re.compile(r"\bviral\w*|goes viral|internet (is )?(obsessed|reacts)", re.I)}
 CC_LANG = {"US": "en", "GB": "en", "DE": "de", "AT": "de", "CH": "de", "FR": "fr", "IT": "it", "ES": "es"}
 PHASE_TXT = {"rising": "\U0001F331 rising", "peak": "\U0001F525 at the peak", "falling": "\U0001F4C9 falling"}
 
@@ -1552,9 +1555,9 @@ def yt_api(path, params, key, q, cost):
                       timeout=20)
 
 
-def yt_supply(t, key, q, now):
+def yt_supply(t, key, q, now, ccs=("US",)):
     """How many YouTube videos about this topic in the last 24h, and how many views they get (101 units)."""
-    main = next((c for c in t["countries"] if c in FOCUS), "US")
+    main = next((c for c in ccs if c in t["countries"]), ccs[0])
     query = t["name"].lstrip("#") if not t["story"] else (t.get("query") or t["name"])
     after = (now.astimezone(timezone.utc) - timedelta(hours=24)).strftime("%Y-%m-%dT%H:%M:%SZ")
     d = yt_api("search", {"part": "id", "type": "video", "q": query, "publishedAfter": after, "order": "viewCount",
@@ -1604,6 +1607,7 @@ def video_score(t):
     opp = OPP_F.get((v.get("yt") or {}).get("rating"), 1.0)
     s = t["score"] * fresh * phase * opp * VIDEO_CAT_W.get(t.get("category"), 1.0) * (1.15 if v.get("travel") else 1.0)
     s *= sum(1 for c in t["countries"] if c in FOCUS) >= 1 and 1.0 or 0.6
+    s *= 1.1 if v.get("social") else 1.0   # the news says it is big on TikTok / Instagram / Facebook / viral
     return round(s * (0.85 if v["sensitive"] else 1.0), 1)
 
 
@@ -1638,11 +1642,17 @@ def plan_videos(topics, state, cfg, now, dry=False):
             if missing and vc.get("travel_min_hours", 2) <= src_h <= 72:
                 travel = {"from": [s for s in sources if s in present], "missing": missing, "since_h": round(src_h, 1)}
         txt = " ".join([t["name"]] + [h["term"] for h in t["heads"][:6]])
+        social = {}
+        for h in t["heads"]:
+            for plat, rx in SOCIAL_RE.items():
+                if rx.search(h["term"]):
+                    social[plat] = social.get(plat, 0) + 1
         t["video"] = {"phase": phase, "window": window, "travel": travel, "sensitive": bool(SENSITIVE_RE.search(txt)),
-                      "yt": None, "search": None}
+                      "yt": None, "search": None, "social": social}
     # ---- YouTube supply for the best candidates, inside the free quota
     key = cfg.get("youtube_api_key")
     yc = cfg.get("youtube") or {}
+    yt_cc = [c.upper() for c in yc.get("countries", ["US"])] or ["US"]
     cache = state.setdefault("yt_opp", {})
     for k in [k for k, v in cache.items() if hours_since(v.get("at"), now) > 48]:
         del cache[k]
@@ -1655,13 +1665,15 @@ def plan_videos(topics, state, cfg, now, dry=False):
     if key and not dry:
         free_checks = max(0, (q["limit"] - q.get("used", 0)) // 101)
         per_run = min(yc.get("max_checks_per_run", 8), max(1, free_checks // max(1, q["hours_left"]))) if free_checks else 0
-        recheck = yc.get("recheck_hours", 6)
-        cands = [t for t in sorted(topics, key=lambda t: -t["video"]["score"])[:25]
-                 if t["video"]["phase"] != "falling" and any(c in FOCUS for c in t["countries"])
+        recheck = yc.get("recheck_hours", 4)
+        # only topics trending in your YouTube countries (default: USA only - the quota is not spent on the others)
+        cands = [t for t in sorted(topics, key=lambda t: -t["video"]["score"])
+                 if any(c in yt_cc for c in t["countries"])][:25]
+        cands = [t for t in cands if t["video"]["phase"] != "falling"
                  and (t["id"] not in cache or hours_since(cache[t["id"]]["at"], now) >= recheck)]
         for t in cands[:per_run]:
             try:
-                r = yt_supply(t, key, q, now)
+                r = yt_supply(t, key, q, now, yt_cc)
             except Exception as e:  # noqa: BLE001 - quota or network: try again next run
                 log(f"YouTube check failed for {t['name']}: {type(e).__name__}: {str(e)[:100]}")
                 if "403" in str(e):
@@ -1697,7 +1709,8 @@ def video_plan_json(topics, meta, now):
         v = t["video"]
         return {"id": t["id"], "name": t["name"], "category": t["category"], "countries": t["countries"][:6],
                 "score": t["score"], "vscore": v["score"], "phase": v["phase"], "window": v["window"], "travel": v["travel"],
-                "sensitive": v["sensitive"], "yt": v["yt"], "search": v["search"], "first_pub_h": t["first_pub_h"],
+                "sensitive": v["sensitive"], "yt": v["yt"], "search": v["search"], "social": v.get("social") or {},
+                "first_pub_h": t["first_pub_h"], "query": t.get("query") or t["name"],
                 "url": t["url"], "pic": t["picture"], "summary": summary_line(t), "news": topic_news(t, 3)}
     ranked = [t for t in sorted(topics, key=lambda t: -(t.get("video") or {}).get("score", 0)) if t.get("video")]
     top, politics = [], 0
@@ -1765,6 +1778,8 @@ def top3_alert(plan, state, cfg, now, force=False):
             bits.append(p["yt"]["txt"].split(" - ")[0] + f" · {p['yt']['n24']}{'+' if p['yt']['full'] else ''} videos/24h")
         if p.get("travel"):
             bits.append("✈️ not yet in " + ", ".join(p["travel"]["missing"]))
+        if p.get("social"):
+            bits.append("📱 buzz: " + ", ".join(k for k in p["social"]))
         if p.get("sensitive"):
             bits.append("⚠️ sensitive: ads may be limited")
         lines.append(f"{i}. {p['name']} - {p['category']} {flags(p['countries'][:4])}\n   " + " · ".join(bits)

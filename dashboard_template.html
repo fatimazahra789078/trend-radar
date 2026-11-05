@@ -410,6 +410,12 @@ const FLAGE = c => c && c.length === 2 && /^[A-Z]+$/.test(c) ? String.fromCodePo
 const PHASE = {rising: ["&#127793; Rising", "b-new"], peak: ["&#128293; At the peak", "b-trend"], falling: ["&#128201; Falling", "b-low"]};
 const OPPC = {go: "b-new", good: "b-new", busy: "b-trend", crowded: "b-hot"};
 const LANGN = {en: "EN", de: "DE", fr: "FR", it: "IT", es: "ES"};
+const SOCIAL_ICON = {TikTok: "&#127925; TikTok", Instagram: "&#128248; Instagram", Facebook: "&#128101; Facebook", Viral: "&#128293; Viral"};
+function platformLinks(p){
+  const q = encodeURIComponent((p.query || p.name).replace(/^#/, ""));
+  return `<div class="links" style="margin-top:8px">${A(`https://www.youtube.com/results?search_query=${q}&sp=EgIIAg%3D%3D`, "YouTube today")}${A(`https://www.tiktok.com/search/video?q=${q}`, "TikTok")}${A(`https://www.instagram.com/explore/search/keyword/?q=${q}`, "Instagram")}${A(`https://www.facebook.com/search/videos/?q=${q}`, "Facebook")}</div>`;
+}
+const socialChips = p => Object.keys(p.social || {}).length ? `<div class="meta">&#128241; In the news as big on: ${Object.entries(p.social).map(([k, n]) => `<span class="cc focus">${SOCIAL_ICON[k] || esc(k)} (${n})</span>`).join(" ")}</div>` : "";
 function renderToday(){
   const P = DATA.plan || {}, top = P.top || [], travel = P.travel || [];
   const ytBadge = p => p.yt ? `<span class="badge ${OPPC[p.yt.rating]}">${esc(p.yt.txt.split(" - ")[0].replace(/^\S+\s/, ""))}</span> <small class="muted">${p.yt.n24}${p.yt.full ? "+" : ""} YouTube videos in 24h</small>` : "";
@@ -423,19 +429,21 @@ function renderToday(){
       <div class="meta">&#9203; <b>${esc(p.window)}</b></div>
       ${p.travel ? `<div class="meta">&#9992;&#65039; Trending in ${p.travel.from.map(FLAGE).join("")} - <b>not yet in ${p.travel.missing.map(FLAGE).join(" ")}</b>: make that language version first</div>` : ""}
       ${p.sensitive ? `<div class="meta" style="color:var(--hot)">&#9888;&#65039; Sensitive topic: YouTube may limit ads - only facts from 2+ trusted sources</div>` : ""}
+      ${socialChips(p)}
       ${search(p)}
+      ${platformLinks(p)}
       ${p.yt && p.yt.top && p.yt.top.length ? `<details><summary>Videos already on YouTube</summary><ol>${p.yt.top.map(v => `<li>${A(v.u, esc(v.t))}<small>${esc(v.ch)} · ${v.views.toLocaleString("en-US")} views · ${v.vph.toLocaleString("en-US")}/hour</small></li>`).join("")}</ol></details>` : ""}
       <details><summary>Titles + headlines</summary><div class="idea">${titlesFor(p).slice(0, 6).map(([l, s]) => `<p><span class="muted">${l}:</span> ${esc(s)}</p>`).join("")}
         ${(p.news || []).map(n => `<p>${A(n.u, esc(n.t))} <small class="muted">${esc(n.s)}</small></p>`).join("")}</div></details>
     </article>`;
-  const row = (p, i) => `<li>${A(p.url, esc(p.name))} <span class="badge ${PHASE[p.phase][1]}">${PHASE[p.phase][0]}</span> ${p.yt ? `<span class="badge ${OPPC[p.yt.rating]}">${p.yt.n24}${p.yt.full ? "+" : ""} videos</span>` : ""}${p.travel ? " &#9992;&#65039;" : ""}${p.sensitive ? " &#9888;&#65039;" : ""}
+  const row = (p, i) => `<li>${A(p.url, esc(p.name))} <span class="badge ${PHASE[p.phase][1]}">${PHASE[p.phase][0]}</span> ${p.yt ? `<span class="badge ${OPPC[p.yt.rating]}">${p.yt.n24}${p.yt.full ? "+" : ""} videos</span>` : ""}${p.travel ? " &#9992;&#65039;" : ""}${Object.keys(p.social || {}).length ? " &#128241;" : ""}${p.sensitive ? " &#9888;&#65039;" : ""}
       <small>${esc(p.category)} · ${p.countries.slice(0, 5).map(FLAGE).join("")} · ${esc(p.window)} · video score ${p.vscore}</small></li>`;
   const Q = P.quota || {};
   const lag = Object.entries(P.lag || {}).map(([c, h]) => `${FLAGE(c)} ~${Math.round(h)}h`).join(" · ");
-  const keyBox = P.yt_key ? "" : `<section class="box away"><h2>&#128273; Add a free YouTube key to see the competition</h2>
-      <p class="hint" style="margin:4px 0 0">With a key, each top topic shows how many YouTube videos were uploaded in the last 24h: &#128994; GO NOW · &#128994; GOOD · &#128993; BUSY · &#128308; CROWDED.
+  const keyBox = P.yt_key ? "" : `<section class="box away"><h2>&#128273; Add a free YouTube key to see the competition (USA)</h2>
+      <p class="hint" style="margin:4px 0 0">With a key, each top USA topic shows how many YouTube videos were uploaded in the last 24h (other countries: add them in <code>config.json</code> &#8594; <code>youtube.countries</code>): &#128994; GO NOW · &#128994; GOOD · &#128993; BUSY · &#128308; CROWDED.
       Free: console.cloud.google.com &#8594; enable "YouTube Data API v3" &#8594; Credentials &#8594; API key &#8594; add it on GitHub as the secret <code>YOUTUBE_API_KEY</code>.</p></section>`;
-  $("#main").innerHTML = `<p class="hint" style="margin-top:16px">Which video to make <b>now</b>: trend strength × freshness × phase (rising / peak / falling) × competition on YouTube × categories that get views, with a bonus when a trend has not reached your other countries yet. A <b>TOP 3</b> notification comes twice a day.</p>
+  $("#main").innerHTML = `<p class="hint" style="margin-top:16px">Which video to make <b>now</b>: trend strength × freshness × phase (rising / peak / falling) × competition on YouTube (USA) × categories that get views, with a bonus when a trend has not reached your other countries yet or the news says it is big on TikTok / Instagram / Facebook. TikTok, Instagram and Facebook have no free public data, so use the buttons to check them in one click. A <b>TOP 3</b> notification comes twice a day.</p>
     ${keyBox}
     ${top.length ? `<div class="grid" style="margin-top:8px">${top.slice(0, 3).map(big).join("")}</div>` : `<div class="empty">No plan yet - it appears after the next check.</div>`}
     ${top.length > 3 ? `<h2 style="margin:22px 0 4px;font-size:17px">&#127919; Next best videos</h2><section class="box"><ol start="4">${top.slice(3).map(row).join("")}</ol></section>` : ""}
