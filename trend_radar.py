@@ -1711,6 +1711,7 @@ def video_plan_json(topics, meta, now):
                 "score": t["score"], "vscore": v["score"], "phase": v["phase"], "window": v["window"], "travel": v["travel"],
                 "sensitive": v["sensitive"], "yt": v["yt"], "search": v["search"], "social": v.get("social") or {},
                 "first_pub_h": t["first_pub_h"], "query": t.get("query") or t["name"],
+                "hours_seen": t.get("hours_seen", 0), "days_seen": t.get("days_seen", 0),
                 "url": t["url"], "pic": t["picture"], "summary": summary_line(t), "news": topic_news(t, 3)}
     ranked = [t for t in sorted(topics, key=lambda t: -(t.get("video") or {}).get("score", 0)) if t.get("video")]
     top, politics = [], 0

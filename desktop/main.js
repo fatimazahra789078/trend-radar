@@ -99,7 +99,7 @@ function createWindow(show = true) {
   win = new BrowserWindow({
     width: 1300, height: 880, minWidth: 380, minHeight: 500, show: false, title: "Trend Radar",
     backgroundColor: "#0a0f1d", icon: ICON, autoHideMenuBar: false,
-    webPreferences: { contextIsolation: true, sandbox: true, nodeIntegration: false },
+    webPreferences: { contextIsolation: true, sandbox: true, nodeIntegration: false, preload: path.join(__dirname, "dashpreload.js") },
   });
   win.webContents.setWindowOpenHandler(({ url }) => { if (/^https?:/.test(url)) shell.openExternal(url); return { action: "deny" }; });
   win.webContents.on("will-navigate", (e, url) => {
@@ -110,7 +110,7 @@ function createWindow(show = true) {
     win.loadFile(path.join(__dirname, "offline.html"));
     setTimeout(() => win && !win.isDestroyed() && win.loadURL(dashboardUrl()), 20000);
   });
-  win.webContents.on("did-finish-load", () => setTimeout(injectYT, 300));   // your YouTube results -> Make today
+  win.webContents.on("did-finish-load", () => setTimeout(() => { injectYT(); injectTR(); }, 300));   // your YouTube results + language
   win.on("close", (e) => { if (!quitting) { e.preventDefault(); win.hide(); } });
   win.once("ready-to-show", () => { if (show) win.show(); });
   win.loadURL(dashboardUrl());
@@ -238,11 +238,14 @@ function handleMessage(ev) {
   const tags = ev.tags || [];
   const flags = tags.map((t) => FLAGS[t]).filter(Boolean).join("");
   const extra = tags.filter((t) => !FLAGS[t]).join(" · ");
-  notify({
-    title: (flags ? flags + " " : "") + (ev.title || "Trend Radar"),
-    body: (ev.message || "") + (extra ? `\n[${extra}]` : ""),
+  const show = (title, body) => notify({
+    title: (flags ? flags + " " : "") + (title || "Trend Radar"),
+    body: (body || "") + (extra ? `\n[${extra}]` : ""),
     click: ev.click, urgent: (ev.priority || 3) >= 5,
   });
+  // your language: translated with free Google Translate (falls back to English after 8 s)
+  if (cfg.trLang) translateNotif(ev.title || "", ev.message || "").then(([t, b]) => show(t, b)).catch(() => show(ev.title, ev.message));
+  else show(ev.title, ev.message);
 }
 
 function notify({ title, body, click, urgent, onClick }) {
@@ -554,7 +557,174 @@ function injectYT() {
   win.webContents.executeJavaScript(js).then((n) => { if (process.env.TR_DEBUG) console.log("[yt inject]", n); }).catch(() => {});
 }
 
+// ---------------------------------------------------------------- trends in YOUR language (no key, no AI quota)
+// The same free Google Translate endpoint as the "Japanese Auto Translate" extension: the whole dashboard and the
+// notifications are translated from English into the language you choose in Settings.
+const TR_LANGS = [["ar", "Arabic - العربية"], ["fr", "French - Français"], ["es", "Spanish - Español"], ["de", "German - Deutsch"],
+                  ["it", "Italian - Italiano"], ["pt", "Portuguese - Português"], ["tr", "Turkish - Türkçe"], ["nl", "Dutch - Nederlands"]];
+const GT_HOSTS = ["translate.googleapis.com", "clients5.google.com"];
+const gtCache = new Map();
+let gtHost = 0, gtRunning = 0;
+const gtWaiting = [];
+const gtAcquire = () => gtRunning < 3 ? (gtRunning++, Promise.resolve()) : new Promise((r) => gtWaiting.push(r));
+const gtRelease = () => { const n = gtWaiting.shift(); if (n) n(); else gtRunning--; };
+const escHtml = (s) => String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+const unHtml = (s) => String(s).replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&quot;/g, '"').replace(/&#39;/g, "'").replace(/&amp;/g, "&");
+async function gtRequest(texts, tl) {
+  let last;
+  for (let attempt = 0; attempt < 4; attempt++) {
+    const host = GT_HOSTS[(gtHost + attempt) % GT_HOSTS.length];
+    await gtAcquire();
+    try {
+      const body = new URLSearchParams();
+      for (const t of texts) body.append("q", escHtml(t));
+      const r = await fetch(`https://${host}/translate_a/t?client=dict-chrome-ex&sl=auto&tl=${encodeURIComponent(tl)}&format=html`, {
+        method: "POST", body, headers: { "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8" }, signal: AbortSignal.timeout(20000) });
+      if (!r.ok) throw new Error("HTTP " + r.status);
+      let j = await r.json();
+      if (typeof j === "string") j = [j];
+      if (texts.length === 1 && j.length === 2 && typeof j[0] === "string" && typeof j[1] === "string") j = [j];
+      if (!Array.isArray(j) || j.length !== texts.length) throw new Error("unexpected answer");
+      gtHost = GT_HOSTS.indexOf(host);
+      return j.map((x) => unHtml(Array.isArray(x) ? x[0] : x));
+    } catch (e) { last = e; } finally { gtRelease(); }
+    await new Promise((r) => setTimeout(r, 700 * 2 ** attempt));
+  }
+  throw last;
+}
+async function gtranslate(texts, tl) {
+  const out = new Array(texts.length).fill(null), todo = new Map();
+  texts.forEach((t, i) => {
+    const s = String(t || "");
+    if (!s.trim()) return;
+    const k = tl + "\u0001" + s;
+    if (gtCache.has(k)) out[i] = gtCache.get(k);
+    else { if (!todo.has(k)) todo.set(k, { s, idx: [] }); todo.get(k).idx.push(i); }
+  });
+  const batches = [];
+  let cur = [], chars = 0;
+  for (const [k, e] of todo) {
+    if (cur.length && (chars + e.s.length > 4500 || cur.length >= 60)) { batches.push(cur); cur = []; chars = 0; }
+    cur.push([k, e]); chars += e.s.length;
+  }
+  if (cur.length) batches.push(cur);
+  await Promise.all(batches.map(async (b) => {
+    try {
+      const res = await gtRequest(b.map(([, e]) => e.s), tl);
+      b.forEach(([k, e], n) => { gtCache.set(k, res[n]); for (const i of e.idx) out[i] = res[n]; });
+    } catch (e) { if (process.env.TR_DEBUG) console.log("[translate] failed", e.message); }
+  }));
+  if (gtCache.size > 20000) for (const k of [...gtCache.keys()].slice(0, 5000)) gtCache.delete(k);
+  return out;
+}
+ipcMain.handle("page:lang", () => cfg.trLang || "");
+ipcMain.handle("page:translate", async (_e, texts) => (cfg.trLang && Array.isArray(texts) ? gtranslate(texts.slice(0, 3000).map(String), cfg.trLang) : []));
+// runs inside the dashboard: translates every text on screen, again after each re-render (tabs, filters, new scan)
+const PAGE_TRANSLATOR = `(async () => {
+  if (!window.trApp) return "no bridge";
+  if (window.__trOn) { window.__trRun && window.__trRun(); return "again"; }
+  const lang = await window.trApp.lang(); if (!lang) return "off";
+  window.__trOn = true;
+  document.documentElement.lang = lang;
+  const st = document.createElement("style");
+  st.textContent = "body *{unicode-bidi:plaintext}";
+  document.head.appendChild(st);
+  const SKIP = new Set(["SCRIPT", "STYLE", "CODE", "PRE", "TEXTAREA", "INPUT", "SELECT", "NOSCRIPT"]);
+  const done = new WeakSet();
+  const pick = () => { const out = []; const w = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, { acceptNode(n) {
+      const p = n.parentElement; if (!p || SKIP.has(p.tagName) || done.has(n) || p.closest(".notranslate,.score,.rank,.clock,code")) return 2;
+      const s = n.nodeValue.trim(); return s.length >= 2 && /\\p{L}{2}/u.test(s) ? 1 : 2; } });
+    let n; while ((n = w.nextNode())) out.push(n); return out; };
+  let busy = false, again = false;
+  async function run() {
+    if (busy) { again = true; return; }
+    busy = true;
+    try {
+      do {
+        again = false;
+        const nodes = pick(); if (!nodes.length) break;
+        for (let i = 0; i < nodes.length; i += 400) {
+          const part = nodes.slice(i, i + 400);
+          const res = await window.trApp.translate(part.map((n) => n.nodeValue.trim()));
+          part.forEach((n, k) => {
+            done.add(n);
+            const t = res[k], o = n.nodeValue.trim();
+            if (!t || t === o) return;
+            const lead = n.nodeValue.match(/^\\s*/)[0], trail = n.nodeValue.match(/\\s*$/)[0];
+            // trend names (titles): keep the original next to the translation - names like "Lens" are often mistranslated
+            const title = n.parentElement && n.parentElement.closest("h3");
+            n.nodeValue = lead + (title ? t + " (" + o + ")" : t) + trail;
+            if (n.parentElement && !n.parentElement.title) n.parentElement.title = o;
+          });
+        }
+      } while (again);
+    } finally { busy = false; }
+  }
+  window.__trRun = run;
+  new MutationObserver(() => { clearTimeout(window.__trT); window.__trT = setTimeout(run, 200); }).observe(document.body, { childList: true, subtree: true });
+  run();
+  return "on";
+})()`;
+function injectTR() {
+  if (!win || win.isDestroyed() || !cfg.trLang) return;
+  win.webContents.executeJavaScript(PAGE_TRANSLATOR).then((r) => { if (process.env.TR_DEBUG) console.log("[tr page]", r); }).catch(() => {});
+}
+async function translateNotif(title, body) {
+  const res = await Promise.race([gtranslate([title, body], cfg.trLang), new Promise((_, rej) => setTimeout(() => rej(new Error("slow")), 8000))]);
+  return [res[0] || title, res[1] || body];
+}
+
+// ---------------------------------------------------------------- "Test" buttons next to each key (free tests)
+async function keyTest(kind, key) {
+  key = String(key || "").trim();
+  if (kind !== "ollama" && !key) return { ok: false, msg: "Paste the key first" };
+  try {
+    if (kind === "gemini") {
+      const old = cfg.geminiKey; cfg.geminiKey = key;
+      try {
+        const list = await gemini("models?pageSize=200");            // valid key? (free, no tokens)
+        if (!(list.models || []).length) throw new Error("no models for this key");
+        const model = await pickModel();
+        const j = await gemini(`${model}:generateContent`, { contents: [{ role: "user", parts: [{ text: "Reply with the word OK" }] }],
+                                                              generationConfig: { maxOutputTokens: 20 } });
+        if (!(j.candidates || []).length) throw new Error("no answer");
+        return { ok: true, msg: `Works ✓ (${model.replace("models/", "")}, free tier)` };
+      } finally { cfg.geminiKey = old; }
+    }
+    if (kind === "youtube") {                                          // 1 quota unit
+      const r = await fetch(YT + "videos?" + new URLSearchParams({ part: "id", chart: "mostPopular", regionCode: "US", maxResults: "1", key }));
+      const j = await r.json().catch(() => ({}));
+      if (!r.ok) {
+        const m = (j.error && j.error.message) || `HTTP ${r.status}`;
+        if (/not valid|API_KEY_INVALID/i.test(m)) throw new Error("this key is not valid - copy it again (it starts with AIza)");
+        if (/has not been used|disabled|accessNotConfigured/i.test(m)) throw new Error("turn on 'YouTube Data API v3' in Google Cloud for this key's project");
+        throw new Error(m.replace(/<[^>]+>/g, "").slice(0, 160));
+      }
+      const { q } = ytQuota();
+      return { ok: true, msg: `Works ✓ (YouTube Data API v3 · quota used today ${q.used.toLocaleString("en-US")} / 10,000)` };
+    }
+    if (kind === "openai") {
+      const r = await fetch("https://api.openai.com/v1/models", { headers: { Authorization: "Bearer " + key } });
+      const j = await r.json().catch(() => ({}));
+      if (!r.ok) throw new Error((j.error && j.error.message) || `HTTP ${r.status}`);
+      return { ok: true, msg: "Works ✓ (OpenAI key valid - usage is paid per request)" };
+    }
+    if (kind === "ollama") {
+      const base = (cfg.ollamaUrl || "http://localhost:11434").replace(/\/$/, "");
+      let tags;
+      try { tags = await (await fetch(base + "/api/tags")).json(); } catch { throw new Error("Ollama is not running - install it from ollama.com and start it"); }
+      const names = (tags.models || []).map((m) => m.name);
+      if (!names.length) throw new Error("Ollama runs but has no model - run: ollama pull llama3.2");
+      return { ok: true, msg: `Works ✓ (Ollama: ${names.slice(0, 3).join(", ")})` };
+    }
+    return { ok: false, msg: "unknown key" };
+  } catch (e) {
+    return { ok: false, msg: String(e.message || e).replace(/^\[?\w*Error\]?:?\s*/, "").slice(0, 200) };
+  }
+}
+
 function applyAiFields(c) {
+  if (c.trLang !== undefined) cfg.trLang = TR_LANGS.some(([v]) => v === c.trLang) ? c.trLang : "";
   if (c.youtubeKey !== undefined) cfg.youtubeKey = String(c.youtubeKey || "").trim();
   if (c.geminiKey !== undefined) cfg.geminiKey = String(c.geminiKey || "").trim();
   if (c.openaiKey !== undefined) cfg.openaiKey = String(c.openaiKey || "").trim();
@@ -583,11 +753,12 @@ async function checkUpdate(manual = false) {
 }
 
 // ---------------------------------------------------------------- IPC for the settings window
-ipcMain.handle("cfg:get", () => ({ ...cfg, lists: { COUNTRIES, CATEGORIES, TYPES, IMPORTANCE, BRIEF_LANGS, ENGINES }, version: app.getVersion(), platform: process.platform }));
+ipcMain.handle("cfg:get", () => ({ ...cfg, lists: { COUNTRIES, CATEGORIES, TYPES, IMPORTANCE, BRIEF_LANGS, ENGINES, TR_LANGS }, version: app.getVersion(), platform: process.platform }));
 ipcMain.handle("brief:now", async (_e, c) => {
   if (c) { applyAiFields(c); saveCfg(); }
   return makeBriefing(true);
 });
+ipcMain.handle("key:test", (_e, kind, key) => keyTest(String(kind), key));
 ipcMain.handle("yt:now", async (_e, c) => {
   if (c) { applyAiFields(c); saveCfg(); }
   return ytTick(true);
@@ -658,6 +829,15 @@ if (!app.requestSingleInstanceLock()) {
     setInterval(briefTick, 5 * 60e3); setTimeout(briefTick, 60e3);
     setTimeout(() => checkUpdate(false), 30e3); setInterval(() => checkUpdate(false), 6 * 3600e3);
     setTimeout(() => ytTick(false), 90e3); setInterval(() => ytTick(false), 60 * 60e3);   // YouTube check with your key
+    if (!app.isPackaged && process.env.TR_LANG) {   // developer test only
+      cfg.trLang = process.env.TR_LANG; cfg.__test = true;
+      setTimeout(() => win.webContents.executeJavaScript(`[document.title, (document.querySelector("#tabs")||{}).innerText, (document.querySelector("#main")||{}).innerText]`)
+        .then((r) => console.log("[tr text]", JSON.stringify(r).slice(0, 900))), 15000);
+    }
+    if (!app.isPackaged && process.env.TR_KEYTEST) {   // developer test only, e.g. TR_KEYTEST=gemini:somekey
+      const [kind, key] = process.env.TR_KEYTEST.split(":");
+      keyTest(kind, key).then((r) => console.log("[keytest]", kind, JSON.stringify(r)));
+    }
     if (!app.isPackaged && process.env.TR_YT_KEY) {   // developer test only
       cfg.youtubeKey = process.env.TR_YT_KEY; cfg.__test = true;
       setTimeout(() => ytTick(true).then((r) => { console.log("[yt]", JSON.stringify(r)); win.loadURL(dashboardUrl("today")); }), 4000);

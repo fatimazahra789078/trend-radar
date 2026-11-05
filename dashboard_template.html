@@ -134,6 +134,9 @@ code{background:var(--chip);border-radius:5px;padding:1px 6px}
   .links a{padding:7px 11px;font-size:13px}
 }
 .away{border-color:var(--accent);margin-top:16px}
+.trx{background:var(--chip);border-left:3px solid var(--accent);border-radius:8px;padding:7px 10px;margin:8px 0;font-size:13.5px;line-height:1.5}
+.trx[dir=rtl]{border-left:0;border-right:3px solid var(--accent);font-size:15px}
+.b-rep{background:#7c5cff;color:#fff}
 .cols3{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px}
 .cols3 ol{margin:6px 0 0}
 </style>
@@ -260,6 +263,12 @@ function freshLine(t){
   return bits.length ? `<div class="meta">&#128339; ${bits.join(" · ")}</div>` : "";
 }
 
+function trBox(t, always){
+  if (t.tr) return `<div class="trx" dir="${DATA.tr_rtl ? "rtl" : "auto"}"><b>${esc(t.tr.name)}</b>${t.tr.what ? `<br>${esc(t.tr.what)}` : ""}</div>`;
+  if ((always || isRepeat(t)) && t.news && t.news.length) return `<div class="trx"><b>&#8505;&#65039; What happened:</b> ${esc(t.news[0].t)} <small class="muted">(${esc(t.news[0].s)})</small></div>`;
+  return "";
+}
+const repBadge = t => isRepeat(t) ? `<span class="badge b-rep" title="Keeps coming back - seen in ${t.hours_seen} hours over ${t.days_seen} day(s)">&#128257; Repeating · ${t.days_seen >= 2 ? "day " + t.days_seen : t.hours_seen + "h"}</span>` : "";
 function card(t, i){
   const tierB = t.breaking ? `<span class="badge b-live">Breaking</span>` : t.story ? `<span class="badge b-story">News</span>` :
     t.tier === 2 ? `<span class="badge b-hot">Hot</span>` : t.tier === 1 ? `<span class="badge b-trend">Trending</span>` : `<span class="badge b-low">Watching</span>`;
@@ -270,9 +279,10 @@ function card(t, i){
       `<li>${A(n.u, esc(n.t))} <small>${esc(n.s)} · ${esc(n.c)}${n.a != null ? " · " + ago(n.a) + " ago" : ""}</small></li>`).join("")}</ul></details>` : "";
   const L = t.links;
   return `<article class="card t${t.tier} ${t.breaking?"brk":""}">
-    <div class="row"><span class="rank">#${i+1}</span>${tierB}${t.just_in?`<span class="badge b-live">&#9889; Just in</span>`:isNew?`<span class="badge b-new">New</span>`:""}${t.days_seen>=2?`<span class="badge b-story">&#128257; Day ${t.days_seen}</span>`:""}${t.watch?`<span class="badge b-watch">&#9733; ${esc(t.watch)}</span>`:""}
+    <div class="row"><span class="rank">#${i+1}</span>${tierB}${t.just_in?`<span class="badge b-live">&#9889; Just in</span>`:isNew?`<span class="badge b-new">New</span>`:""}${repBadge(t)}${t.watch?`<span class="badge b-watch">&#9733; ${esc(t.watch)}</span>`:""}
       <span class="cat">${esc(t.category)}</span>${t.rising>1?`<span class="rise">&#9650; +${t.rising}</span>`:""}<span class="score" title="Why: ${esc(why)}">${t.score}</span></div>
     <div class="head"><h3>${esc(t.name)}</h3>${t.pic?`<img src="${esc(t.pic)}" alt="" loading="lazy" referrerpolicy="no-referrer">`:""}</div>
+    ${trBox(t)}
     <div class="sum">${esc(t.summary)}</div>
     ${t.context?A(t.url, esc(t.context), "ctx"):""}
     <div class="row">${cc}</div>
@@ -423,8 +433,9 @@ function renderToday(){
       `<div class="meta"><b>${LANGN[lg] || lg}</b> people search: ${v.slice(0, 4).map(s => `<span class="cc">${esc(s)}</span>`).join(" ")}</div>`).join("");
   const big = (p, i) => `<article class="box" style="border-color:${i === 0 ? "var(--accent)" : "var(--line)"}">
       <div class="row" style="gap:8px;align-items:center;flex-wrap:wrap"><span style="font-size:26px;font-weight:900;color:var(--accent)">${i + 1}</span>
-        <span class="badge ${PHASE[p.phase][1]}">${PHASE[p.phase][0]}</span> ${ytBadge(p)}</div>
+        <span class="badge ${PHASE[p.phase][1]}">${PHASE[p.phase][0]}</span> ${repBadge(p)} ${ytBadge(p)}</div>
       <h3 style="margin:8px 0 2px;font-size:18px">${A(p.url, esc(p.name))}</h3>
+      ${trBox(p, true)}
       <div class="meta">${esc(p.category)} · ${p.countries.map(FLAGE).join(" ")}${p.first_pub_h != null ? ` · first article ${ago(p.first_pub_h)} ago` : ""}</div>
       <div class="meta">&#9203; <b>${esc(p.window)}</b></div>
       ${p.travel ? `<div class="meta">&#9992;&#65039; Trending in ${p.travel.from.map(FLAGE).join("")} - <b>not yet in ${p.travel.missing.map(FLAGE).join(" ")}</b>: make that language version first</div>` : ""}
@@ -436,7 +447,7 @@ function renderToday(){
       <details><summary>Titles + headlines</summary><div class="idea">${titlesFor(p).slice(0, 6).map(([l, s]) => `<p><span class="muted">${l}:</span> ${esc(s)}</p>`).join("")}
         ${(p.news || []).map(n => `<p>${A(n.u, esc(n.t))} <small class="muted">${esc(n.s)}</small></p>`).join("")}</div></details>
     </article>`;
-  const row = (p, i) => `<li>${A(p.url, esc(p.name))} <span class="badge ${PHASE[p.phase][1]}">${PHASE[p.phase][0]}</span> ${p.yt ? `<span class="badge ${OPPC[p.yt.rating]}">${p.yt.n24}${p.yt.full ? "+" : ""} videos</span>` : ""}${p.travel ? " &#9992;&#65039;" : ""}${Object.keys(p.social || {}).length ? " &#128241;" : ""}${p.sensitive ? " &#9888;&#65039;" : ""}
+  const row = (p, i) => `<li>${A(p.url, esc(p.name))}${p.tr ? ` <span dir="auto" class="muted">- ${esc(p.tr.name)}</span>` : ""} <span class="badge ${PHASE[p.phase][1]}">${PHASE[p.phase][0]}</span> ${p.yt ? `<span class="badge ${OPPC[p.yt.rating]}">${p.yt.n24}${p.yt.full ? "+" : ""} videos</span>` : ""}${p.travel ? " &#9992;&#65039;" : ""}${Object.keys(p.social || {}).length ? " &#128241;" : ""}${p.sensitive ? " &#9888;&#65039;" : ""}
       <small>${esc(p.category)} · ${p.countries.slice(0, 5).map(FLAGE).join("")} · ${esc(p.window)} · video score ${p.vscore}</small></li>`;
   const Q = P.quota || {};
   const lag = Object.entries(P.lag || {}).map(([c, h]) => `${FLAGE(c)} ~${Math.round(h)}h`).join(" · ");

@@ -45,6 +45,15 @@ Notifications that arrived while the computer was asleep are shown when it wakes
 
 ---
 
+### Desktop app settings (⚙ Settings → 🧠 AI & API keys)
+
+| Setting | What it does | Cost |
+|---|---|---|
+| AI engine + Gemini / OpenAI key, Ollama | writes the briefing (5 best video ideas) | Gemini free · Ollama free · OpenAI paid |
+| 🌐 Trends in my language | translates the whole dashboard and the notifications from English (Arabic, French, Spanish, German, Italian, Portuguese, Turkish, Dutch) – trend names keep the original next to the translation | free Google Translate, no key, does not use Gemini |
+| ▶️ YouTube API key | YouTube competition check for the top USA topics in 🎯 Make today | free quota (10,000 units / day) |
+| **Test** buttons | green = the key works, red = what is wrong | free (YouTube: 1 unit) |
+
 ## 2. Phone (ntfy)
 
 ntfy is only the **messenger**: the radar writes the notification, ntfy delivers it to your phone.

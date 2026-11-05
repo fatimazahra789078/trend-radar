@@ -5,7 +5,9 @@ The radar runs in the cloud 24/7; this app shows it and notifies you. Nothing el
 
 **New in 1.3:** Settings has a **🧠 AI & API key** box at the top (Ctrl+, / Cmd+,). Choose the briefing engine:
 No AI (free, no key), Ollama (free, on your computer), Google Gemini (free key) or OpenAI. The app also tells you when a new version is out.
-**New in 1.4:** Settings → 🧠 AI & API keys has a **▶️ YouTube API key** field (free, optional). With it the app checks how many YouTube videos already exist about the top USA topics (🟢 GO NOW · 🟢 GOOD · 🟡 BUSY · 🔴 CROWDED) every hour, inside your free quota, and shows it in 🎯 Make today and in the briefing. No GitHub step needed.
+**New in 1.4:** 🌐 **Trends in your language** (Settings → 🧠 AI & API keys): the whole dashboard and the notifications are translated automatically from English into Arabic, French, Spanish, German, Italian, Portuguese, Turkish or Dutch - free Google Translate, no key, does not use your Gemini quota. **Test** buttons next to every key (green = works, red = what is wrong). 🔁 badge + "What happened" on trends that keep repeating.
+
+Also in 1.4: Settings → 🧠 AI & API keys has a **▶️ YouTube API key** field (free, optional). With it the app checks how many YouTube videos already exist about the top USA topics (🟢 GO NOW · 🟢 GOOD · 🟡 BUSY · 🔴 CROWDED) every hour, inside your free quota, and shows it in 🎯 Make today and in the briefing. No GitHub step needed.
 1.3.3: new alert types **TOP 3** (today's 3 best videos to make, twice a day) and **TRAVELING** (trending in the USA/UK, not yet in your other countries); menu → 🎯 Make today.
 1.3.2: new alert type **GITHUB** – repos everyone is starring (GitHub Trending + new AI tools); it is switched on automatically.
 1.3.1: the AI & API key box is now the second box in Settings, with jump links at the top, and the window fits small Mac screens.
