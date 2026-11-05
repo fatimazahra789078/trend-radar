@@ -40,7 +40,7 @@ html{scroll-padding-top:56px}
 <body>
 <h1><img src="build/icon.png" alt="">Trend Radar settings</h1>
 <p class="sub" id="ver"></p>
-<nav class="jump"><a href="#ai">🧠 AI &amp; API key</a><a href="#notif">🔔 Notifications</a><a href="#countries-box">🌍 Countries</a><a href="#app">⚙ App</a></nav>
+<nav class="jump"><a href="#ai">🧠 AI &amp; API keys</a><a href="#notif">🔔 Notifications</a><a href="#countries-box">🌍 Countries</a><a href="#app">⚙ App</a></nav>
 
 <div class="box">
   <h2>Your ntfy topic (secret)</h2>
@@ -73,6 +73,13 @@ html{scroll-padding-top:56px}
   </div>
   <div class="opt" style="margin-top:6px"><input type="checkbox" id="gauto"><label for="gauto">Write it automatically at these times<small>Skipped if the cloud already sent a briefing in the last 3 hours.</small></label></div>
   <div class="row" style="margin-top:6px;align-items:center"><button id="gnow" type="button">Write a briefing now</button><span class="hint" id="gmsg" style="margin:0"></span></div>
+  <div id="f-youtube" style="margin-top:14px;padding-top:12px;border-top:1px solid var(--line)">
+    <p style="margin:0 0 2px;font-weight:700">▶️ YouTube API key <span class="hint">(optional, free)</span></p>
+    <p class="hint">Shows how many YouTube videos already exist about each top USA topic (🟢 GO NOW · 🟢 GOOD · 🟡 BUSY · 🔴 CROWDED) in 🎯 Make today.
+      Free key: <a href="#" data-open="https://console.cloud.google.com/apis/library/youtube.googleapis.com">enable YouTube Data API v3</a> → <a href="#" data-open="https://console.cloud.google.com/apis/credentials">Credentials</a> → Create credentials → <b>API key</b> (not "OAuth client ID"). Saved only on this computer; uses your own free quota.</p>
+    <div class="row"><input type="password" id="ykey" placeholder="YouTube API key (AIza...)" autocomplete="off" spellcheck="false"><button id="yshow" type="button">Show</button></div>
+    <div class="row" style="margin-top:6px;align-items:center"><button id="ynow" type="button">Check YouTube now</button><span class="hint" id="ymsg" style="margin:0"></span></div>
+  </div>
 </div>
 
 <div class="box" id="notif">
@@ -138,6 +145,7 @@ const setAll = (id, fn) => document.querySelectorAll(`#${id} input`).forEach((i)
   $("#gkey").value = c.geminiKey || "";
   $("#okey").value = c.openaiKey || "";
   $("#omodel").value = c.ollamaModel || "";
+  $("#ykey").value = c.youtubeKey || "";
   $("#engine").innerHTML = L.ENGINES.map(([v, l]) => `<option value="${v}">${esc(l)}</option>`).join("");
   $("#engine").value = c.aiEngine || (c.geminiKey ? "gemini" : "none");
   showEngine();
@@ -155,8 +163,14 @@ document.addEventListener("click", (e) => { const u = e.target.dataset && e.targ
 const toggle = (inp, btn) => () => { const t = $(inp); t.type = t.type === "password" ? "text" : "password"; $(btn).textContent = t.type === "password" ? "Show" : "Hide"; };
 $("#gshow").onclick = toggle("#gkey", "#gshow");
 $("#oshow").onclick = toggle("#okey", "#oshow");
+$("#yshow").onclick = toggle("#ykey", "#yshow");
 const aiFields = () => ({ aiEngine: $("#engine").value, geminiKey: $("#gkey").value, openaiKey: $("#okey").value,
-                          ollamaModel: $("#omodel").value, briefLang: $("#glang").value });
+                          ollamaModel: $("#omodel").value, briefLang: $("#glang").value, youtubeKey: $("#ykey").value });
+$("#ynow").onclick = async () => {
+  $("#ymsg").textContent = "Checking the top USA topics on YouTube...";
+  const r = await window.tr.ytNow({ youtubeKey: $("#ykey").value });
+  $("#ymsg").textContent = r.msg;
+};
 $("#gnow").onclick = async () => {
   $("#gmsg").textContent = "Writing... (a few seconds, up to 1 minute with AI)";
   const r = await window.tr.briefNow(aiFields());

@@ -110,6 +110,7 @@ function createWindow(show = true) {
     win.loadFile(path.join(__dirname, "offline.html"));
     setTimeout(() => win && !win.isDestroyed() && win.loadURL(dashboardUrl()), 20000);
   });
+  win.webContents.on("did-finish-load", () => setTimeout(injectYT, 300));   // your YouTube results -> Make today
   win.on("close", (e) => { if (!quitting) { e.preventDefault(); win.hide(); } });
   win.once("ready-to-show", () => { if (show) win.show(); });
   win.loadURL(dashboardUrl());
@@ -408,6 +409,10 @@ async function makeBriefing(manual = false) {
     const r = await fetch(cfg.url.replace(/#.*$/, "").replace(/\/?$/, "/") + "latest.json", { cache: "no-store" });
     if (!r.ok) throw new Error("could not load the trends (" + r.status + ")");
     const snap = await r.json();
+    for (const t of [...(snap.trends || []), ...(snap.stories || [])]) {   // add this computer's YouTube results
+      const y = (cfg.ytCache || {})[t.id];
+      if (y && t.video && !t.video.yt) t.video.yt = { n24: y.n24, full: y.full, rating: y.rating, txt: y.txt, vph_top: y.vph_top };
+    }
     const data = { ...snap,
       trends: (snap.trends || []).slice(0, 20).map(({ related, ...t }) => ({ ...t, news: (t.news || []).slice(0, 3) })),
       stories: (snap.stories || []).slice(0, 6),
@@ -458,7 +463,99 @@ function briefTick() {
   }
 }
 
+// ---------------------------------------------------------------- YouTube competition check with YOUR free key (USA)
+// How many YouTube videos were uploaded about a top topic in the last 24h. Free quota: 10,000 units a day per key
+// (reset at midnight Pacific); one check = 101 units. Results stay on this computer and fill the "Make today" tab.
+const YT = (!app.isPackaged && process.env.TR_YT_URL) || "https://www.googleapis.com/youtube/v3/";   // test override (dev only)
+const YT_COUNTRIES = ["US"];
+const YT_LIMIT = 9000;
+let ytBusy = false;
+const pacific = () => {
+  const p = Object.fromEntries(new Intl.DateTimeFormat("en-CA", { timeZone: "America/Los_Angeles", year: "numeric", month: "2-digit",
+    day: "2-digit", hour: "2-digit", hourCycle: "h23" }).formatToParts(new Date()).map((x) => [x.type, x.value]));
+  return { day: `${p.year}-${p.month}-${p.day}`, hour: Number(p.hour) };
+};
+function ytQuota() {
+  const { day, hour } = pacific();
+  if (!cfg.ytq || cfg.ytq.day !== day) cfg.ytq = { day, used: 0, checks: 0 };
+  return { q: cfg.ytq, hoursLeft: Math.max(1, 24 - hour) };
+}
+async function ytGet(path, params, q, cost) {
+  q.used += cost;
+  const r = await fetch(YT + path + "?" + new URLSearchParams({ ...params, key: cfg.youtubeKey }));
+  const j = await r.json().catch(() => ({}));
+  if (!r.ok) {
+    const m = (j.error && j.error.message) || `HTTP ${r.status}`;
+    if (/not valid|API_KEY_INVALID/i.test(m)) throw new Error("this key is not valid - copy it again (it starts with AIza)");
+    if (/has not been used|disabled|accessNotConfigured/i.test(m)) throw new Error("turn on 'YouTube Data API v3' in Google Cloud for this key's project");
+    if (/quota/i.test(m)) { q.used = YT_LIMIT; throw new Error("today's free YouTube quota is used up - it comes back at midnight Pacific time"); }
+    throw new Error(m.replace(/<[^>]+>/g, "").slice(0, 160));
+  }
+  return j;
+}
+async function ytSupply(p, q) {
+  const cc = YT_COUNTRIES.find((c) => (p.countries || []).includes(c)) || YT_COUNTRIES[0];
+  const after = new Date(Date.now() - 24 * 3600e3).toISOString().replace(/\.\d+Z$/, "Z");
+  const s = await ytGet("search", { part: "id", type: "video", q: p.query || p.name, publishedAfter: after, order: "viewCount",
+                                    maxResults: "50", regionCode: cc, relevanceLanguage: "en" }, q, 100);
+  const ids = (s.items || []).map((i) => i.id && i.id.videoId).filter(Boolean);
+  let vids = [];
+  if (ids.length) {
+    const v = await ytGet("videos", { part: "snippet,statistics", id: ids.slice(0, 50).join(",") }, q, 1);
+    vids = (v.items || []).map((it) => {
+      const views = Number((it.statistics || {}).viewCount || 0);
+      const age = Math.max(0.5, (Date.now() - new Date((it.snippet || {}).publishedAt).getTime()) / 3600e3);
+      return { t: ((it.snippet || {}).title || "").slice(0, 120), ch: (it.snippet || {}).channelTitle || "", views,
+               vph: Math.round(views / age), u: `https://www.youtube.com/watch?v=${it.id}` };
+    }).sort((a, b) => b.views - a.views);
+  }
+  const n = ids.length, vphTop = Math.max(0, ...vids.map((x) => x.vph));
+  let [rating, txt] = n <= 5 ? ["go", "🟢 GO NOW - almost no YouTube videos yet"] : n <= 20 ? ["good", "🟢 GOOD - only a few YouTube videos"]
+    : n < 50 ? ["busy", "🟡 BUSY - many videos, find your own angle"] : ["crowded", "🔴 CROWDED - 50+ videos in 24h"];
+  if (vphTop >= 5000 && (rating === "busy" || rating === "crowded")) txt += ` (but people watch a lot: top video ${vphTop.toLocaleString("en-US")} views/hour)`;
+  return { at: new Date().toISOString(), n24: n, full: n >= 50, vph_top: vphTop, views_sum: vids.reduce((a, x) => a + x.views, 0),
+           rating, txt, country: cc, query: p.query || p.name, top: vids.slice(0, 3), by: "app" };
+}
+async function ytTick(manual = false) {
+  if (!cfg.youtubeKey) return { ok: false, msg: "Paste your YouTube API key first." };
+  if (ytBusy) return { ok: false, msg: "Already checking..." };
+  ytBusy = true;
+  try {
+    const { q, hoursLeft } = ytQuota();
+    const free = Math.floor((YT_LIMIT - q.used) / 101);
+    if (free <= 0) return { ok: false, msg: "Today's free YouTube quota is used up - it comes back at midnight Pacific time." };
+    const perRun = Math.min(manual ? 5 : 8, Math.max(1, Math.floor(free / hoursLeft)));
+    const r = await fetch(cfg.url.replace(/#.*$/, "").replace(/\/?$/, "/") + "latest.json", { cache: "no-store" });
+    if (!r.ok) throw new Error("could not load the trends (" + r.status + ")");
+    const snap = await r.json();
+    const cache = cfg.ytCache = Object.fromEntries(Object.entries(cfg.ytCache || {}).filter(([, v]) => Date.now() - new Date(v.at) < 24 * 3600e3));
+    const fresh = (id) => cache[id] && Date.now() - new Date(cache[id].at) < 4 * 3600e3;
+    const cands = (snap.video_top || []).filter((p) => (p.countries || []).some((c) => YT_COUNTRIES.includes(c)))
+      .slice(0, 25).filter((p) => p.phase !== "falling" && !p.has_yt && !fresh(p.id)).slice(0, perRun);
+    let n = 0;
+    for (const p of cands) { cache[p.id] = await ytSupply(p, q); q.checks += 1; n += 1; }
+    saveCfg();
+    injectYT();
+    const have = (snap.video_top || []).filter((p) => cache[p.id]).length;
+    return { ok: true, msg: `YouTube ✓ ${n ? `checked ${n} new topic${n > 1 ? "s" : ""}` : "all top topics are up to date"} · ${have} with data · quota today ${q.used.toLocaleString("en-US")} / 10,000` };
+  } catch (e) {
+    saveCfg();
+    return { ok: false, msg: "YouTube: " + String(e.message || e).slice(0, 200) };
+  } finally { ytBusy = false; }
+}
+// put this computer's YouTube results into the online dashboard's "Make today" tab
+function injectYT() {
+  if (!win || win.isDestroyed() || !cfg.youtubeKey) return;
+  const Y = cfg.ytCache || {}, q = (cfg.ytq || {});
+  const js = `(() => { try { if (typeof DATA === "undefined" || !DATA || !DATA.plan) return 0; const Y = ${JSON.stringify(Y)}; let n = 0;
+    for (const p of [...(DATA.plan.top || []), ...(DATA.plan.travel || [])]) if (!p.yt && Y[p.id]) { p.yt = Y[p.id]; n++; }
+    DATA.plan.yt_key = true; if (!DATA.plan.quota || !DATA.plan.quota.checks) DATA.plan.quota = { used: ${Number(q.used) || 0}, limit: 10000, checks: ${Number(q.checks) || 0} };
+    if (typeof state !== "undefined" && state.tab === "today" && typeof render === "function") render(); return n; } catch (e) { return -1; } })()`;
+  win.webContents.executeJavaScript(js).then((n) => { if (process.env.TR_DEBUG) console.log("[yt inject]", n); }).catch(() => {});
+}
+
 function applyAiFields(c) {
+  if (c.youtubeKey !== undefined) cfg.youtubeKey = String(c.youtubeKey || "").trim();
   if (c.geminiKey !== undefined) cfg.geminiKey = String(c.geminiKey || "").trim();
   if (c.openaiKey !== undefined) cfg.openaiKey = String(c.openaiKey || "").trim();
   if (c.ollamaModel !== undefined) cfg.ollamaModel = String(c.ollamaModel || "").trim();
@@ -491,6 +588,10 @@ ipcMain.handle("brief:now", async (_e, c) => {
   if (c) { applyAiFields(c); saveCfg(); }
   return makeBriefing(true);
 });
+ipcMain.handle("yt:now", async (_e, c) => {
+  if (c) { applyAiFields(c); saveCfg(); }
+  return ytTick(true);
+});
 ipcMain.handle("brief:get", () => { try { return fs.readFileSync(briefFile(), "utf8"); } catch { return ""; } });
 ipcMain.handle("open:url", (_e, u) => { if (/^https:\/\//.test(u)) shell.openExternal(u); });
 ipcMain.handle("cfg:save", (_e, c) => {
@@ -510,6 +611,7 @@ ipcMain.handle("cfg:save", (_e, c) => {
   cfg.briefLang = BRIEF_LANGS.includes(c.briefLang) ? c.briefLang : "English";
   cfg.briefTimes = (c.briefTimes || []).filter((t) => /^\d{1,2}:\d{2}$/.test(t)).slice(0, 4);
   saveCfg(); applyAutostart(); connect(); buildTray();
+  if (cfg.youtubeKey) setTimeout(() => ytTick(false), 4000);
   if (win && !win.isDestroyed()) win.loadURL(dashboardUrl());
   return true;
 });
@@ -555,6 +657,11 @@ if (!app.requestSingleInstanceLock()) {
     powerMonitor.on("resume", () => setTimeout(connect, 3000));   // woke up from sleep -> catch up
     setInterval(briefTick, 5 * 60e3); setTimeout(briefTick, 60e3);
     setTimeout(() => checkUpdate(false), 30e3); setInterval(() => checkUpdate(false), 6 * 3600e3);
+    setTimeout(() => ytTick(false), 90e3); setInterval(() => ytTick(false), 60 * 60e3);   // YouTube check with your key
+    if (!app.isPackaged && process.env.TR_YT_KEY) {   // developer test only
+      cfg.youtubeKey = process.env.TR_YT_KEY; cfg.__test = true;
+      setTimeout(() => ytTick(true).then((r) => { console.log("[yt]", JSON.stringify(r)); win.loadURL(dashboardUrl("today")); }), 4000);
+    }
     if (!app.isPackaged && process.env.TR_BRIEF_NOW) {   // developer test only
       cfg.aiEngine = process.env.TR_ENGINE || "none"; if (cfg.aiEngine === "gemini") cfg.geminiKey = "test-key"; cfg.__test = true;
       makeBriefing(true).then((r) => { console.log("[brief]", JSON.stringify(r)); if (r.ok) showBriefing(); });

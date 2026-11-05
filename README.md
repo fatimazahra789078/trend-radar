@@ -140,7 +140,8 @@ Online: **https://fatimazahra789078.github.io/trend-radar/** (add `#today`, `#us
 - **🎯 Make today** – which video to make **now**. Every topic gets a **video score** = trend strength × freshness ×
   phase × YouTube competition × categories that get views (+ a bonus when it has not reached your other countries yet):
   - **Phase:** 🌱 rising (about 6–12 h left) · 🔥 at the peak (about 3–6 h left) · 📉 falling (only with a new angle)
-  - **YouTube competition** (needs the free `YOUTUBE_API_KEY` secret): how many videos were uploaded about it in the
+  - **YouTube competition** (a free YouTube API key – either in the desktop app: Settings → 🧠 AI & API keys → ▶️ YouTube
+    API key, checked on your computer every hour; or for everybody as the GitHub secret `YOUTUBE_API_KEY`): how many videos were uploaded about it in the
     last 24 h – 🟢 GO NOW (≤5) · 🟢 GOOD (≤20) · 🟡 BUSY · 🔴 CROWDED (50+), plus the views per hour of the top videos.
     Default: **USA only** (`config.json` → `youtube.countries`), so the free quota is not spent on other countries
   - **TikTok / Instagram / Facebook:** these have no free public data API, so the radar reads the news instead
