@@ -122,6 +122,14 @@
   },
   "_ai_tools_help": "AI video / image / voice tools: each word in 'watch' gets its own news search (category 'AI video & image'). New open models trending on Hugging Face (top_n of each task, younger than new_model_days) make an 'AI MODEL' notification. Phone channel: your topic + -ai.",
 
+  "video_planner": {
+    "enabled": true,
+    "top3_hours_utc": [6, 15],
+    "travel_from": ["US", "GB"], "travel_to": ["DE", "FR", "IT", "ES"],
+    "travel_alerts": true, "travel_min_hours": 2, "max_travel_alerts": 1
+  },
+  "youtube": {"daily_units": 9000, "max_checks_per_run": 8, "recheck_hours": 6},
+  "_video_planner_help": "Which video to make now. Every topic gets a phase (rising / at the peak / falling) and a time window. 'Travel': trending in travel_from but not yet in travel_to (TRAVELING alert, make that language version first). With the YOUTUBE_API_KEY secret (free) the best candidates get a YouTube check: how many videos were uploaded about it in the last 24h (GO NOW / GOOD / BUSY / CROWDED). The free quota is 10,000 units a day; one check costs 101, the radar spreads ~85 checks over the day (daily_units). A 'TOP 3' notification comes at top3_hours_utc.",
   "github": {
     "enabled": true,
     "topics": ["text-to-video", "video-generation", "image-generation", "comfyui", "text-to-speech", "ai-agents", "llm", "mcp"],

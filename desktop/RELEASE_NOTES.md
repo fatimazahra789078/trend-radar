@@ -5,6 +5,7 @@ The radar runs in the cloud 24/7; this app shows it and notifies you. Nothing el
 
 **New in 1.3:** Settings has a **🧠 AI & API key** box at the top (Ctrl+, / Cmd+,). Choose the briefing engine:
 No AI (free, no key), Ollama (free, on your computer), Google Gemini (free key) or OpenAI. The app also tells you when a new version is out.
+1.3.3: new alert types **TOP 3** (today's 3 best videos to make, twice a day) and **TRAVELING** (trending in the USA/UK, not yet in your other countries); menu → 🎯 Make today.
 1.3.2: new alert type **GITHUB** – repos everyone is starring (GitHub Trending + new AI tools); it is switched on automatically.
 1.3.1: the AI & API key box is now the second box in Settings, with jump links at the top, and the window fits small Mac screens.
 

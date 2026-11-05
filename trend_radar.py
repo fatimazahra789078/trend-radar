@@ -1489,6 +1489,291 @@ def update_state(topics, state, now):
     for tid in [k for k, r in st.items() if datetime.fromisoformat(r.get("last_seen", r["first_seen"])) < cutoff]:
         del st[tid]
 
+# --------------------------------------------------------------------------- video planner: which video to make NOW
+# phase + time window, trends travelling between countries, YouTube supply (opportunity), what people type on YouTube,
+# a "video score" and the daily top 3.
+
+VIDEO_CAT_W = {"Celebs & viral": 1.3, "Movies & TV": 1.25, "Gaming": 1.25, "Music": 1.2, "AI video & image": 1.2,
+               "Sports": 1.15, "Tech & AI": 1.1, "Natural disasters": 1.0, "Business": 1.0, "Politics": 0.85,
+               "World & conflicts": 0.8, "Crime & accidents": 0.75}
+TRAVEL_CATS = {"Movies & TV", "Music", "Gaming", "Tech & AI", "AI video & image", "Celebs & viral", "Sports", "Business"}
+SENSITIVE_RE = re.compile(r"\b(dead|death|dies|died|killed|kills|shooting|shot|murder\w*|stabb\w*|war|attack\w*|terror\w*|"
+                          r"suicide|abuse\w*|rape|overdose|drugs?|massacre|hostage|bomb\w*|tot|getötet|mord|anschlag|krieg|"
+                          r"mort|tué|guerre|morto|ucciso|guerra|muerto|asesinado)\b", re.I)
+CC_LANG = {"US": "en", "GB": "en", "DE": "de", "AT": "de", "CH": "de", "FR": "fr", "IT": "it", "ES": "es"}
+PHASE_TXT = {"rising": "\U0001F331 rising", "peak": "\U0001F525 at the peak", "falling": "\U0001F4C9 falling"}
+
+
+def topic_phase(t, rec, now):
+    """Rising / at the peak / falling + a rough time window, from the score history and the article speed."""
+    hist = rec.setdefault("sh", [])
+    hour = now.strftime("%Y-%m-%dT%H")
+    if hist and hist[-1][0] == hour:
+        hist[-1][1] = t["score"]
+    else:
+        hist.append([hour, t["score"]])
+    del hist[:-24]
+    old = [s for h, s in hist[:-1]][-3:]
+    ref = (sum(old) / len(old)) if old else None
+    best = rec.get("best", t["score"]) or t["score"]
+    age = t.get("first_pub_h") if t.get("first_pub_h") is not None else t.get("age_h", 0)
+    fast = t.get("recent1", 0) >= 3 or t.get("just_in")
+    if (age is not None and age <= 3) or (ref and t["score"] >= 1.15 * ref) or (fast and t["score"] >= 0.9 * best):
+        phase = "rising"
+    elif t["score"] <= 0.75 * best or ((age or 0) >= 36 and not fast):
+        phase = "falling"
+    else:
+        phase = "peak"
+    window = {"rising": "about 6-12h left", "peak": "about 3-6h left", "falling": "late - only with a new angle"}[phase]
+    return phase, window
+
+
+def yt_quota(state, now, cfg):
+    """YouTube free quota: 10,000 units a day per project, reset at midnight Pacific time."""
+    try:
+        from zoneinfo import ZoneInfo
+        day = now.astimezone(ZoneInfo("America/Los_Angeles")).strftime("%Y-%m-%d")
+        hours_left = 24 - now.astimezone(ZoneInfo("America/Los_Angeles")).hour
+    except Exception:   # noqa: BLE001 - no tz database: Pacific is about UTC-8
+        pac = now.astimezone(timezone.utc) - timedelta(hours=8)
+        day, hours_left = pac.strftime("%Y-%m-%d"), 24 - pac.hour
+    q = state.setdefault("ytq", {})
+    if q.get("day") != day:
+        q.clear()
+        q.update(day=day, used=0, checks=0)
+    q["limit"] = (cfg.get("youtube") or {}).get("daily_units", 9000)
+    q["hours_left"] = hours_left
+    return q
+
+
+def yt_api(path, params, key, q, cost):
+    q["used"] = q.get("used", 0) + cost
+    return fetch_json(f"https://www.googleapis.com/youtube/v3/{path}?" + urllib.parse.urlencode({**params, "key": key}),
+                      timeout=20)
+
+
+def yt_supply(t, key, q, now):
+    """How many YouTube videos about this topic in the last 24h, and how many views they get (101 units)."""
+    main = next((c for c in t["countries"] if c in FOCUS), "US")
+    query = t["name"].lstrip("#") if not t["story"] else (t.get("query") or t["name"])
+    after = (now.astimezone(timezone.utc) - timedelta(hours=24)).strftime("%Y-%m-%dT%H:%M:%SZ")
+    d = yt_api("search", {"part": "id", "type": "video", "q": query, "publishedAfter": after, "order": "viewCount",
+                          "maxResults": 50, "regionCode": main, "relevanceLanguage": CC_LANG.get(main, "en")}, key, q, 100)
+    ids = [i["id"]["videoId"] for i in d.get("items", []) if (i.get("id") or {}).get("videoId")]
+    vids = []
+    if ids:
+        v = yt_api("videos", {"part": "snippet,statistics", "id": ",".join(ids[:50])}, key, q, 1)
+        for it in v.get("items", []):
+            sn, stt = it.get("snippet") or {}, it.get("statistics") or {}
+            views = int(stt.get("viewCount", 0) or 0)
+            age = max(0.5, hours_since(parse_date(sn.get("publishedAt")), now))
+            vids.append({"t": sn.get("title", "")[:120], "ch": sn.get("channelTitle", ""), "views": views,
+                         "vph": round(views / age), "u": f"https://www.youtube.com/watch?v={it.get('id')}"})
+    vids.sort(key=lambda x: -x["views"])
+    n = len(ids)
+    vph_top = max([x["vph"] for x in vids] or [0])
+    if n <= 5:
+        rating, txt = "go", "\U0001F7E2 GO NOW - almost no YouTube videos yet"
+    elif n <= 20:
+        rating, txt = "good", "\U0001F7E2 GOOD - only a few YouTube videos"
+    elif n < 50:
+        rating, txt = "busy", "\U0001F7E1 BUSY - many videos, find your own angle"
+    else:
+        rating, txt = "crowded", "\U0001F534 CROWDED - 50+ videos in 24h"
+    if vph_top >= 5000 and rating in ("busy", "crowded"):
+        txt += " (but people watch a lot: top video %s views/hour)" % f"{vph_top:,}"
+    return {"at": now.isoformat(), "n24": n, "full": n >= 50, "vph_top": vph_top, "views_sum": sum(x["views"] for x in vids),
+            "rating": rating, "txt": txt, "country": main, "query": query, "top": vids[:3]}
+
+
+OPP_F = {"go": 1.4, "good": 1.2, "busy": 0.9, "crowded": 0.65}
+
+
+def yt_suggest(query, lang):
+    """What people type in the YouTube search box (Google's public suggestions, no key, no quota)."""
+    d = fetch_json("https://suggestqueries.google.com/complete/search?" +
+                   urllib.parse.urlencode({"client": "firefox", "ds": "yt", "hl": lang, "q": query}), timeout=10)
+    return [s for s in (d[1] if isinstance(d, list) and len(d) > 1 else []) if s.lower() != query.lower()][:5]
+
+
+def video_score(t):
+    v = t["video"]
+    fresh = 1.0 if t.get("first_pub_h") is None else 1.4 if t["first_pub_h"] <= 3 else 1.2 if t["first_pub_h"] <= 8 else \
+        1.0 if t["first_pub_h"] <= 24 else 0.75
+    phase = {"rising": 1.25, "peak": 1.0, "falling": 0.6}[v["phase"]]
+    opp = OPP_F.get((v.get("yt") or {}).get("rating"), 1.0)
+    s = t["score"] * fresh * phase * opp * VIDEO_CAT_W.get(t.get("category"), 1.0) * (1.15 if v.get("travel") else 1.0)
+    s *= sum(1 for c in t["countries"] if c in FOCUS) >= 1 and 1.0 or 0.6
+    return round(s * (0.85 if v["sensitive"] else 1.0), 1)
+
+
+def plan_videos(topics, state, cfg, now, dry=False):
+    """Adds t['video'] to every topic (phase, window, travel, sensitive, YouTube supply, video score)."""
+    vc = cfg.get("video_planner") or {}
+    if not vc.get("enabled", True):
+        for t in topics:
+            t["video"] = None
+        return {}
+    sources, targets = vc.get("travel_from", ["US", "GB"]), [c for c in vc.get("travel_to", ["DE", "FR", "IT", "ES"]) if c in FOCUS]
+    stats = state.setdefault("travel_lag", {})
+    for t in topics:
+        rec = t.get("rec") or {}
+        phase, window = topic_phase(t, rec, now)
+        present = set(t["countries"])
+        first = rec.setdefault("cc_first", {})
+        for c in present:
+            if c not in first:
+                first[c] = now.isoformat()
+                src = [first[s] for s in sources if s in first and s != c]
+                if c in targets and src and len(first) > 1:   # it reached a target country: learn the delay
+                    lag = hours_since(min(src), now)
+                    if 1 <= lag <= 96:
+                        stats.setdefault(c, []).append(round(lag, 1))
+                        del stats[c][:-60]
+        travel = None
+        if (not t["story"] and t.get("category") in TRAVEL_CATS and t["score"] >= cfg["trend_score"]
+                and any(s in present for s in sources)):
+            missing = [c for c in targets if c not in present]
+            src_h = hours_since(min(first[s] for s in sources if s in first), now)
+            if missing and vc.get("travel_min_hours", 2) <= src_h <= 72:
+                travel = {"from": [s for s in sources if s in present], "missing": missing, "since_h": round(src_h, 1)}
+        txt = " ".join([t["name"]] + [h["term"] for h in t["heads"][:6]])
+        t["video"] = {"phase": phase, "window": window, "travel": travel, "sensitive": bool(SENSITIVE_RE.search(txt)),
+                      "yt": None, "search": None}
+    # ---- YouTube supply for the best candidates, inside the free quota
+    key = cfg.get("youtube_api_key")
+    yc = cfg.get("youtube") or {}
+    cache = state.setdefault("yt_opp", {})
+    for k in [k for k, v in cache.items() if hours_since(v.get("at"), now) > 48]:
+        del cache[k]
+    q = yt_quota(state, now, cfg)
+    for t in topics:
+        if t["id"] in cache and hours_since(cache[t["id"]]["at"], now) < 24:
+            t["video"]["yt"] = cache[t["id"]]
+    for t in topics:
+        t["video"]["score"] = video_score(t)
+    if key and not dry:
+        free_checks = max(0, (q["limit"] - q.get("used", 0)) // 101)
+        per_run = min(yc.get("max_checks_per_run", 8), max(1, free_checks // max(1, q["hours_left"]))) if free_checks else 0
+        recheck = yc.get("recheck_hours", 6)
+        cands = [t for t in sorted(topics, key=lambda t: -t["video"]["score"])[:25]
+                 if t["video"]["phase"] != "falling" and any(c in FOCUS for c in t["countries"])
+                 and (t["id"] not in cache or hours_since(cache[t["id"]]["at"], now) >= recheck)]
+        for t in cands[:per_run]:
+            try:
+                r = yt_supply(t, key, q, now)
+            except Exception as e:  # noqa: BLE001 - quota or network: try again next run
+                log(f"YouTube check failed for {t['name']}: {type(e).__name__}: {str(e)[:100]}")
+                if "403" in str(e):
+                    q["used"] = q["limit"]   # quota finished for today
+                break
+            q["checks"] = q.get("checks", 0) + 1
+            cache[t["id"]] = t["video"]["yt"] = r
+            t["video"]["score"] = video_score(t)
+    # ---- what people type on YouTube, for the 10 best candidates (cached 6h)
+    sug = state.setdefault("yt_suggest", {})
+    for k in [k for k, v in sug.items() if hours_since(v.get("at"), now) > 24]:
+        del sug[k]
+    best = sorted(topics, key=lambda t: -t["video"]["score"])[:10]
+    for t in best:
+        main = next((c for c in t["countries"] if c in FOCUS), "US")
+        langs = list(dict.fromkeys(["en", CC_LANG.get(main, "en")] + [CC_LANG[c] for c in (t["video"]["travel"] or {}).get("missing", [])[:1]]))
+        c = sug.get(t["id"])
+        if not c or hours_since(c["at"], now) >= 6:
+            res = {}
+            for lg in langs[:3]:
+                try:
+                    res[lg] = yt_suggest(t["name"].lstrip("#") if not t["story"] else t.get("query") or t["name"], lg)
+                except Exception:  # noqa: BLE001
+                    pass
+            c = sug[t["id"]] = {"at": now.isoformat(), "s": res}
+        t["video"]["search"] = c["s"]
+    lags = {c: sorted(v)[len(v) // 2] for c, v in stats.items() if len(v) >= 3}
+    return {"quota": {k: q.get(k) for k in ("day", "used", "limit", "checks")}, "yt_key": bool(key), "lag": lags}
+
+
+def video_plan_json(topics, meta, now):
+    def item(t):
+        v = t["video"]
+        return {"id": t["id"], "name": t["name"], "category": t["category"], "countries": t["countries"][:6],
+                "score": t["score"], "vscore": v["score"], "phase": v["phase"], "window": v["window"], "travel": v["travel"],
+                "sensitive": v["sensitive"], "yt": v["yt"], "search": v["search"], "first_pub_h": t["first_pub_h"],
+                "url": t["url"], "pic": t["picture"], "summary": summary_line(t), "news": topic_news(t, 3)}
+    ranked = [t for t in sorted(topics, key=lambda t: -(t.get("video") or {}).get("score", 0)) if t.get("video")]
+    top, politics = [], 0
+    for t in ranked:
+        if t.get("category") == "Politics":
+            politics += 1
+            if politics > 1:
+                continue
+        top.append(t)
+        if len(top) >= 12:
+            break
+    travel = [t for t in ranked if t["video"]["travel"]][:10]
+    return {"at": now.isoformat(), "top": [item(t) for t in top], "travel": [item(t) for t in travel], **meta}
+
+
+def flags(cs):
+    return "".join(chr(0x1F1E6 + ord(c[0]) - 65) + chr(0x1F1E6 + ord(c[1]) - 65) for c in cs if len(c) == 2 and c.isalpha())
+
+
+def travel_alerts(topics, state, cfg, now, quiet, lags):
+    vc = cfg.get("video_planner") or {}
+    if quiet or not vc.get("travel_alerts", True):
+        return []
+    out = []
+    for t in sorted([t for t in topics if (t.get("video") or {}).get("travel")], key=lambda t: -t["video"]["score"]):
+        rec = t["rec"]
+        if rec.get("travel_sent") or t["score"] < vc.get("travel_min_score", cfg["hot_score"] * 0.8):
+            continue
+        tr = t["video"]["travel"]
+        miss = [COUNTRY_NAMES.get(c, c) for c in tr["missing"]]
+        lag = [f"{COUNTRY_NAMES.get(c, c)} usually ~{round(lags[c])}h later" for c in tr["missing"] if c in lags]
+        yt = t["video"].get("yt")
+        lines = [f"Trending in {', '.join(COUNTRY_NAMES.get(c, c) for c in tr['from'])} for {fmt_age(tr['since_h'])} - "
+                 f"not yet in {', '.join(miss)}",
+                 "→ Make the " + "/".join({"DE": "German", "FR": "French", "IT": "Italian", "ES": "Spanish"}.get(c, c)
+                                                 for c in tr["missing"][:3]) + " version now and be first"
+                 + (f" ({'; '.join(lag)})" if lag else ""),
+                 f"{t.get('category')} · {PHASE_TXT[t['video']['phase']]} · {t['video']['window']}"
+                 + (f" · {yt['txt']}" if yt else "")]
+        out.append(mk_alert(f"✈️ NOT IN {miss[0].upper()} YET: {t['name']}", lines[0], lines[1], t["url"],
+                            tag="tr" + t["id"], priority=3, short=t["name"], kind="travel", countries=tr["missing"],
+                            category=t.get("category"), label="TRAVELING", push_text="\n".join(lines), pic_url=t.get("picture"),
+                            hash="#today"))
+        rec["travel_sent"] = now.isoformat()
+        if len(out) >= vc.get("max_travel_alerts", 1):
+            break
+    return out
+
+
+def top3_alert(plan, state, cfg, now, force=False):
+    vc = cfg.get("video_planner") or {}
+    hours = vc.get("top3_hours_utc", [6, 15])
+    h = now.astimezone(timezone.utc).hour
+    slot = f"{now.astimezone(timezone.utc):%Y-%m-%d} {max([x for x in hours if x <= h] or [-1])}"
+    if not force and (slot.endswith(" -1") or state.get("top3_slot") == slot or not plan.get("top")):
+        return []
+    state["top3_slot"] = slot
+    picks = [p for p in plan["top"] if p["phase"] != "falling"][:3] or plan["top"][:3]
+    lines = []
+    for i, p in enumerate(picks, 1):
+        s = (p.get("search") or {})
+        say = next((v[0] for v in s.values() if v), "")
+        bits = [PHASE_TXT[p["phase"]] + f" ({p['window']})"]
+        if p.get("yt"):
+            bits.append(p["yt"]["txt"].split(" - ")[0] + f" · {p['yt']['n24']}{'+' if p['yt']['full'] else ''} videos/24h")
+        if p.get("travel"):
+            bits.append("✈️ not yet in " + ", ".join(p["travel"]["missing"]))
+        if p.get("sensitive"):
+            bits.append("⚠️ sensitive: ads may be limited")
+        lines.append(f"{i}. {p['name']} - {p['category']} {flags(p['countries'][:4])}\n   " + " · ".join(bits)
+                     + (f"\n   People search: «{say}»" if say else ""))
+    return [mk_alert("\U0001F3C6 TODAY'S TOP 3 VIDEOS", picks[0]["name"] + (" + " + ", ".join(p["name"] for p in picks[1:]) if len(picks) > 1 else ""),
+                     "Open the 'Make today' tab for details", None, hash="#today",
+                     tag="top3" + slot.replace(" ", ""), priority=4, short="Top 3 videos", kind="top3", label="TOP 3",
+                     push_text="\n".join(lines))]
+
 # --------------------------------------------------------------------------- alerts
 
 
@@ -1525,7 +1810,7 @@ def cache_picture(url):
 #   3 trending / normal · 2 low (digest, music charts, reminders)
 KIND_LABEL = {"disaster": "DISASTER", "watch": "WATCHLIST", "music": "MUSIC CHART", "event": "EVENT",
               "digest": "DIGEST", "catchup": "SUMMARY", "briefing": "BRIEFING", "ai": "AI MODEL",
-              "github": "GITHUB"}
+              "github": "GITHUB", "travel": "TRAVELING", "top3": "TOP 3"}
 KIND_PRIORITY = {"music": 2, "digest": 2, "catchup": 4, "briefing": 4}
 
 
@@ -2046,7 +2331,7 @@ def push_remote(alerts, cfg, force=False):
             for ch in (channels_for(a, cfg) if topic and cfg.get("phone_channels", True) else [""]):
                 if not topic:
                     break
-                dash = online + CHANNEL_HASH.get(ch, "") if online else ""
+                dash = online + (a.get("hash") or CHANNEL_HASH.get(ch, "")) if online else ""
                 body = {"topic": topic + ch, "title": a["title"][:250], "message": msg[:3800], "priority": a["priority"]}
                 # flags in front of the title + the category as a small label
                 tags = [FLAG_TAG[c] for c in a.get("countries") or [] if c in FLAG_TAG][:4]
@@ -2187,7 +2472,7 @@ SITES = [
 ]
 
 
-def topic_json(t):
+def topic_news(t, n=8):
     news, seen = [], set()
     for h in sorted(t["heads"], key=lambda h: (h["kind"] != "news", not h.get("recent"), h["rank"])):
         if h["term"] in seen:
@@ -2195,8 +2480,13 @@ def topic_json(t):
         seen.add(h["term"])
         news.append({"t": h["term"], "u": h["url"], "s": h.get("outlet") or h["source"], "c": h["country"],
                      "r": bool(h.get("recent")), "a": h["age_h"] if h.get("age_h", 9999) < 9999 else None})
-        if len(news) >= 8:
+        if len(news) >= n:
             break
+    return news
+
+
+def topic_json(t):
+    news = topic_news(t)
     rel = []
     for m in t["members"]:
         lab = m["display"]
@@ -2210,6 +2500,8 @@ def topic_json(t):
             "links": research_links(t), "breaking": bool(t["breaking"]), "recent": t["recent"],
             "first_pub_h": t["first_pub_h"], "last_pub_h": t["last_pub_h"], "recent1": t["recent1"],
             "recent1_outlets": t["recent1_outlets"], "just_in": t["just_in"],
+            "video": ({k: v for k, v in t["video"].items() if k != "search"} | {"yt": {k: t["video"]["yt"][k] for k in
+                      ("n24", "full", "rating", "txt", "vph_top")} if t["video"].get("yt") else None}) if t.get("video") else None,
             "parts": {k: round(v, 1) for k, v in t["parts"].items() if v}}
 
 
@@ -2280,6 +2572,7 @@ def render_dashboard(topics, health, events, cfg, now, signals, watch_summary, g
         "briefing": state.get("briefing"), "cloud": CLOUD, "online_url": cfg.get("online_dashboard", ""),
         "disasters": state.get("disaster_data") or {},
         "github": state.get("gh_data") or {},
+        "plan": state.get("video_plan") or {},
         "ai": {"models": state.get("ai_data") or {}, "tools": load_json(ROOT / "ai_tools.json", {}).get("groups", [])},
         "catchup": state.get("catchup") if hours_since((state.get("catchup") or {}).get("at"), now) < 12 else None,
     }
@@ -2349,6 +2642,9 @@ Use ONLY this data - never invent facts, numbers, results, quotes or dates.
 Choose the 5 best topics for a video right now. Prefer: just_in, high score, new (small first_pub_h = hours since the
 first article), many articles in the last hour (recent1), trending in several audience countries, and categories that
 bring views (celebs, movies & TV, music, gaming, sports, tech, AI tools, natural disasters). At most 2 politics topics.
+Each topic has a 'video' object: prefer phase 'rising', yt.rating 'go' or 'good' (few YouTube videos yet), a 'travel'
+entry (trending in the USA/UK, not yet in the 'missing' countries: suggest that language first) and a high video score;
+avoid 'falling' and 'crowded'; if 'sensitive' is true, warn that YouTube may limit ads.
 Never list the same story twice.
 
 Write in {language}. Plain text with simple markdown, max 3500 characters. Exact format:
@@ -2423,7 +2719,7 @@ def export_latest(topics, signals, watch_summary, games, events, now):
         j = topic_json(t)
         return {k: j[k] for k in ("name", "category", "tier", "score", "story", "countries", "summary", "context",
                                   "url", "first_pub_h", "last_pub_h", "recent1", "just_in", "hours_seen", "days_seen",
-                                  "watch", "related")} | {"news": j["news"][:5]}
+                                  "watch", "related", "video")} | {"news": j["news"][:5]}
     today = now.date().isoformat()
     soon = (now.date() + timedelta(days=14)).isoformat()
     heads = {c: v[:8] for c, v in headlines_by_country(signals, topics).items()}
@@ -2522,6 +2818,9 @@ def run_check(dry=False, report=False, sim_gap=None, preview=False, brief_now=Fa
         gdelt_boost(topics, state, cfg, health)
         update_state(topics, state, now)
         topics.sort(key=lambda t: -t["score"])
+        plan_meta = plan_videos(topics, state, cfg, now, dry=dry and not os.environ.get("TR_YT_TEST"))
+        plan = video_plan_json(topics, plan_meta, now)
+        state["video_plan"] = plan
 
         queue, also = plan_topic_alerts(topics, cfg, now)
         if preview:  # --test: show how a real notification looks (top trend right now), save nothing
@@ -2543,7 +2842,8 @@ def run_check(dry=False, report=False, sim_gap=None, preview=False, brief_now=Fa
         d_alerts, dis_data = disaster_alerts(signals, state, cfg, now, quiet)
         ai_new, ai_data = ai_alerts(signals, state, cfg, now, quiet)
         gh_new, gh_data = github_alerts(signals, state, cfg, now, quiet)
-        e_alerts = ai_new + gh_new + e_alerts
+        tr_alerts = travel_alerts(topics, state, cfg, now, quiet, plan_meta.get("lag", {}))
+        e_alerts = ai_new + gh_new + tr_alerts + e_alerts
         d_alerts = fold(d_alerts, (cfg.get("disasters") or {}).get("max_toasts", 3), "\U0001F30D Disasters")
         if catchup:
             alerts = d_alerts + catchup_alerts(topics, queue, s_alerts, w_alerts, m_alerts, e_alerts, state, now, gap_h, last_ok)
@@ -2559,6 +2859,8 @@ def run_check(dry=False, report=False, sim_gap=None, preview=False, brief_now=Fa
         br = briefing_alert(signals, state, now)
         if br:
             alerts.append(br)
+        if not quiet:
+            alerts += top3_alert(plan, state, cfg, now)
         deliver(alerts, state, cfg, now, dry)
         if not dry:
             mark_topics([(t, r) for t, r, _ in queue] + also, now)

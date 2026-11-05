@@ -121,6 +121,8 @@ If a source fails (for example Reddit refusing servers), the radar continues wit
 | 📊 | top trends every 3 hours |
 | 🧠 | Claude briefing |
 | 🎬 NEW AI MODEL | a new open AI video / image / voice model reached the top 5 on Hugging Face |
+| 🏆 TODAY'S TOP 3 VIDEOS | twice a day (06:00 and 15:00 UTC): the 3 best videos to make now – phase, time left, YouTube competition, what people search |
+| ✈️ NOT IN GERMANY YET | trending in the USA / UK for 2+ hours but not yet in Germany / France / Italy / Spain – make that language version first |
 | ⭐ GITHUB TRENDING / 🆕 NEW ON GITHUB | a repo entered the top 10 of GitHub Trending with 300+ new stars today, or a repo younger than 30 days passed 1,000 stars (very important if it is an AI tool with 1,500+ stars today) |
 
 "also: …" means several trends about the same story were grouped into one notification.
@@ -132,8 +134,17 @@ articles in the last hours + number of countries + how long it keeps coming back
 
 ## 5. Dashboard
 
-Online: **https://fatimazahra789078.github.io/trend-radar/** (add `#us`, `#de`, `#eu`, `#disasters`, `#sports` or
-`#ideas` to open a page directly).
+Online: **https://fatimazahra789078.github.io/trend-radar/** (add `#today`, `#us`, `#de`, `#eu`, `#disasters`,
+`#sports`, `#ai` or `#ideas` to open a page directly).
+
+- **🎯 Make today** – which video to make **now**. Every topic gets a **video score** = trend strength × freshness ×
+  phase × YouTube competition × categories that get views (+ a bonus when it has not reached your other countries yet):
+  - **Phase:** 🌱 rising (about 6–12 h left) · 🔥 at the peak (about 3–6 h left) · 📉 falling (only with a new angle)
+  - **YouTube competition** (needs the free `YOUTUBE_API_KEY` secret): how many videos were uploaded about it in the
+    last 24 h – 🟢 GO NOW (≤5) · 🟢 GOOD (≤20) · 🟡 BUSY · 🔴 CROWDED (50+), plus the views per hour of the top videos
+  - **People search:** what people type in the YouTube search box, in English and the country's language
+  - **✈️ Travelling trends:** trending in the USA / UK, not yet in DE / FR / IT / ES, with the usual delay per country
+  - ⚠️ **Sensitive** topics (death, war, crime…): YouTube may limit ads
 
 - **Trends** – everything ranked by score; filters for USA / Germany / UK / France / Italy / Spain / Europe /
   Hot / Just in / Repeats / Watchlist / category; each card shows since when (first and latest article), research
@@ -151,7 +162,7 @@ Online: **https://fatimazahra789078.github.io/trend-radar/** (add `#us`, `#de`, 
 **Posting times (Morocco time = UTC+1, same as Berlin in winter; New York −6 h; Los Angeles −9 h):**
 USA 17:00–21:00 and 00:00–02:00 · Germany / France / Italy / Spain 18:00–21:00 · UK 19:00–22:00.
 
-1. Open **💡 Ideas** first.
+1. Open **🎯 Make today** first (or wait for the 🏆 TOP 3 notification), then **💡 Ideas**.
 2. **Breaking / Just in / Hot** → short video within 2–6 hours; check YouTube and TikTok first – if there are already
    many videos, take a different angle.
 3. **Repeating trends** (day 2+) → longer explainer or a series.
@@ -171,7 +182,9 @@ USA 17:00–21:00 and 00:00–02:00 · Germany / France / Italy / Spain 18:00–
 - `just_in_outlets`, `repeat_notify_days`, `digest_hours`, `quiet_hours`, `max_toasts_per_run`
 - `disasters` – earthquake magnitudes and GDACS levels
 - `extra_feeds` – add any RSS (e.g. a Talkwalker Alerts feed)
-- `youtube_api_key` – optional, adds YouTube trending (US + DE)
+- `video_planner` – top 3 times, travel countries, travel alerts
+- `youtube` – how much of the free YouTube quota the radar may use (`daily_units`, default 9,000 of 10,000)
+- `youtube_api_key` – optional (cloud: secret `YOUTUBE_API_KEY`): YouTube competition check + YouTube trending videos
 
 Secrets are never in `config.json`: on the PC they are in `config.local.json` (not uploaded), in the cloud in the
 GitHub secret `NTFY_TOPIC`. Events (calendar): `events.json`.
@@ -212,6 +225,7 @@ The local Windows radar (`INSTALL.cmd` / `UNINSTALL.cmd`) is optional now – th
 |---|---|
 | GitHub Actions (radar), GitHub Pages (dashboard), the download page | free (public repository) |
 | ntfy (phone notifications) | free |
+| YouTube Data API (competition check) | free – 10,000 units a day; the radar uses at most 9,000 (about 85 checks a day + trending videos) |
 | Desktop app | free |
 | Claude briefing routine (2 runs a day) | uses your Claude plan's usage – pause or delete it at https://claude.ai/code/routines |
 

@@ -27,12 +27,15 @@ const TYPES = [
   ["SPREADING", "A trend reaches a new country"], ["SUMMARY", "While you were away"],
   ["AI MODEL", "New AI video / image / voice model (Hugging Face)"], ["AI TOOLS", "News about AI tools (Seedance, Kling, Veo...)"],
   ["GITHUB", "GitHub repos everyone is starring (trending + new AI tools)"],
+  ["TOP 3", "Today's top 3 videos to make (twice a day)"],
+  ["TRAVELING", "Trending in the USA / UK, not yet in your other countries - be first"],
 ];
-const NEW_TYPES = ["GITHUB"];   // types added after 1.3.1: switched on for people who saved their types before
+// types added after 1.3.1: switched on for people who saved their types before
+const NEW_TYPES = ["GITHUB", "TOP 3", "TRAVELING"];
 const IMPORTANCE = [[4, "Very important only", "Breaking, hot, just in, repeating trends, big disasters, briefing"],
                     [3, "Important + trending", "Also normal trends, top news, sports results, watchlist"],
                     [1, "Everything", "Also digests, music charts, reminders"]];
-const COUNTRYLESS_OK = ["WATCHLIST", "BRIEFING", "DIGEST", "SUMMARY", "AI MODEL", "AI TOOLS", "GITHUB"];
+const COUNTRYLESS_OK = ["WATCHLIST", "BRIEFING", "DIGEST", "SUMMARY", "AI MODEL", "AI TOOLS", "GITHUB", "TOP 3"];
 const ICON = path.join(__dirname, "build", "icon.png");
 const START_HIDDEN = process.argv.includes("--hidden");
 
@@ -152,6 +155,7 @@ function buildTray() {
   tray.setContextMenu(Menu.buildFromTemplate([
     { label: "Open Trend Radar", click: () => showDashboard() },
     { type: "separator" },
+    { label: "🎯 Make today (top videos)", click: () => showDashboard("today") },
     { label: "💡 Video ideas", click: () => showDashboard("ideas") },
     { label: "🌍 Disasters", click: () => showDashboard("disasters") },
     { label: "⚽ Sports", click: () => showDashboard("sports") },
@@ -287,6 +291,9 @@ Use ONLY this data - never invent facts, numbers, results, quotes or dates.
 Choose the 5 best topics for a video right now. Prefer: just_in, high score, new (small first_pub_h = hours since the
 first article), many articles in the last hour (recent1), trending in several audience countries, and categories that
 bring views (celebs, movies & TV, music, gaming, sports, tech, AI tools, natural disasters). At most 2 politics topics.
+Each topic has a 'video' object: prefer phase 'rising', yt.rating 'go' or 'good' (few YouTube videos yet), a 'travel'
+entry (trending in the USA/UK, not yet in the 'missing' countries: suggest that language first) and a high video score;
+avoid 'falling' and 'crowded'; if 'sensitive' is true, warn that YouTube may limit ads.
 ${cfg.countries.length < 8 ? `Focus on these countries: ${cfg.countries.join(", ")}.` : ""}
 Write in ${cfg.briefLang || "English"}. Simple markdown, max 3500 characters. Format:
 # Briefing ${when}
@@ -527,6 +534,7 @@ if (!app.requestSingleInstanceLock()) {
     ] };
     const pages = { label: "Pages", submenu: [
       { label: "All trends", click: () => showDashboard("") }, { label: "🇺🇸 USA", click: () => showDashboard("us") },
+      { label: "🎯 Make today", click: () => showDashboard("today") },
       { label: "💡 Video ideas", click: () => showDashboard("ideas") }, { label: "🎬 AI tools & GitHub", click: () => showDashboard("ai") },
       { label: "🌍 Disasters", click: () => showDashboard("disasters") }, { label: "⚽ Sports", click: () => showDashboard("sports") },
       { type: "separator" }, { label: "Reload", accelerator: "F5", click: () => win && win.reload() },

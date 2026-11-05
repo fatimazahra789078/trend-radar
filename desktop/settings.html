@@ -114,7 +114,7 @@ html{scroll-padding-top:56px}
 <script>
 const $ = (s) => document.querySelector(s);
 const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
-const BIG = ["BREAKING", "JUST IN", "HOT", "REPEATING", "DISASTER", "BRIEFING", "SUMMARY"];
+const BIG = ["BREAKING", "JUST IN", "HOT", "REPEATING", "DISASTER", "BRIEFING", "SUMMARY", "TOP 3"];
 const EUROPE = ["de", "gb", "fr", "it", "es", "eu"];
 const boxes = (id, items, chosen) => {
   $("#" + id).innerHTML = items.map(([v, l, h], i) => `<div class="opt"><input type="checkbox" id="${id}${i}" value="${esc(v)}" ${chosen.includes(v) ? "checked" : ""}>

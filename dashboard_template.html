@@ -202,7 +202,8 @@ function tabs(){
   const D = DATA.disasters || {};
   n.disasters = (D.quakes || []).filter(q => q.big).length + (D.gdacs || []).filter(g => g.level === "Red" || g.level === "Orange").length || "";
   n.ai = "";
-  const T = [["trends","Trends"],["ideas","&#128161; Ideas"],["news","Top news"],["disasters","&#127757; Disasters"],["ai","&#127916; AI tools"],["watch","Watchlist"],["sports", (DATA.sports||[]).some(g=>g.state==="in") ? "Sports &#128308;" : "Sports"],
+  n.today = "";
+  const T = [["today","&#127919; Make today"],["trends","Trends"],["ideas","&#128161; Ideas"],["news","Top news"],["disasters","&#127757; Disasters"],["ai","&#127916; AI tools"],["watch","Watchlist"],["sports", (DATA.sports||[]).some(g=>g.state==="in") ? "Sports &#128308;" : "Sports"],
              ["charts","Charts"],["events","Upcoming"],["sites","Best sites"],["history","Sent"]];
   $("#tabs").innerHTML = T.map(([id,l]) => `<button class="tab" role="tab" data-tab="${id}" aria-selected="${state.tab===id}">${l}${n[id]!==""?`<span class="n">${n[id]}</span>`:""}</button>`).join("");
   $("#tabs").onclick = e => { const b = e.target.closest(".tab"); if (!b) return; state.tab = b.dataset.tab; store.set("tab", state.tab); tabs(); render(); window.scrollTo(0,0); };
@@ -404,6 +405,45 @@ function renderIdeas(){
     ${now.length + multi.length + longT.length ? "" : `<div class="empty">No strong ideas right now - check again later.</div>`}`;
 }
 
+/* ---------- Make today: which video to make now ---------- */
+const FLAGE = c => c && c.length === 2 && /^[A-Z]+$/.test(c) ? String.fromCodePoint(...[...c].map(x => 0x1F1E6 + x.charCodeAt(0) - 65)) : "";
+const PHASE = {rising: ["&#127793; Rising", "b-new"], peak: ["&#128293; At the peak", "b-trend"], falling: ["&#128201; Falling", "b-low"]};
+const OPPC = {go: "b-new", good: "b-new", busy: "b-trend", crowded: "b-hot"};
+const LANGN = {en: "EN", de: "DE", fr: "FR", it: "IT", es: "ES"};
+function renderToday(){
+  const P = DATA.plan || {}, top = P.top || [], travel = P.travel || [];
+  const ytBadge = p => p.yt ? `<span class="badge ${OPPC[p.yt.rating]}">${esc(p.yt.txt.split(" - ")[0].replace(/^\S+\s/, ""))}</span> <small class="muted">${p.yt.n24}${p.yt.full ? "+" : ""} YouTube videos in 24h</small>` : "";
+  const search = p => Object.entries(p.search || {}).filter(([, v]) => v && v.length).map(([lg, v]) =>
+      `<div class="meta"><b>${LANGN[lg] || lg}</b> people search: ${v.slice(0, 4).map(s => `<span class="cc">${esc(s)}</span>`).join(" ")}</div>`).join("");
+  const big = (p, i) => `<article class="box" style="border-color:${i === 0 ? "var(--accent)" : "var(--line)"}">
+      <div class="row" style="gap:8px;align-items:center;flex-wrap:wrap"><span style="font-size:26px;font-weight:900;color:var(--accent)">${i + 1}</span>
+        <span class="badge ${PHASE[p.phase][1]}">${PHASE[p.phase][0]}</span> ${ytBadge(p)}</div>
+      <h3 style="margin:8px 0 2px;font-size:18px">${A(p.url, esc(p.name))}</h3>
+      <div class="meta">${esc(p.category)} · ${p.countries.map(FLAGE).join(" ")}${p.first_pub_h != null ? ` · first article ${ago(p.first_pub_h)} ago` : ""}</div>
+      <div class="meta">&#9203; <b>${esc(p.window)}</b></div>
+      ${p.travel ? `<div class="meta">&#9992;&#65039; Trending in ${p.travel.from.map(FLAGE).join("")} - <b>not yet in ${p.travel.missing.map(FLAGE).join(" ")}</b>: make that language version first</div>` : ""}
+      ${p.sensitive ? `<div class="meta" style="color:var(--hot)">&#9888;&#65039; Sensitive topic: YouTube may limit ads - only facts from 2+ trusted sources</div>` : ""}
+      ${search(p)}
+      ${p.yt && p.yt.top && p.yt.top.length ? `<details><summary>Videos already on YouTube</summary><ol>${p.yt.top.map(v => `<li>${A(v.u, esc(v.t))}<small>${esc(v.ch)} · ${v.views.toLocaleString("en-US")} views · ${v.vph.toLocaleString("en-US")}/hour</small></li>`).join("")}</ol></details>` : ""}
+      <details><summary>Titles + headlines</summary><div class="idea">${titlesFor(p).slice(0, 6).map(([l, s]) => `<p><span class="muted">${l}:</span> ${esc(s)}</p>`).join("")}
+        ${(p.news || []).map(n => `<p>${A(n.u, esc(n.t))} <small class="muted">${esc(n.s)}</small></p>`).join("")}</div></details>
+    </article>`;
+  const row = (p, i) => `<li>${A(p.url, esc(p.name))} <span class="badge ${PHASE[p.phase][1]}">${PHASE[p.phase][0]}</span> ${p.yt ? `<span class="badge ${OPPC[p.yt.rating]}">${p.yt.n24}${p.yt.full ? "+" : ""} videos</span>` : ""}${p.travel ? " &#9992;&#65039;" : ""}${p.sensitive ? " &#9888;&#65039;" : ""}
+      <small>${esc(p.category)} · ${p.countries.slice(0, 5).map(FLAGE).join("")} · ${esc(p.window)} · video score ${p.vscore}</small></li>`;
+  const Q = P.quota || {};
+  const lag = Object.entries(P.lag || {}).map(([c, h]) => `${FLAGE(c)} ~${Math.round(h)}h`).join(" · ");
+  const keyBox = P.yt_key ? "" : `<section class="box away"><h2>&#128273; Add a free YouTube key to see the competition</h2>
+      <p class="hint" style="margin:4px 0 0">With a key, each top topic shows how many YouTube videos were uploaded in the last 24h: &#128994; GO NOW · &#128994; GOOD · &#128993; BUSY · &#128308; CROWDED.
+      Free: console.cloud.google.com &#8594; enable "YouTube Data API v3" &#8594; Credentials &#8594; API key &#8594; add it on GitHub as the secret <code>YOUTUBE_API_KEY</code>.</p></section>`;
+  $("#main").innerHTML = `<p class="hint" style="margin-top:16px">Which video to make <b>now</b>: trend strength × freshness × phase (rising / peak / falling) × competition on YouTube × categories that get views, with a bonus when a trend has not reached your other countries yet. A <b>TOP 3</b> notification comes twice a day.</p>
+    ${keyBox}
+    ${top.length ? `<div class="grid" style="margin-top:8px">${top.slice(0, 3).map(big).join("")}</div>` : `<div class="empty">No plan yet - it appears after the next check.</div>`}
+    ${top.length > 3 ? `<h2 style="margin:22px 0 4px;font-size:17px">&#127919; Next best videos</h2><section class="box"><ol start="4">${top.slice(3).map(row).join("")}</ol></section>` : ""}
+    ${travel.length ? `<h2 style="margin:22px 0 4px;font-size:17px">&#9992;&#65039; Trends travelling to Europe</h2><p class="hint" style="margin:0 0 8px">Trending in the USA / UK but not yet in these countries - be the first in that language.${lag ? " Usual delay: " + lag : ""}</p>
+      <section class="box"><ol>${travel.map(p => `<li>${A(p.url, esc(p.name))} <small>${esc(p.category)} · trending in ${p.travel.from.map(FLAGE).join("")} for ${ago(p.travel.since_h)} · <b>missing: ${p.travel.missing.map(FLAGE).join(" ")}</b> · ${esc(p.window)}</small></li>`).join("")}</ol></section>` : ""}
+    ${P.yt_key ? `<p class="hint" style="margin-top:14px">YouTube quota today: ${(Q.used || 0).toLocaleString("en-US")} / ${(Q.limit || 0).toLocaleString("en-US")} units · ${Q.checks || 0} checks (free limit 10,000 a day, resets at midnight Pacific time).</p>` : ""}`;
+}
+
 /* ---------- AI tools (video / image / voice) ---------- */
 const PIPE = {"text-to-video":"&#127916; Text to video","image-to-video":"&#127902;&#65039; Image to video","text-to-image":"&#128444;&#65039; Text to image","text-to-speech":"&#127908; Voice (text to speech)"};
 function renderAI(){
@@ -553,7 +593,7 @@ function renderHistory(){
 
 function render(){
   $("#main").onclick = null;
-  ({trends: renderTrends, ideas: renderIdeas, news: renderHeadlines, disasters: renderDisasters, ai: renderAI, watch: renderWatch, sports: renderSports, charts: renderCharts,
+  ({today: renderToday, trends: renderTrends, ideas: renderIdeas, news: renderHeadlines, disasters: renderDisasters, ai: renderAI, watch: renderWatch, sports: renderSports, charts: renderCharts,
     events: renderEvents, sites: renderSites, history: renderHistory}[state.tab] || renderTrends)();
 }
 
@@ -573,11 +613,11 @@ let idle = Date.now();
 ["mousemove","keydown","scroll","click"].forEach(ev => addEventListener(ev, () => idle = Date.now(), {passive:true}));
 setInterval(() => { if (Date.now() - idle > 8*60000) location.reload(); }, 60000);
 
-// links from phone notifications: ...#us  #de  #eu  #sports  #disasters  #ideas
+// links from phone notifications: ...#us  #de  #eu  #sports  #disasters  #ideas  #today
 function fromHash(){
   const h = (location.hash || "").slice(1).toLowerCase();
   if (["us","de","eu","gb","fr","it","es"].includes(h)){ state.tab = "trends"; state.filter = h; state.cat = "all"; }
-  else if (["sports","disasters","ideas","news","watch","charts","events","ai"].includes(h)) state.tab = h;
+  else if (["sports","disasters","ideas","news","watch","charts","events","ai","today"].includes(h)) state.tab = h;
   else return false;
   store.set("tab", state.tab); store.set("filter", state.filter); return true;
 }
