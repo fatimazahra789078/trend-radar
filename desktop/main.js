@@ -272,20 +272,25 @@ async function gemini(pathPart, body) {
   return j;
 }
 
+// all Gemini text models of your key, newest first (lite first inside a version: more free requests per day)
+const GEM_SKIP = /tts|image|embedding|live|audio|aqa|learnlm|gemma|imagen|veo|robotics|computer-use|native|banana/;
+const gemVersion = (n) => { const m = /gemini-(\d+(?:\.\d+)?)/.exec(n); return m ? parseFloat(m[1]) : 0; };
+async function geminiModels() {
+  const j = await gemini("models?pageSize=200");
+  return (j.models || [])
+    .filter((m) => (m.supportedGenerationMethods || []).includes("generateContent") && /^models\/gemini-/.test(m.name) && !GEM_SKIP.test(m.name))
+    .map((m) => ({ name: m.name.replace("models/", ""), label: m.displayName || m.name, v: gemVersion(m.name),
+                   lite: /lite/.test(m.name), preview: /preview|exp/.test(m.name) }))
+    .sort((a, b) => b.v - a.v || Number(b.lite) - Number(a.lite) || Number(a.preview) - Number(b.preview) || a.name.localeCompare(b.name));
+}
 async function pickModel() {
-  if (cfg.geminiModel) return cfg.geminiModel.startsWith("models/") ? cfg.geminiModel : "models/" + cfg.geminiModel;
+  if (cfg.geminiModel) return "models/" + cfg.geminiModel.replace(/^models\//, "");
   try {
-    const j = await gemini("models?pageSize=200");
-    let best = null;
-    for (const m of j.models || []) {
-      if (!(m.supportedGenerationMethods || []).includes("generateContent")) continue;
-      const mm = /^models\/gemini-(\d+(?:\.\d+)?)-flash(-[a-z0-9.-]+)?$/.exec(m.name);
-      if (!mm || /lite|image|tts|audio|live|exp|thinking|8b/.test(m.name)) continue;
-      const rank = parseFloat(mm[1]) * 10 + (mm[2] ? 0 : 1);
-      if (!best || rank > best[0]) best = [rank, m.name];
-    }
-    return best ? best[1] : "models/gemini-2.5-flash";
-  } catch { return "models/gemini-2.5-flash"; }
+    const st = cfg.geminiStatus || {};
+    const list = (await geminiModels()).filter((m) => !(st[m.name] && st[m.name].ok === false));
+    const best = list.find((m) => m.lite && !m.preview && /flash/.test(m.name)) || list.find((m) => /flash/.test(m.name) && !m.preview) || list[0];
+    return best ? "models/" + best.name : "models/gemini-2.5-flash-lite";
+  } catch { return "models/gemini-2.5-flash-lite"; }
 }
 
 function briefPrompt(data, when) {
@@ -625,18 +630,32 @@ const PAGE_TRANSLATOR = `(async () => {
   if (window.__trOn) { window.__trRun && window.__trRun(); return "again"; }
   const lang = await window.trApp.lang(); if (!lang) return "off";
   window.__trOn = true;
-  document.documentElement.lang = lang;
   const st = document.createElement("style");
-  st.textContent = "body *{unicode-bidi:plaintext}";
+  st.textContent = "body *{unicode-bidi:plaintext}" +
+    "#trbtn{position:fixed;right:16px;bottom:16px;z-index:99999;border:1px solid #ff7a50;background:#ff7a50;color:#fff;border-radius:999px;" +
+    "padding:9px 15px;font:700 13px system-ui,sans-serif;cursor:pointer;box-shadow:0 6px 20px rgba(0,0,0,.45)}" +
+    "#trbtn.orig{background:#172240;color:#e8edf7;border-color:#3a4a73}";
   document.head.appendChild(st);
   const SKIP = new Set(["SCRIPT", "STYLE", "CODE", "PRE", "TEXTAREA", "INPUT", "SELECT", "NOSCRIPT"]);
-  const done = new WeakSet();
+  const seen = new WeakSet();
+  let items = [];          // [text node, original, translation]
+  let mode = "tr";         // "tr" = your language, "orig" = English
+  const L = lang.toUpperCase();
+  const btn = document.createElement("button");
+  btn.id = "trbtn"; btn.className = "notranslate"; btn.title = "Switch language (Alt+Shift+T)";
+  const label = () => { btn.textContent = mode === "tr" ? "🌐 " + L + "  ·  show English" : "🌐 EN  ·  show " + L; btn.classList.toggle("orig", mode !== "tr"); };
+  btn.onclick = () => toggle();
+  document.body.appendChild(btn); label();
+  const apply = ([n, o, t]) => { if (!n.isConnected) return; const v = mode === "tr" ? t : o; if (n.nodeValue !== v) n.nodeValue = v; };
+  function toggle() { mode = mode === "tr" ? "orig" : "tr"; label(); items = items.filter(([n]) => n.isConnected); items.forEach(apply); if (mode === "tr") run(); return mode; }
+  window.__trToggle = toggle;
   const pick = () => { const out = []; const w = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, { acceptNode(n) {
-      const p = n.parentElement; if (!p || SKIP.has(p.tagName) || done.has(n) || p.closest(".notranslate,.score,.rank,.clock,code")) return 2;
+      const p = n.parentElement; if (!p || SKIP.has(p.tagName) || seen.has(n) || p.closest(".notranslate,.score,.rank,.clock,code")) return 2;
       const s = n.nodeValue.trim(); return s.length >= 2 && /\\p{L}{2}/u.test(s) ? 1 : 2; } });
     let n; while ((n = w.nextNode())) out.push(n); return out; };
   let busy = false, again = false;
   async function run() {
+    if (mode !== "tr") return;
     if (busy) { again = true; return; }
     busy = true;
     try {
@@ -647,17 +666,17 @@ const PAGE_TRANSLATOR = `(async () => {
           const part = nodes.slice(i, i + 400);
           const res = await window.trApp.translate(part.map((n) => n.nodeValue.trim()));
           part.forEach((n, k) => {
-            done.add(n);
-            const t = res[k], o = n.nodeValue.trim();
-            if (!t || t === o) return;
-            const lead = n.nodeValue.match(/^\\s*/)[0], trail = n.nodeValue.match(/\\s*$/)[0];
+            seen.add(n);
+            const o = n.nodeValue, ot = o.trim(), t = res[k];
+            if (!t || t === ot) return;
+            const lead = o.match(/^\\s*/)[0], trail = o.match(/\\s*$/)[0];
             // trend names (titles): keep the original next to the translation - names like "Lens" are often mistranslated
-            const title = n.parentElement && n.parentElement.closest("h3");
-            n.nodeValue = lead + (title ? t + " (" + o + ")" : t) + trail;
-            if (n.parentElement && !n.parentElement.title) n.parentElement.title = o;
+            const full = lead + (n.parentElement && n.parentElement.closest("h3") ? t + " (" + ot + ")" : t) + trail;
+            items.push([n, o, full]);
+            if (mode === "tr") n.nodeValue = full;
           });
         }
-      } while (again);
+      } while (again && mode === "tr");
     } finally { busy = false; }
   }
   window.__trRun = run;
@@ -665,6 +684,11 @@ const PAGE_TRANSLATOR = `(async () => {
   run();
   return "on";
 })()`;
+function toggleLang() {
+  if (!cfg.trLang) { openSettings("f-lang"); return; }   // no language chosen yet
+  if (!win || win.isDestroyed()) return;
+  win.webContents.executeJavaScript("window.__trToggle ? window.__trToggle() : 'off'").catch(() => {});
+}
 function injectTR() {
   if (!win || win.isDestroyed() || !cfg.trLang) return;
   win.webContents.executeJavaScript(PAGE_TRANSLATOR).then((r) => { if (process.env.TR_DEBUG) console.log("[tr page]", r); }).catch(() => {});
@@ -675,7 +699,24 @@ async function translateNotif(title, body) {
 }
 
 // ---------------------------------------------------------------- "Test" buttons next to each key (free tests)
-async function keyTest(kind, key) {
+async function gemTestModel(m) {
+  const name = m.replace("models/", "");
+  cfg.geminiStatus = cfg.geminiStatus || {};
+  try {
+    const j = await gemini(`${m}:generateContent`, { contents: [{ role: "user", parts: [{ text: "Reply with the word OK" }] }],
+                                                    generationConfig: { maxOutputTokens: 20 } });
+    if (!(j.candidates || []).length) throw new Error("no answer");
+    cfg.geminiStatus[name] = { ok: true, at: new Date().toISOString() };
+    return { ok: true, msg: `Works ✓ (${name})` };
+  } catch (e) {
+    let msg = String(e.message || e);
+    if (/quota|RESOURCE_EXHAUSTED|rate/i.test(msg)) msg = "no free quota for this model right now (limit reached or not free) - pick another one";
+    else if (/not found|not supported/i.test(msg)) msg = "this model is not available for your key";
+    cfg.geminiStatus[name] = { ok: false, msg: msg.slice(0, 120), at: new Date().toISOString() };
+    throw new Error(`${name}: ${msg}`);
+  } finally { saveCfg(); }
+}
+async function keyTest(kind, key, model) {
   key = String(key || "").trim();
   if (kind !== "ollama" && !key) return { ok: false, msg: "Paste the key first" };
   try {
@@ -684,11 +725,8 @@ async function keyTest(kind, key) {
       try {
         const list = await gemini("models?pageSize=200");            // valid key? (free, no tokens)
         if (!(list.models || []).length) throw new Error("no models for this key");
-        const model = await pickModel();
-        const j = await gemini(`${model}:generateContent`, { contents: [{ role: "user", parts: [{ text: "Reply with the word OK" }] }],
-                                                              generationConfig: { maxOutputTokens: 20 } });
-        if (!(j.candidates || []).length) throw new Error("no answer");
-        return { ok: true, msg: `Works ✓ (${model.replace("models/", "")}, free tier)` };
+        const m = model ? "models/" + String(model).replace(/^models\//, "") : await pickModel();
+        return await gemTestModel(m);
       } finally { cfg.geminiKey = old; }
     }
     if (kind === "youtube") {                                          // 1 quota unit
@@ -727,6 +765,7 @@ function applyAiFields(c) {
   if (c.trLang !== undefined) cfg.trLang = TR_LANGS.some(([v]) => v === c.trLang) ? c.trLang : "";
   if (c.youtubeKey !== undefined) cfg.youtubeKey = String(c.youtubeKey || "").trim();
   if (c.geminiKey !== undefined) cfg.geminiKey = String(c.geminiKey || "").trim();
+  if (c.geminiModel !== undefined) cfg.geminiModel = /^[\w.-]{0,80}$/.test(c.geminiModel) ? c.geminiModel : "";
   if (c.openaiKey !== undefined) cfg.openaiKey = String(c.openaiKey || "").trim();
   if (c.ollamaModel !== undefined) cfg.ollamaModel = String(c.ollamaModel || "").trim();
   if (ENGINES.some(([v]) => v === c.aiEngine)) cfg.aiEngine = c.aiEngine;
@@ -758,7 +797,29 @@ ipcMain.handle("brief:now", async (_e, c) => {
   if (c) { applyAiFields(c); saveCfg(); }
   return makeBriefing(true);
 });
-ipcMain.handle("key:test", (_e, kind, key) => keyTest(String(kind), key));
+ipcMain.handle("key:test", (_e, kind, key, model) => keyTest(String(kind), key, model));
+// Gemini models of your key + the saved test result of each one
+ipcMain.handle("gemini:models", async (_e, key) => {
+  const old = cfg.geminiKey; cfg.geminiKey = String(key || cfg.geminiKey || "").trim();
+  try { return { ok: true, models: await geminiModels(), status: cfg.geminiStatus || {}, auto: (await pickModel()).replace("models/", "") }; }
+  catch (e) { return { ok: false, msg: String(e.message || e).slice(0, 200) }; }
+  finally { cfg.geminiKey = old; }
+});
+// tests every model once (one tiny request each) and saves which ones work
+ipcMain.handle("gemini:testAll", (_e, key) => gemTestAll(key));
+async function gemTestAll(key) {
+  const old = cfg.geminiKey; cfg.geminiKey = String(key || cfg.geminiKey || "").trim();
+  try {
+    const list = await geminiModels();
+    let ok = 0;
+    for (const m of list) {
+      try { await gemTestModel("models/" + m.name); ok++; } catch {}
+      await new Promise((r) => setTimeout(r, 700));
+    }
+    return { ok: true, msg: `${ok} of ${list.length} models work ✓`, models: list, status: cfg.geminiStatus || {}, auto: (await pickModel()).replace("models/", "") };
+  } catch (e) { return { ok: false, msg: String(e.message || e).slice(0, 200) }; }
+  finally { cfg.geminiKey = old; }
+}
 ipcMain.handle("yt:now", async (_e, c) => {
   if (c) { applyAiFields(c); saveCfg(); }
   return ytTick(true);
@@ -804,6 +865,8 @@ if (!app.requestSingleInstanceLock()) {
       { label: "Write a briefing now", click: () => makeBriefing(true).then((r) => { if (!r.ok) { notify({ title: "🧠 Briefing", body: r.msg }); openSettings("ai"); } }) },
       { label: "Show last briefing", click: showBriefing },
       { label: "AI engine, keys and times...", click: () => openSettings("ai") },
+      { type: "separator" },
+      { label: "🌐 Switch language / English", accelerator: "Alt+Shift+T", click: () => toggleLang() },
     ] };
     const pages = { label: "Pages", submenu: [
       { label: "All trends", click: () => showDashboard("") }, { label: "🇺🇸 USA", click: () => showDashboard("us") },
@@ -831,8 +894,16 @@ if (!app.requestSingleInstanceLock()) {
     setTimeout(() => ytTick(false), 90e3); setInterval(() => ytTick(false), 60 * 60e3);   // YouTube check with your key
     if (!app.isPackaged && process.env.TR_LANG) {   // developer test only
       cfg.trLang = process.env.TR_LANG; cfg.__test = true;
-      setTimeout(() => win.webContents.executeJavaScript(`[document.title, (document.querySelector("#tabs")||{}).innerText, (document.querySelector("#main")||{}).innerText]`)
-        .then((r) => console.log("[tr text]", JSON.stringify(r).slice(0, 900))), 15000);
+      const read = (tag) => win.webContents.executeJavaScript(`[(document.querySelector("#trbtn")||{}).textContent, (document.querySelector("#tabs")||{}).innerText.slice(0, 120)]`)
+        .then((r) => console.log("[tr " + tag + "]", JSON.stringify(r)));
+      setTimeout(() => read("start"), 14000);
+      setTimeout(() => { toggleLang(); setTimeout(() => read("after toggle"), 500); }, 15000);
+      setTimeout(() => { toggleLang(); setTimeout(() => read("toggle back"), 1500); }, 17000);
+    }
+    if (!app.isPackaged && process.env.TR_GEMALL) {   // developer test only
+      cfg.__test = true;
+      gemTestAll(process.env.TR_GEMALL).then(async (r) => { console.log("[gemall]", r.msg, "auto=" + r.auto, JSON.stringify(r.status));
+        console.log("[gem one]", JSON.stringify(await keyTest("gemini", process.env.TR_GEMALL, "gemini-2.5-pro"))); });
     }
     if (!app.isPackaged && process.env.TR_KEYTEST) {   // developer test only, e.g. TR_KEYTEST=gemini:somekey
       const [kind, key] = process.env.TR_KEYTEST.split(":");

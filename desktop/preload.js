@@ -7,7 +7,9 @@ contextBridge.exposeInMainWorld("tr", {
   test: () => ipcRenderer.invoke("notify:test"),
   briefNow: (c) => ipcRenderer.invoke("brief:now", c),
   ytNow: (c) => ipcRenderer.invoke("yt:now", c),
-  testKey: (kind, key) => ipcRenderer.invoke("key:test", kind, key),
+  testKey: (kind, key, model) => ipcRenderer.invoke("key:test", kind, key, model),
+  geminiModels: (key) => ipcRenderer.invoke("gemini:models", key),
+  geminiTestAll: (key) => ipcRenderer.invoke("gemini:testAll", key),
   briefGet: () => ipcRenderer.invoke("brief:get"),
   open: (u) => ipcRenderer.invoke("open:url", u),
 });
