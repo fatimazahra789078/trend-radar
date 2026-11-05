@@ -2734,7 +2734,13 @@ def export_latest(topics, signals, watch_summary, games, events, now):
         j = topic_json(t)
         return {k: j[k] for k in ("name", "category", "tier", "score", "story", "countries", "summary", "context",
                                   "url", "first_pub_h", "last_pub_h", "recent1", "just_in", "hours_seen", "days_seen",
-                                  "watch", "related", "video")} | {"news": j["news"][:5]}
+                                  "watch", "related", "video", "id")} | {"news": j["news"][:5],
+                                                                         "query": t.get("query") or t["name"]}
+    # the best video candidates: the desktop app checks them on YouTube with its own key
+    vt = sorted([t for t in topics if t.get("video")], key=lambda t: -t["video"]["score"])[:30]
+    video_top = [{"id": t["id"], "name": t["name"], "query": (t["name"].lstrip("#") if not t["story"] else t.get("query") or t["name"]),
+                  "countries": t["countries"][:8], "phase": t["video"]["phase"], "vscore": t["video"]["score"],
+                  "has_yt": bool(t["video"].get("yt"))} for t in vt]
     today = now.date().isoformat()
     soon = (now.date() + timedelta(days=14)).isoformat()
     heads = {c: v[:8] for c, v in headlines_by_country(signals, topics).items()}
@@ -2746,6 +2752,7 @@ def export_latest(topics, signals, watch_summary, games, events, now):
         "watchlist": {k: {"today": v["n24"], "last_2h": v["n2"], "top": v["items"][:3]} for k, v in (watch_summary or {}).items()},
         "big_games": [g for g in sports_json(games, now) if g.get("big")][:20],
         "events_next_14_days": [e for e in events if today <= e.get("date", "") <= soon],
+        "video_top": video_top,
     }
     DATA.mkdir(exist_ok=True)
     LATEST_FILE.write_text(json.dumps(data, ensure_ascii=False, indent=1), encoding="utf-8")
