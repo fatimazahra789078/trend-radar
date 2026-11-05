@@ -9,8 +9,7 @@ on:
         description: "Public download page (false = private draft only you can see)"
         type: boolean
         default: true
-  push:
-    tags: ["desktop-v*"]
+# (no "push: tags" trigger: publishing a release creates a tag, which used to start a second build = duplicate releases)
 
 permissions:
   contents: write
