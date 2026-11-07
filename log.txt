@@ -1,0 +1,6 @@
+2026-11-07 12:19:22 source failed: Reddit r/aivideo: HTTPError: HTTP Error 429: Too Many Requests
+2026-11-07 12:19:22 source failed: Reddit r/de: HTTPError: HTTP Error 429: Too Many Requests
+2026-11-07 12:20:24 source failed: Apple Music US: TimeoutError: The read operation timed out
+2026-11-07 12:20:24 source failed: Apple Music ES: HTTPError: HTTP Error 502: Bad Gateway
+2026-11-07 12:20:37 notified 5: 🔥 HOT: Leeds | 📈 TRENDING: Nikos | 📈 TRENDING: Wrexham Vs Wolves | 📈 TRENDING: Tajani | 📊 Trends +8 more
+2026-11-07 12:20:37 check done in 82.6s: 2944 signals, 472 topics, 155/160 sources ok, 5 notifications
