@@ -639,8 +639,10 @@ def src_steam_top():
 def src_steam_featured():
     d = fetch_json("https://store.steampowered.com/api/featuredcategories?cc=us&l=en", timeout=25)
     out = []
-    for cat, lab in (("new_releases", "new"), ("top_sellers", "topsellers")):
+    for cat, lab in (("new_releases", "new"), ("top_sellers", "topsellers"), ("coming_soon", "soon")):
         for rank, it in enumerate(((d.get(cat) or {}).get("items") or [])[:20], 1):
+            if lab == "soon" and re.search(r"\bdemo\b|playtest", it.get("name", ""), re.I):
+                continue
             out.append({"kind": "steam_list", "source": "Steam", "country": "", "list": lab, "id": str(it.get("id")), "term": it.get("name", ""),
                         "rank": rank, "price": round((it.get("final_price") or 0) / 100, 2), "discount": it.get("discount_percent") or 0,
                         "icon": it.get("small_capsule_image") or "", "url": f"https://store.steampowered.com/app/{it.get('id')}/"})
@@ -666,6 +668,50 @@ def src_apple_books(cc, chart):
                     "genres": [g["name"] for g in r.get("genres", []) if g.get("name") != "Books"][:3], "icon": r.get("artworkUrl100", ""),
                     "url": r.get("url", "")})
     return out
+
+
+# Apple Books best sellers per genre (US) - the book types you can switch between on the Books tab
+BOOK_GENRES = [("kids", "9010", "Children's books"), ("teens", "11185", "Young adult fantasy"), ("teens", "11177", "Young adult dystopian & myths"),
+               ("teens", "11181", "Comics for young readers"), ("adults", "9032", "Mysteries & thrillers"), ("adults", "9003", "Romance"),
+               ("adults", "9020", "Sci-fi & fantasy"), ("adults", "9009", "Business & money"), ("adults", "9028", "Cookbooks"),
+               ("adults", "9024", "Lifestyle, crafts & pets"), ("adults", "9030", "Parenting"), ("adults", "9008", "Biographies & memoirs"),
+               ("adults", "9012", "Humor"), ("adults", "9026", "Comics & manga"), ("adults", "9018", "Christianity & Bible"), ("adults", "9035", "Sports")]
+# what people type in Amazon's book search, per type (Amazon gives no numbers: the order = what is typed most)
+AMAZON_SEEDS = {"kids": ["coloring book", "activity book", "picture book", "workbook", "sticker book", "kids books"],
+                "teens": ["journal for", "books for teen", "manga", "fantasy books", "ya books"],
+                "adults": ["coloring books for", "journal", "planner", "puzzle book", "word search", "cookbook", "romance", "self help", "gift book"],
+                "seasonal": ["christmas", "valentine", "easter", "halloween", "mothers day", "ramadan", "back to school"]}
+
+
+def src_book_genre(aud, gid, label):
+    d = fetch_json(f"https://itunes.apple.com/us/rss/toppaidebooks/limit=50/genre={gid}/json", timeout=25)
+    e = (d.get("feed") or {}).get("entry") or []
+    if isinstance(e, dict):
+        e = [e]
+    out = []
+    for rank, x in enumerate(e, 1):
+        link = x.get("link") or {}
+        if isinstance(link, list):
+            link = link[0] if link else {}
+        imgs = x.get("im:image") or []
+        out.append({"kind": "book_genre", "source": "Apple Books US", "country": "US", "aud": aud, "gid": gid, "glabel": label,
+                    "id": (x.get("id") or {}).get("attributes", {}).get("im:id", ""), "term": (x.get("im:name") or {}).get("label", ""),
+                    "author": (x.get("im:artist") or {}).get("label", ""), "rank": rank,
+                    "sub": (x.get("category") or {}).get("attributes", {}).get("label", ""),
+                    "released": ((x.get("im:releaseDate") or {}).get("label") or "")[:10],
+                    "icon": imgs[-1].get("label", "") if imgs and isinstance(imgs[-1], dict) else "",
+                    "url": (link.get("attributes") or {}).get("href", "") if isinstance(link, dict) else ""})
+    return out
+
+
+def src_amazon_suggest(aud, seed):
+    url = "https://completion.amazon.com/api/2017/suggestions?" + urllib.parse.urlencode(
+        {"mid": "ATVPDKIKX0DER", "alias": "stripbooks", "prefix": seed, "limit": "11", "plain-mid": "1", "client-info": "amazon-search-ui"})
+    d = fetch_json(url, timeout=20)
+    time.sleep(0.4)
+    sug = [x.get("value") for x in d.get("suggestions", []) if x.get("value")
+           and not re.search(r"(stand|slippers?|rings?|necklace|pendant|clothes|shirt|mug|socks|holder|organizer|case)", x.get("value"), re.I)]
+    return [{"kind": "amazon_kw", "source": "Amazon suggestions", "country": "US", "aud": aud, "seed": seed, "term": seed, "rank": 1, "sug": sug[:10]}]
 
 
 def game_details(ids, cc, state, now):
@@ -716,9 +762,27 @@ def games_alerts(signals, state, cfg, now, quiet):
     want = sorted(rows.values(), key=lambda r: min([v for k, v in r["charts"].items() if k.endswith(":topfree")] or [999]))[:80]
     want += [r for r in rows.values() if r["new_entry"] or r["climb"] >= 10 or r["released"] >= (now - timedelta(days=90)).strftime("%Y-%m-%d")]
     info = game_details(list(dict.fromkeys(r["id"] for r in want)), "us", state, now)
+    rate = state.setdefault("game_rate", {})
+    today_s = now.strftime("%Y-%m-%d")
+    for gid, i in info.items():
+        if not i.get("ratings"):
+            continue
+        h = rate.setdefault(gid, [])
+        if not h or h[-1][0] != today_s:
+            h.append([today_s, i["ratings"]])
+        else:
+            h[-1][1] = i["ratings"]
+        del h[:-8]
+    for k in [k for k in rate if k not in info]:
+        del rate[k]
     out_rows = []
     for r in rows.values():
         i = info.get(r["id"], {})
+        h = rate.get(r["id"]) or []
+        per_day = None
+        if len(h) >= 2:
+            days = max(1, (datetime.strptime(h[-1][0], "%Y-%m-%d") - datetime.strptime(h[0][0], "%Y-%m-%d")).days)
+            per_day = max(0, round((h[-1][1] - h[0][1]) / days))
         pub = (r["publisher"] or "").lower()
         genres = i.get("genres") or []
         simple = any(g in SIMPLE_GENRES for g in genres)
@@ -734,10 +798,12 @@ def games_alerts(signals, state, cfg, now, quiet):
         score += 10 if hyper else (-15 if big else 5)
         score += 8 if (i.get("mb") or 999) <= 300 else 0
         score += 5 * min(3, n_cc - 1)
+        score += min(10, (per_day or 0) / 100)   # many new ratings a day = many downloads
         score += max(0, 10 - best_free / 5) if best_free < 50 else (-12 if best_free == 999 else 0)   # not in any top-free chart yet = unproven
         r.update({"genres": genres, "mb": i.get("mb"), "rating": i.get("rating"), "ratings": i.get("ratings"), "desc": i.get("desc", ""),
                   "shots": i.get("shots", []), "age_d": age_d if age_d < 9999 else None, "simple": simple, "hyper": hyper, "big": big,
-                  "best_free": best_free, "countries": sorted({k.split(":")[0].upper() for k in r["charts"]}), "clone": round(score)})
+                  "best_free": best_free, "countries": sorted({k.split(":")[0].upper() for k in r["charts"]}), "clone": round(score),
+                  "per_day": per_day})
         out_rows.append(r)
     out_rows.sort(key=lambda r: -r["clone"])
     gc_state = state.setdefault("games_meta", {})
@@ -766,15 +832,16 @@ def games_alerts(signals, state, cfg, now, quiet):
     for s in steam:
         s["move"] = (s["last_week"] - s["rank"]) if s["last_week"] else None
     slim = lambda r: {k: r.get(k) for k in ("id", "name", "publisher", "released", "icon", "url", "charts", "new_entry", "climb", "genres", "mb",
-                                            "rating", "ratings", "desc", "shots", "age_d", "simple", "hyper", "big", "best_free", "countries", "clone")}
-    data = {"at": now.isoformat(), "clone": [slim(r) for r in out_rows[:30]],
+                                            "rating", "ratings", "desc", "shots", "age_d", "simple", "hyper", "big", "best_free", "countries", "clone", "per_day")}
+    data = {"at": now.isoformat(), "clone": [slim(r) for r in out_rows[:40]],
+            "demand": [slim(r) for r in sorted([r for r in out_rows if r.get("per_day")], key=lambda r: -r["per_day"])[:30]],
             "rising": [slim(r) for r in sorted([r for r in out_rows if r["new_entry"] or r["climb"] >= 5], key=lambda r: (-r["new_entry"], -r["climb"]))[:30]],
             "new": [slim(r) for r in sorted([r for r in out_rows if (r["age_d"] or 9999) <= 120 and r["best_free"] < 999], key=lambda r: r["best_free"])[:30]],
             "hyper": [slim(r) for r in sorted([r for r in out_rows if r["hyper"]], key=lambda r: r["best_free"])[:30]],
             "charts": {}, "steam": [{k: s[k] for k in ("id", "term", "rank", "last_week", "peak", "url", "move")} for s in steam[:40]],
             "steam_lists": {lab: [{k: s[k] for k in ("id", "term", "rank", "price", "discount", "icon", "url")}
                                   for s in sorted([s for s in signals if s["kind"] == "steam_list" and s["list"] == lab], key=lambda s: s["rank"])]
-                            for lab in ("new", "topsellers")},
+                            for lab in ("new", "topsellers", "soon")},
             "itch": [{k: s[k] for k in ("term", "tags", "url")} for s in sorted([s for s in signals if s["kind"] == "itch"], key=lambda s: s["rank"])],
             "pubs": Counter(r["publisher"] for r in out_rows if r["best_free"] <= 100).most_common(12)}
     for s in charts:
@@ -795,6 +862,13 @@ def games_alerts(signals, state, cfg, now, quiet):
     for k in [k for k, v in bh.items() if hours_since(v, now) > 30 * 24]:
         del bh[k]
     data["books"] = books
+    bg = {}
+    for s_ in sorted([s_ for s_ in signals if s_["kind"] == "book_genre"], key=lambda s_: s_["rank"]):
+        bg.setdefault(s_["aud"], {}).setdefault(s_["glabel"], []).append({k: s_[k] for k in ("id", "term", "author", "rank", "sub", "released", "icon", "url")})
+    data["book_types"] = bg
+    data["amazon"] = {}
+    for s_ in [s_ for s_ in signals if s_["kind"] == "amazon_kw"]:
+        data["amazon"].setdefault(s_["aud"], []).append({"seed": s_["seed"], "sug": s_["sug"]})
     return alerts, data
 
 
@@ -1386,6 +1460,11 @@ def collect(cfg, state, gap_h=0.0):
                 jobs.append((f"App Store games {cc.upper()} {chart}", src_appstore_games, (cc, chart), 120))
         jobs += [("Steam most played", src_steam_top, (), 180), ("Steam new + top sellers", src_steam_featured, (), 180),
                  ("itch.io featured", src_itch, (), 360)]
+        for aud, gid, label in BOOK_GENRES:
+            jobs.append((f"Apple Books US {label}", src_book_genre, (aud, gid, label), 360))
+        for aud, seeds in AMAZON_SEEDS.items():
+            for seed in seeds:
+                jobs.append((f"Amazon: {seed}", src_amazon_suggest, (aud, seed), 1440))
         for cc in gm.get("book_countries", ["us", "gb", "de"]):
             for chart in ("top-paid", "top-free"):
                 jobs.append((f"Apple Books {cc.upper()} {chart}", src_apple_books, (cc, chart), 360))
@@ -1495,7 +1574,7 @@ def build_topics(signals, cfg, now):
     cw = cfg.get("country_weight", {})
     terms, heads = [], []
     for s in signals:
-        if s["kind"] in ("sport", "movie_chart", "watch", "briefing", "disaster", "ai_model", "gh_repo", "gh_new", "game_chart", "steam_top", "steam_list", "itch", "book_chart"):
+        if s["kind"] in ("sport", "movie_chart", "watch", "briefing", "disaster", "ai_model", "gh_repo", "gh_new", "game_chart", "steam_top", "steam_list", "itch", "book_chart", "book_genre", "amazon_kw"):
             continue
         s["key"] = norm(s["term"])
         s["toks"] = s["key"].split()

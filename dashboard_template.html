@@ -509,6 +509,7 @@ function gameCard(g, i){
     <div class="head"><h3>${esc(g.name)}</h3>${g.icon ? `<img src="${esc(g.icon)}" alt="" loading="lazy" referrerpolicy="no-referrer" style="width:56px;height:56px;border-radius:12px">` : ""}</div>
     <div class="meta">${esc((g.genres || []).join(" / ") || "Game")} · ${esc(g.publisher)}${g.mb ? ` · ${g.mb} MB` : ""}${g.ratings ? ` · ${Number(g.ratings).toLocaleString("en-US")} ratings${g.rating ? " (" + Number(g.rating).toFixed(1) + "★)" : ""}` : ""}${g.released ? ` · released ${g.released}` : ""}</div>
     ${chartTxt ? `<div class="meta">&#128200; ${chartTxt}</div>` : ""}
+    ${g.per_day ? `<div class="meta">&#128101; <b>+${Number(g.per_day).toLocaleString("en-US")} ratings/day</b> · roughly ${Number(g.per_day * 50).toLocaleString("en-US")}-${Number(g.per_day * 100).toLocaleString("en-US")} downloads a day</div>` : ""}
     ${g.desc ? `<div class="sum">${esc(g.desc)}</div>` : ""}
     ${shots ? `<div class="row" style="gap:6px;overflow-x:auto">${shots}</div>` : ""}
     ${gameLinks(g)}
@@ -517,7 +518,16 @@ function gameCard(g, i){
 function renderGames(){
   const G = DATA.games || {};
   const q = state.q.trim().toLowerCase();
-  const match = g => !q || (g.name + " " + (g.publisher || "") + " " + (g.genres || []).join(" ")).toLowerCase().includes(q);
+  const gcc = store.get("gcc", "us"), gcat = store.get("gcat", "all");
+  const allG = [...(G.clone || []), ...(G.rising || []), ...(G.new || []), ...(G.hyper || []), ...(G.demand || [])];
+  const cats = {}; for (const g of allG.filter((g, i, a) => a.findIndex(x => x.id === g.id) === i)) for (const c of (g.genres || [])) cats[c] = (cats[c] || 0) + 1;
+  const catList = Object.entries(cats).filter(([c]) => !["Entertainment", "Games"].includes(c)).sort((a, b) => b[1] - a[1]).slice(0, 12);
+  const match = g => (!q || (g.name + " " + (g.publisher || "") + " " + (g.genres || []).join(" ")).toLowerCase().includes(q))
+    && (gcc === "all" || Object.keys(g.charts || {}).some(k => k.startsWith(gcc + ":")))
+    && (gcat === "all" || (g.genres || []).includes(gcat));
+  const demand = (G.demand || []).filter(match).slice(0, 12);
+  const switches = `<div class="bar" style="margin-top:10px">${[["us", "&#127482;&#127480; USA only"], ["all", "All countries"]].map(([k, l]) => `<button class="chipbtn" data-gcc="${k}" aria-pressed="${gcc === k}">${l}</button>`).join("")}
+      <span class="muted" style="margin:0 6px">|</span>${[["all", "All types"], ...catList.map(([c, n]) => [c, `${esc(c)} · ${n}`])].map(([k, l]) => `<button class="chipbtn" data-gcat="${esc(k)}" aria-pressed="${gcat === k}">${l}</button>`).join("")}</div>`;
   const clone = (G.clone || []).filter(match).slice(0, 12), rising = (G.rising || []).filter(match).slice(0, 12), newG = (G.new || []).filter(match).slice(0, 12), hyper = (G.hyper || []).filter(match).slice(0, 12);
   const news = DATA.topics.filter(t => t.category === "Gaming").slice(0, 8);
   const steam = (G.steam || []).slice(0, 25).map(s => `<li>${A(s.url, esc(s.term))} ${s.move > 0 ? `<span class="badge b-new">&#9650; ${s.move}</span>` : s.move < 0 ? `<span class="badge b-low">&#9660; ${-s.move}</span>` : s.last_week === 0 ? `<span class="badge b-live">New</span>` : ""}<small>#${s.rank} · peak ${Number(s.peak || 0).toLocaleString("en-US")} players</small></li>`).join("");
@@ -529,6 +539,8 @@ function renderGames(){
   const sec = (title, hint, list) => list.length ? `<section style="margin-top:22px"><h2 style="margin:0 0 4px;font-size:17px">${title}</h2><p class="hint" style="margin:0 0 12px">${hint}</p><div class="grid">${list.map(gameCard).join("")}</div></section>` : "";
   $("#main").innerHTML = `<p class="hint" style="margin-top:16px">Mobile games from the App Store <b>game charts</b> (USA, Germany, UK, France: top free, new, top grossing), Steam and itch.io. <b>&#129513; Clone score</b> = how good a model this game is for one you could make yourself: new + climbing + simple mechanic (puzzle, casual, arcade, word) + small download + small or hyper-casual publisher (Voodoo, Homa, Rollic, SayGames...). Big studios (Supercell, King, Epic...) score low. You get a &#127918; GAME notification when a game is new in the top free list or climbs 15+ places. Phone channel: your topic + <code>-games</code>.</p>
     ${pubs ? `<div class="meta" style="margin:8px 0 0">Publishers with the most games in the top 100 right now: ${pubs}</div>` : ""}
+    ${switches}
+    ${sec("&#128101; Most downloads right now", "New App Store ratings per day (about 1 in 50-100 players rates a game) - the best free signal of how many people download it today. Needs 2 days of history.", demand)}
     ${sec("&#129513; Best models to remake", "Ranked by clone score. Check the mechanic in the gameplay video, then make your own version with a different theme.", clone)}
     ${sec("&#128640; Rising right now", "New in a top-free list or climbing fast - the market is pulling these this week.", rising)}
     ${sec("&#127381; New games already in the charts", "Released in the last 4 months and already in a top-free list - the freshest proven ideas.", newG)}
@@ -537,6 +549,7 @@ function renderGames(){
     <h2 style="margin:22px 0 4px;font-size:17px">&#128187; PC: Steam most played this week <small class="muted" style="font-size:12px">(&#9650; = up vs last week)</small></h2>
     <div class="cols"><section class="box"><h2>Most played</h2><ol>${steam || "<li class='muted'>No data yet</li>"}</ol></section>
       <section class="box"><h2>New on Steam</h2><ol>${steamNew || "<li class='muted'>No data yet</li>"}</ol></section>
+      <section class="box"><h2>&#128284; Coming soon on Steam</h2><ol>${(sl.soon || []).slice(0, 12).map(s => `<li>${A(s.url, esc(s.term))}</li>`).join("") || "<li class='muted'>No data yet</li>"}</ol></section>
       <section class="box"><h2>itch.io featured (indie)</h2><ol>${itch || "<li class='muted'>No data yet</li>"}</ol></section></div>
     ${charts ? `<h2 style="margin:22px 0 4px;font-size:17px">&#128241; Top free games per country</h2><div class="cols">${charts}</div>` : ""}
     <div class="links" style="margin-top:16px">${A("https://apps.apple.com/us/charts/iphone/games-apps/6014", "App Store charts")}${A("https://play.google.com/store/games?device=phone", "Google Play games")}${A("https://store.steampowered.com/charts/", "Steam charts")}${A("https://www.pocketgamer.biz/", "PocketGamer.biz")}${A("https://www.voodoo.io/games", "Voodoo games")}</div>`;
@@ -581,8 +594,27 @@ function renderBooks(){
     ${(() => { const S = ((DATA.seasons || {}).events || []).filter(e => e.size !== "small" && e.days_left >= 20).sort((a, b) => a.book_by.localeCompare(b.book_by)).slice(0, 6);
       return S.length ? `<section style="margin-top:22px"><h2 style="margin:0 0 4px;font-size:17px">&#128197; Seasonal books - next deadlines</h2><p class="hint" style="margin:0 0 12px">Big events with a lot of searches: publish before the date so Amazon has time to rank the book. All events: <a href="#events">Upcoming tab</a>.</p><div class="grid">${S.map(e => seasonCard(e, "all")).join("")}</div></section>` : ""; })()}
     <section style="margin-top:22px"><h2 style="margin:0 0 4px;font-size:17px">&#128161; Book ideas from the trends</h2><p class="hint" style="margin:0 0 12px">Trends that keep repeating or are very hot - people search them for weeks, long enough to write and publish.</p><div class="grid">${ideas || `<div class="empty">No strong ideas right now.</div>`}</div></section>
+    ${bookTypesHTML()}
     <h2 style="margin:22px 0 4px;font-size:17px">&#128218; What sells now (Apple Books charts)</h2><div class="cols">${charts || `<div class="muted">No data yet - it appears after the next check.</div>`}</div>
     <div class="links" style="margin-top:16px">${A("https://www.amazon.com/gp/bestsellers/books", "Amazon best sellers")}${A("https://www.amazon.com/gp/movers-and-shakers/books", "Amazon movers & shakers (climbing now)")}${A("https://www.amazon.com/gp/new-releases/books", "Amazon new releases")}${A("https://kdp.amazon.com/", "KDP")}${A("https://books.google.com/", "Google Books")}</div>`;
+}
+
+function bookTypesHTML(){
+  const G = DATA.games || {}, BT = G.book_types || {}, AM = G.amazon || {};
+  const aud = store.get("baud", "kids"), gen = store.get("bgen", "all");
+  const AUD = [["kids", "&#129490; Kids"], ["teens", "&#129489; Teens"], ["adults", "&#129489;&#8205;&#129456; Adults"], ["seasonal", "&#128197; Seasonal"]];
+  const genres = Object.keys(BT[aud] || {});
+  const shown = gen === "all" ? genres : genres.filter(g => g === gen);
+  const kw = (AM[aud] || []).filter(k => (k.sug || []).length);
+  const charts = shown.map(g => `<section class="box"><h2>${esc(g)} <small class="muted">US best sellers</small></h2><ol>${(BT[aud][g] || []).slice(0, 12).map(b =>
+      `<li>${A(b.url, esc(b.term))}<small>${esc(b.author)}${b.sub && b.sub !== g ? " · " + esc(b.sub) : ""}</small></li>`).join("")}</ol></section>`).join("");
+  return `<section style="margin-top:22px"><h2 style="margin:0 0 4px;font-size:17px">&#128269; Book types: what people search and buy</h2>
+    <p class="hint" style="margin:0 0 10px"><b>What people type on Amazon</b>: Amazon's own search suggestions, in order - #1 is typed most (Amazon shows no numbers, nobody gets them for free). <b>Best sellers</b>: Apple Books charts per genre (US). Pick a type, then a genre.</p>
+    <div class="bar">${AUD.map(([k, l]) => `<button class="chipbtn" data-baud="${k}" aria-pressed="${aud === k}">${l}</button>`).join("")}
+      ${genres.length > 1 ? `<span class="muted" style="margin:0 6px">|</span>` + [["all", "All genres"], ...genres.map(g => [g, g])].map(([k, l]) => `<button class="chipbtn" data-bgen="${esc(k)}" aria-pressed="${gen === k}">${esc(l)}</button>`).join("") : ""}</div>
+    ${kw.length ? `<h3 style="margin:14px 0 6px;font-size:15px">&#128270; What people type on Amazon</h3><div class="cols">${kw.map(k => `<section class="box"><h2>“${esc(k.seed)}…”</h2><ol>${k.sug.map(x =>
+        `<li>${A("https://www.amazon.com/s?k=" + encodeURIComponent(x) + "&i=stripbooks", esc(x))}</li>`).join("")}</ol></section>`).join("")}</div>` : `<div class="muted" style="margin:10px 0">No Amazon data yet - it appears after the next check.</div>`}
+    ${charts ? `<h3 style="margin:16px 0 6px;font-size:15px">&#128218; Best sellers in this type</h3><div class="cols">${charts}</div>` : ""}</section>`;
 }
 
 /* ---------- Search everything ---------- */
@@ -763,6 +795,9 @@ function seasonsHTML(limit){
     <div class="row" style="gap:6px;margin-bottom:12px">${SE_AUD.map(([k, l]) => `<button class="chipbtn" aria-pressed="${aud === k}" data-seaud="${k}">${l}</button>`).join("")}</div>
     <div class="grid">${list.map(e => seasonCard(e, aud)).join("")}</div></section>`;
 }
+document.addEventListener("click", e => { const b = e.target.closest("[data-gcc],[data-gcat],[data-baud],[data-bgen]"); if (!b) return;
+  if (b.dataset.gcc) store.set("gcc", b.dataset.gcc); if (b.dataset.gcat) store.set("gcat", b.dataset.gcat);
+  if (b.dataset.baud) { store.set("baud", b.dataset.baud); store.set("bgen", "all"); } if (b.dataset.bgen) store.set("bgen", b.dataset.bgen); render(); });
 document.addEventListener("click", e => { const b = e.target.closest("[data-seaud]"); if (!b) return; store.set("seaud", b.dataset.seaud); render(); });
 
 function renderEvents(){

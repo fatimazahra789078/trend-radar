@@ -168,6 +168,12 @@ Online: **https://fatimazahra789078.github.io/trend-radar/** (add `#today`, `#gi
 - **🎮 Games** – best models to remake (clone score), rising right now, new games already in the charts, hyper-casual
   publishers, game news, Steam most played / new, itch.io, top free games per country; each game has YouTube gameplay,
   TikTok, Google Play and App Store buttons.
+- **🎮 Games switches:** 🇺🇸 USA only / all countries and the game type (Puzzle, Casual, Simulation, Strategy, Action, Word…);
+  **👥 Most downloads right now** = new App Store ratings per day (about 1 rating per 50–100 downloads); **🔜 Coming soon on Steam**.
+  Google Play has no free data feed, so each game has a Google Play search button.
+- **📚 Book types:** Kids / Teens / Adults / Seasonal, then a genre (Romance, Thrillers, Cookbooks, Young adult fantasy…):
+  **what people type on Amazon** (Amazon's own suggestions in order – #1 is typed most; Amazon gives no numbers) and the US
+  best sellers of that genre (Apple Books).
 - **📚 Books** – book ideas from the repeating trends (Amazon / Kindle buttons) and what sells now on the Apple Books charts.
 - **🔍 Search everything** – the box in the header (Ctrl+K) searches trends, headlines, games, GitHub repos, AI models,
   books and sent alerts at once; clearing it returns to the tab you were on.
