@@ -42,19 +42,33 @@ class Dates(unittest.TestCase):
 
 
 class QuietAndBudget(unittest.TestCase):
-    def setUp(self):
-        self.c = cfg(quiet_hours=[0, 7], quiet_tz="Africa/Casablanca", alert_budget={"topic": 3})
+    # times are given already in the user's zone (quiet_tz=None): the tests do not depend on a tz database
+    LOCAL = timezone(timedelta(hours=1))
 
-    def test_quiet_uses_your_time_zone(self):
-        # Casablanca is UTC+1: 23:30 UTC = 00:30 local -> quiet; 06:30 UTC = 07:30 local -> not quiet
-        self.assertTrue(tr.in_quiet_hours(self.c, datetime(2026, 11, 11, 23, 30, tzinfo=UTC)))
-        self.assertFalse(tr.in_quiet_hours(self.c, datetime(2026, 11, 12, 6, 30, tzinfo=UTC)))
+    def setUp(self):
+        self.c = cfg(quiet_hours=[0, 7], quiet_tz=None, alert_budget={"topic": 3})
+
+    def test_quiet_hours(self):
+        self.assertTrue(tr.in_quiet_hours(self.c, datetime(2026, 11, 12, 0, 30, tzinfo=self.LOCAL)))
+        self.assertTrue(tr.in_quiet_hours(self.c, datetime(2026, 11, 12, 6, 59, tzinfo=self.LOCAL)))
+        self.assertFalse(tr.in_quiet_hours(self.c, datetime(2026, 11, 12, 7, 0, tzinfo=self.LOCAL)))
+        self.assertFalse(tr.in_quiet_hours(self.c, datetime(2026, 11, 11, 23, 59, tzinfo=self.LOCAL)))
+        self.assertTrue(tr.in_quiet_hours(cfg(quiet_hours=[22, 6], quiet_tz=None), datetime(2026, 1, 1, 23, 0, tzinfo=self.LOCAL)))
+
+    def test_time_zone_conversion(self):
+        try:
+            from zoneinfo import ZoneInfo
+            ZoneInfo("Africa/Casablanca")
+        except Exception:  # noqa: BLE001
+            self.skipTest("no tz database on this computer")
+        local = tr.local_now(cfg(quiet_tz="Africa/Casablanca"), datetime(2026, 7, 1, 12, 0, tzinfo=UTC))
+        self.assertIn(local.utcoffset(), (timedelta(0), timedelta(hours=1)))   # Morocco: UTC+0 or UTC+1
 
     def a(self, pr, kind="topic", title="x"):
         return tr.mk_alert(title, "l2", "l3", None, priority=pr, kind=kind)
 
     def test_budget(self):
-        now = datetime(2026, 11, 11, 12, 0, tzinfo=UTC)
+        now = datetime(2026, 11, 11, 12, 0, tzinfo=self.LOCAL)
         st = {}
         out = tr.apply_budget([self.a(3, title=f"t{i}") for i in range(5)], st, self.c, now)
         self.assertEqual(len(out), 2)                        # 60 % of 3 reached -> normal ones stop
@@ -67,11 +81,11 @@ class QuietAndBudget(unittest.TestCase):
 
     def test_night_hold_and_morning_summary(self):
         st = {}
-        night = datetime(2026, 11, 11, 23, 30, tzinfo=UTC)
+        night = datetime(2026, 11, 12, 0, 30, tzinfo=self.LOCAL)
         out = tr.apply_budget([self.a(3, title="A"), self.a(4, title="B"), self.a(5, title="URGENT")], st, self.c, night)
         self.assertEqual([x["title"] for x in out], ["URGENT"])
         self.assertEqual(len(st["night_held"]), 2)
-        out = tr.apply_budget([], st, self.c, datetime(2026, 11, 12, 7, 30, tzinfo=UTC))
+        out = tr.apply_budget([], st, self.c, datetime(2026, 11, 12, 7, 30, tzinfo=self.LOCAL))
         self.assertEqual(len(out), 1)
         self.assertIn("While you slept: 2", out[0]["title"])
         self.assertEqual(st["night_held"], [])

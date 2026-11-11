@@ -2333,8 +2333,8 @@ def local_now(cfg, now):
         try:
             from zoneinfo import ZoneInfo
             return now.astimezone(ZoneInfo(tz))
-        except Exception:  # noqa: BLE001 - no tz database: fall back to the offset in config
-            return now.astimezone(timezone(timedelta(hours=cfg.get("quiet_utc_offset", 1))))
+        except Exception:  # noqa: BLE001 - no tz database (Windows): the PC's own time zone is the user's
+            return now.astimezone()
     return now
 
 
