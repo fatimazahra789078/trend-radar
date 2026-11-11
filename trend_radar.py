@@ -1700,7 +1700,7 @@ def update_state(topics, state, now):
         rec["sig"] = t["sig"][:20]
         rec["name"] = t["name"]
         if hour not in rec["hours"]:
-            rec["hours"] = (rec["hours"] + [hour])[-300:]
+            rec["hours"] = (rec["hours"] + [hour])[-100:]
         if day not in rec["days"]:
             rec["days"] = (rec["days"] + [day])[-60:]
         rec["prev_score"] = rec.get("last_score", 0)
