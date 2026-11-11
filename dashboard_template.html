@@ -149,7 +149,10 @@ code{background:var(--chip);border-radius:5px;padding:1px 6px}
       <div class="status" id="status"></div>
       <div class="clocks" id="clocks"></div>
     </div>
-    <nav class="tabs" role="tablist" id="tabs"></nav>
+    <div class="row" style="align-items:center;gap:8px">
+      <nav class="tabs" role="tablist" id="tabs" style="flex:1"></nav>
+      <input class="search notranslate" id="gq" type="search" placeholder="&#128269; Search everything..." autocomplete="off" style="max-width:240px">
+    </div>
   </div>
 </header>
 <main class="wrap" id="main"></main>
@@ -207,7 +210,10 @@ function tabs(){
   n.ai = "";
   n.today = "";
   n.github = ((DATA.github || {}).daily || []).length || "";
-  const T = [["today","&#127919; Make today"],["trends","Trends"],["ideas","&#128161; Ideas"],["news","Top news"],["disasters","&#127757; Disasters"],["ai","&#127916; AI tools"],["github","&#128025; GitHub"],["watch","Watchlist"],["sports", (DATA.sports||[]).some(g=>g.state==="in") ? "Sports &#128308;" : "Sports"],
+  n.games = ((DATA.games || {}).rising || []).length || "";
+  n.books = "";
+  n.search = "";
+  const T = [["today","&#127919; Make today"],["trends","Trends"],["ideas","&#128161; Ideas"],["news","Top news"],["disasters","&#127757; Disasters"],["ai","&#127916; AI tools"],["github","&#128025; GitHub"],["games","&#127918; Games"],["books","&#128218; Books"],["watch","Watchlist"],["sports", (DATA.sports||[]).some(g=>g.state==="in") ? "Sports &#128308;" : "Sports"],
              ["charts","Charts"],["events","Upcoming"],["sites","Best sites"],["history","Sent"]];
   $("#tabs").innerHTML = T.map(([id,l]) => `<button class="tab" role="tab" data-tab="${id}" aria-selected="${state.tab===id}">${l}${n[id]!==""?`<span class="n">${n[id]}</span>`:""}</button>`).join("");
   $("#tabs").onclick = e => { const b = e.target.closest(".tab"); if (!b) return; state.tab = b.dataset.tab; store.set("tab", state.tab); tabs(); render(); window.scrollTo(0,0); };
@@ -481,6 +487,128 @@ function renderGitHub(){
     <div class="links" style="margin-top:16px">${A("https://github.com/trending", "GitHub trending")}${A("https://github.com/trending?since=weekly", "This week")}${A("https://github.com/topics/text-to-video", "Topic: text-to-video")}${A("https://github.com/topics/comfyui", "Topic: ComfyUI")}</div>`;
 }
 
+/* ---------- Games: what is rising, what you could remake ---------- */
+const GCC = {us:"&#127482;&#127480; USA", de:"&#127465;&#127466; Germany", gb:"&#127468;&#127463; UK", fr:"&#127467;&#127479; France", it:"&#127470;&#127481; Italy", es:"&#127466;&#127480; Spain"};
+const GCHART = {topfree:"Top free", new:"New games", topgrossing:"Top grossing"};
+const gq = s => encodeURIComponent(s);
+function gameLinks(g){
+  const q = gq(g.name.replace(/[:!\-–].*$/, "").trim() + " gameplay");
+  return `<div class="links">${A(g.url, "App Store")}${A("https://www.youtube.com/results?search_query=" + q, "YouTube gameplay")}${A("https://www.tiktok.com/search/video?q=" + gq(g.name), "TikTok")}${A("https://play.google.com/store/search?q=" + gq(g.name) + "&c=apps", "Google Play")}${A("https://www.google.com/search?q=" + gq(g.name + " " + (g.publisher || "") + " game"), "Search")}</div>`;
+}
+function gameCard(g, i){
+  const chartTxt = Object.entries(g.charts || {}).filter(([k]) => k.endsWith(":topfree")).sort((a, b) => a[1] - b[1]).map(([k, v]) => `${(GCC[k.split(":")[0]] || k).split(" ")[0]} #${v}`).join(" ");
+  const badges = [g.new_entry ? `<span class="badge b-live">New in chart</span>` : "", g.climb >= 5 ? `<span class="badge b-new">&#9650; +${g.climb}</span>` : "",
+    g.hyper ? `<span class="badge b-watch">Hyper-casual publisher</span>` : "", g.simple ? `<span class="badge b-trend">Simple mechanic</span>` : "",
+    g.age_d != null && g.age_d <= 120 ? `<span class="badge b-story">${g.age_d <= 30 ? "Released this month" : "Released " + Math.round(g.age_d / 30) + " months ago"}</span>` : ""].join(" ");
+  const shots = (g.shots || []).slice(0, 3).map(u => `<img src="${esc(u)}" alt="" loading="lazy" referrerpolicy="no-referrer" style="height:120px;border-radius:8px">`).join("");
+  return `<article class="card ${i === 0 ? "t2" : "t1"}">
+    <div class="row">${i != null ? `<span class="rank">#${i + 1}</span>` : ""}${badges}<span class="score" title="Clone score: new + rising + simple genre + small download + small publisher">&#129513; ${g.clone}</span></div>
+    <div class="head"><h3>${esc(g.name)}</h3>${g.icon ? `<img src="${esc(g.icon)}" alt="" loading="lazy" referrerpolicy="no-referrer" style="width:56px;height:56px;border-radius:12px">` : ""}</div>
+    <div class="meta">${esc((g.genres || []).join(" / ") || "Game")} · ${esc(g.publisher)}${g.mb ? ` · ${g.mb} MB` : ""}${g.ratings ? ` · ${Number(g.ratings).toLocaleString("en-US")} ratings${g.rating ? " (" + Number(g.rating).toFixed(1) + "★)" : ""}` : ""}${g.released ? ` · released ${g.released}` : ""}</div>
+    ${chartTxt ? `<div class="meta">&#128200; ${chartTxt}</div>` : ""}
+    ${g.desc ? `<div class="sum">${esc(g.desc)}</div>` : ""}
+    ${shots ? `<div class="row" style="gap:6px;overflow-x:auto">${shots}</div>` : ""}
+    ${gameLinks(g)}
+  </article>`;
+}
+function renderGames(){
+  const G = DATA.games || {};
+  const q = state.q.trim().toLowerCase();
+  const match = g => !q || (g.name + " " + (g.publisher || "") + " " + (g.genres || []).join(" ")).toLowerCase().includes(q);
+  const clone = (G.clone || []).filter(match).slice(0, 12), rising = (G.rising || []).filter(match).slice(0, 12), newG = (G.new || []).filter(match).slice(0, 12), hyper = (G.hyper || []).filter(match).slice(0, 12);
+  const news = DATA.topics.filter(t => t.category === "Gaming").slice(0, 8);
+  const steam = (G.steam || []).slice(0, 25).map(s => `<li>${A(s.url, esc(s.term))} ${s.move > 0 ? `<span class="badge b-new">&#9650; ${s.move}</span>` : s.move < 0 ? `<span class="badge b-low">&#9660; ${-s.move}</span>` : s.last_week === 0 ? `<span class="badge b-live">New</span>` : ""}<small>#${s.rank} · peak ${Number(s.peak || 0).toLocaleString("en-US")} players</small></li>`).join("");
+  const sl = G.steam_lists || {};
+  const steamNew = (sl.new || []).slice(0, 12).map(s => `<li>${A(s.url, esc(s.term))}<small>${s.price ? "$" + s.price : "free"}${s.discount ? " · -" + s.discount + "%" : ""}</small></li>`).join("");
+  const itch = (G.itch || []).map(s => `<li>${A(s.url, esc(s.term))}<small>${esc((s.tags || []).join(" · "))}</small></li>`).join("");
+  const charts = Object.entries(G.charts || {}).filter(([k]) => k.endsWith(":topfree")).map(([k, list]) => `<section class="box"><h2>${GCC[k.split(":")[0]] || k} - top free games</h2><ol>${list.slice(0, 15).map(x => `<li>${A(x.url, esc(x.name))}<small>${esc(x.publisher)}</small></li>`).join("")}</ol></section>`).join("");
+  const pubs = (G.pubs || []).map(([p, n]) => `<span class="cc">${esc(p)} · ${n}</span>`).join(" ");
+  const sec = (title, hint, list) => list.length ? `<section style="margin-top:22px"><h2 style="margin:0 0 4px;font-size:17px">${title}</h2><p class="hint" style="margin:0 0 12px">${hint}</p><div class="grid">${list.map(gameCard).join("")}</div></section>` : "";
+  $("#main").innerHTML = `<p class="hint" style="margin-top:16px">Mobile games from the App Store <b>game charts</b> (USA, Germany, UK, France: top free, new, top grossing), Steam and itch.io. <b>&#129513; Clone score</b> = how good a model this game is for one you could make yourself: new + climbing + simple mechanic (puzzle, casual, arcade, word) + small download + small or hyper-casual publisher (Voodoo, Homa, Rollic, SayGames...). Big studios (Supercell, King, Epic...) score low. You get a &#127918; GAME notification when a game is new in the top free list or climbs 15+ places. Phone channel: your topic + <code>-games</code>.</p>
+    ${pubs ? `<div class="meta" style="margin:8px 0 0">Publishers with the most games in the top 100 right now: ${pubs}</div>` : ""}
+    ${sec("&#129513; Best models to remake", "Ranked by clone score. Check the mechanic in the gameplay video, then make your own version with a different theme.", clone)}
+    ${sec("&#128640; Rising right now", "New in a top-free list or climbing fast - the market is pulling these this week.", rising)}
+    ${sec("&#127381; New games already in the charts", "Released in the last 4 months and already in a top-free list - the freshest proven ideas.", newG)}
+    ${sec("&#9889; Hyper-casual publishers", "Games from publishers who copy and launch fast (Voodoo, Homa, Rollic, SayGames, Grand Games...). What they push is what spreads.", hyper)}
+    ${news.length ? `<section style="margin-top:22px"><h2 style="margin:0 0 10px;font-size:17px">&#128240; Game news trending</h2><div class="grid">${news.map(card).join("")}</div></section>` : ""}
+    <h2 style="margin:22px 0 4px;font-size:17px">&#128187; PC: Steam most played this week <small class="muted" style="font-size:12px">(&#9650; = up vs last week)</small></h2>
+    <div class="cols"><section class="box"><h2>Most played</h2><ol>${steam || "<li class='muted'>No data yet</li>"}</ol></section>
+      <section class="box"><h2>New on Steam</h2><ol>${steamNew || "<li class='muted'>No data yet</li>"}</ol></section>
+      <section class="box"><h2>itch.io featured (indie)</h2><ol>${itch || "<li class='muted'>No data yet</li>"}</ol></section></div>
+    ${charts ? `<h2 style="margin:22px 0 4px;font-size:17px">&#128241; Top free games per country</h2><div class="cols">${charts}</div>` : ""}
+    <div class="links" style="margin-top:16px">${A("https://apps.apple.com/us/charts/iphone/games-apps/6014", "App Store charts")}${A("https://play.google.com/store/games?device=phone", "Google Play games")}${A("https://store.steampowered.com/charts/", "Steam charts")}${A("https://www.pocketgamer.biz/", "PocketGamer.biz")}${A("https://www.voodoo.io/games", "Voodoo games")}</div>`;
+}
+
+/* ---------- Books: what sells, what to write (Amazon KDP) ---------- */
+const BOOK_IDEAS = {
+  "Tech & AI": ["%s for beginners: a simple guide", "Make money with %s: 50 ideas", "%s prompts and workflows notebook"],
+  "AI video & image": ["%s: the complete beginner's guide", "100 prompts for %s (with examples)"],
+  "Business": ["%s explained simply: what it means for your money", "%s workbook and planner"],
+  "Sports": ["%s: the story of the season (fan book)", "%s coloring and activity book for kids"],
+  "Movies & TV": ["Unofficial %s quiz and trivia book", "%s fan journal and watch log"],
+  "Music": ["%s lyrics journal and fan workbook", "Unofficial %s trivia book"],
+  "Gaming": ["Unofficial %s guide, tips and tricks", "%s activity and puzzle book for kids"],
+  "Celebs & viral": ["%s: the viral story explained", "%s quotes and journal"],
+  "Natural disasters": ["%s preparedness checklist and family plan", "Emergency planner: lessons from %s"],
+  "General": ["%s explained in 100 pages", "%s journal and workbook"],
+};
+const KDP_SAFE = new Set(["Tech & AI", "AI video & image", "Business", "Natural disasters", "General", "Gaming"]);
+function renderBooks(){
+  const B = (DATA.games || {}).books || {};
+  const q = state.q.trim().toLowerCase();
+  const row = b => `<li>${A(b.url, esc(b.term))}${b.new_entry ? ` <span class="badge b-live">New in chart</span>` : ""}<small>${esc(b.author)}${(b.genres || []).length ? " · " + esc(b.genres.join(", ")) : ""}${b.released ? " · " + b.released : ""}</small></li>`;
+  const charts = Object.entries(B).sort().map(([k, list]) => { const [cc, ch] = k.split(":"); const l = list.filter(b => !q || (b.term + " " + b.author + " " + (b.genres || []).join(" ")).toLowerCase().includes(q)).slice(0, 15);
+    return l.length ? `<section class="box"><h2>${GCC[cc] || cc} - ${ch === "top-paid" ? "best sellers (paid)" : "top free"}</h2><ol>${l.map(row).join("")}</ol></section>` : ""; }).join("");
+  const genreCount = {};
+  for (const list of Object.values(B)) for (const b of list.slice(0, 30)) for (const g of (b.genres || [])) genreCount[g] = (genreCount[g] || 0) + 1;
+  const genres = Object.entries(genreCount).sort((a, b) => b[1] - a[1]).slice(0, 14).map(([g, n]) => `<span class="cc ${n >= 8 ? "focus" : ""}">${esc(g)} · ${n}</span>`).join(" ");
+  const T = DATA.topics.filter(t => (t.tier > 0 || t.days_seen >= 2) && !t.story).slice(0, 60);
+  const ideas = T.filter(t => isRepeat(t) || t.tier === 2).slice(0, 12).map(t => {
+    const n = t.name.replace(/^#/, "");
+    const list = BOOK_IDEAS[t.category] || BOOK_IDEAS.General;
+    const safe = KDP_SAFE.has(t.category) && !/^[A-Z][\p{L}'.-]+( [A-Z][\p{L}'.-]+){1,2}$/u.test(n);   // a person's name = brand risk
+    return `<article class="card t1"><div class="row"><span class="cat">${esc(t.category)}</span>${repBadge(t)}${safe ? "" : `<span class="badge b-hot">&#9888; names / brands</span>`}</div>
+      <div class="head"><h3>${esc(n)}</h3></div>
+      <div class="idea">${list.map(s => `<p>&#128214; ${esc(s.replace("%s", n))}</p>`).join("")}</div>
+      <div class="meta">${safe ? "Low-content and guide books are the fastest to make (journal, workbook, checklist, quiz)." : "A real person, team or brand: KDP removes books that use trademarked names or photos - keep it unofficial, no logos, no copied text."}</div>
+      <div class="links">${A("https://www.amazon.com/s?k=" + gq(n + " book") + "&i=stripbooks", "Amazon books")}${A("https://www.amazon.com/s?k=" + gq(n) + "&i=digital-text", "Kindle")}${A("https://www.google.com/search?q=" + gq(n + " book"), "Google")}${A(t.url, "Trend")}</div></article>`;
+  }).join("");
+  $("#main").innerHTML = `<p class="hint" style="margin-top:16px">For Amazon KDP. Amazon has no free data feed and blocks robots, so the radar reads the <b>Apple Books charts</b> (USA, UK, Germany - the same titles sell on Amazon) and turns the trends into book ideas. Every idea has one-click <b>Amazon</b> and <b>Kindle</b> search buttons to check the competition.</p>
+    ${genres ? `<div class="meta" style="margin:8px 0 0">Genres selling most right now: ${genres}</div>` : ""}
+    <section style="margin-top:22px"><h2 style="margin:0 0 4px;font-size:17px">&#128161; Book ideas from the trends</h2><p class="hint" style="margin:0 0 12px">Trends that keep repeating or are very hot - people search them for weeks, long enough to write and publish.</p><div class="grid">${ideas || `<div class="empty">No strong ideas right now.</div>`}</div></section>
+    <h2 style="margin:22px 0 4px;font-size:17px">&#128218; What sells now (Apple Books charts)</h2><div class="cols">${charts || `<div class="muted">No data yet - it appears after the next check.</div>`}</div>
+    <div class="links" style="margin-top:16px">${A("https://www.amazon.com/gp/bestsellers/books", "Amazon best sellers")}${A("https://www.amazon.com/gp/movers-and-shakers/books", "Amazon movers & shakers (climbing now)")}${A("https://www.amazon.com/gp/new-releases/books", "Amazon new releases")}${A("https://kdp.amazon.com/", "KDP")}${A("https://books.google.com/", "Google Books")}</div>`;
+}
+
+/* ---------- Search everything ---------- */
+function renderSearch(){
+  const q = state.q.trim().toLowerCase();
+  if (!q) { $("#main").innerHTML = `<div class="empty">Type something in the search box: trends, headlines, games, GitHub repos, AI models, books, sent alerts.</div>`; return; }
+  const has = s => String(s || "").toLowerCase().includes(q);
+  const topics = DATA.topics.filter(t => has(t.name + " " + t.related.join(" ") + " " + (t.context || "") + " " + t.news.map(n => n.t).join(" "))).slice(0, 12);
+  const heads = [];
+  for (const [c, list] of Object.entries(DATA.headlines || {})) for (const h of list) if (has(h.t)) heads.push({ ...h, c });
+  const G = DATA.games || {}, GH = DATA.github || {}, AI = (DATA.ai || {}).models || {};
+  const games = [...(G.clone || []), ...(G.rising || []), ...(G.new || [])].filter((g, i, a) => a.findIndex(x => x.id === g.id) === i).filter(g => has(g.name + " " + g.publisher + " " + (g.genres || []).join(" "))).slice(0, 8);
+  const repos = [...(GH.daily || []), ...(GH.weekly || []), ...Object.values(GH.new || {}).flat()].filter((r, i, a) => a.findIndex(x => x.id === r.id) === i).filter(r => has(r.id + " " + r.desc)).slice(0, 10);
+  const models = Object.entries(AI).flatMap(([p, l]) => l.map(m => ({ ...m, p }))).filter(m => has(m.id)).slice(0, 10);
+  const books = Object.values(G.books || {}).flat().filter((b, i, a) => a.findIndex(x => x.id === b.id) === i).filter(b => has(b.term + " " + b.author)).slice(0, 10);
+  const sent = (DATA.alerts || []).filter(a => has(a.title)).slice(0, 15);
+  const li = (u, t, s) => `<li>${u ? A(u, esc(t)) : esc(t)}${s ? `<small>${s}</small>` : ""}</li>`;
+  const box = (title, items) => items ? `<section class="box"><h2>${title}</h2><ol>${items}</ol></section>` : "";
+  const n = topics.length + heads.length + games.length + repos.length + models.length + books.length + sent.length;
+  $("#main").innerHTML = `<p class="hint" style="margin-top:16px">${n} results for “${esc(state.q.trim())}”</p>
+    ${topics.length ? `<div class="grid">${topics.map(card).join("")}</div>` : ""}
+    <div class="cols" style="margin-top:14px">
+      ${box("&#128240; Headlines", heads.slice(0, 20).map(h => li(h.u, h.t, `${esc(h.s)} · ${esc(h.c)}${h.a != null ? " · " + ago(h.a) + " ago" : ""}`)).join(""))}
+      ${box("&#127918; Games", games.map(g => li(g.url, g.name, `${esc(g.publisher)} · clone ${g.clone}`)).join(""))}
+      ${box("&#128025; GitHub", repos.map(r => li(r.url, r.id, esc(r.desc || ""))).join(""))}
+      ${box("&#129303; AI models", models.map(m => li(m.u, m.id, esc(m.p))).join(""))}
+      ${box("&#128218; Books", books.map(b => li(b.url, b.term, esc(b.author))).join(""))}
+      ${box("&#128276; Sent alerts", sent.map(a => li(a.url && a.url.startsWith("http") ? a.url : "", a.title, fmtDay(a.at))).join(""))}
+    </div>${n ? "" : `<div class="empty">Nothing found.</div>`}`;
+}
+
 /* ---------- AI tools (video / image / voice) ---------- */
 const PIPE = {"text-to-video":"&#127916; Text to video","image-to-video":"&#127902;&#65039; Image to video","text-to-image":"&#128444;&#65039; Text to image","text-to-speech":"&#127908; Voice (text to speech)"};
 function renderAI(){
@@ -622,7 +750,7 @@ function renderHistory(){
 
 function render(){
   $("#main").onclick = null;
-  ({today: renderToday, trends: renderTrends, ideas: renderIdeas, news: renderHeadlines, disasters: renderDisasters, ai: renderAI, github: renderGitHub, watch: renderWatch, sports: renderSports, charts: renderCharts,
+  ({today: renderToday, trends: renderTrends, ideas: renderIdeas, news: renderHeadlines, disasters: renderDisasters, ai: renderAI, github: renderGitHub, games: renderGames, books: renderBooks, search: renderSearch, watch: renderWatch, sports: renderSports, charts: renderCharts,
     events: renderEvents, sites: renderSites, history: renderHistory}[state.tab] || renderTrends)();
 }
 
@@ -646,13 +774,20 @@ setInterval(() => { if (Date.now() - idle > 8*60000) location.reload(); }, 60000
 function fromHash(){
   const h = (location.hash || "").slice(1).toLowerCase();
   if (["us","de","eu","gb","fr","it","es"].includes(h)){ state.tab = "trends"; state.filter = h; state.cat = "all"; }
-  else if (["sports","disasters","ideas","news","watch","charts","events","ai","today","github"].includes(h)) state.tab = h;
+  else if (["sports","disasters","ideas","news","watch","charts","events","ai","today","github","games","books","search"].includes(h)) state.tab = h;
   else return false;
   store.set("tab", state.tab); store.set("filter", state.filter); return true;
 }
 addEventListener("hashchange", () => { if (fromHash()){ tabs(); render(); window.scrollTo(0,0); } });
 
-if (DATA){ fromHash(); header(); tabs(); render(); footer(); }
+if (DATA){ fromHash(); header(); tabs(); render(); footer();
+  // global search: typing opens the Search tab; clearing it goes back to the tab you were on
+  const gq = $("#gq"); let backTab = state.tab === "search" ? "trends" : state.tab;
+  gq.oninput = () => { const v = gq.value; if (v.trim()) { if (state.tab !== "search") backTab = state.tab; state.tab = "search"; state.q = v; }
+    else { state.tab = backTab; state.q = ""; } tabs(); render(); };
+  gq.onkeydown = e => { if (e.key === "Escape") { gq.value = ""; gq.oninput(); } };
+  addEventListener("keydown", e => { if ((e.ctrlKey || e.metaKey) && e.key === "k") { e.preventDefault(); gq.focus(); gq.select(); } });
+}
 else { $("#main").innerHTML = `<div class="empty">No data yet - run a check first.</div>`; }
 </script>
 </body>

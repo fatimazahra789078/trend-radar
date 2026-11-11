@@ -53,6 +53,7 @@ Notifications that arrived while the computer was asleep are shown when it wakes
 | 🌐 Trends in my language | translates the whole dashboard and the notifications from English (Arabic, French, Spanish, German, Italian, Portuguese, Turkish, Dutch) – trend names keep the original next to the translation | free Google Translate, no key, does not use Gemini |
 | ▶️ YouTube API key | YouTube competition check for the top USA topics in 🎯 Make today | free quota (10,000 units / day) |
 | **Test** buttons | green = the key works, red = what is wrong | free (YouTube: 1 unit) |
+| 🔔 Inbox (Ctrl+I) | every notification stays readable – the ones that popped up and the ones your filters skipped – with search and unread count; the tray icon opens it when something is unread | free |
 
 ## 2. Phone (ntfy)
 
@@ -73,6 +74,7 @@ Pick the **channels** you want (your topic + an ending):
 | `your-topic-eu` | Europe (UK, France, Italy, Spain…) – trending and up |
 | `your-topic-sports` | sports results and sports trends |
 | `your-topic-disasters` | natural disasters + breaking news |
+| `your-topic-games` | mobile games rising in the App Store charts (GAME alerts) |
 | `your-topic-ai` | AI video / image / voice tools: new models + news (Seedance, Kling, Veo, LTX, Wan...) + GitHub repos everyone is starring |
 
 Example – **USA only**: subscribe to `your-topic-us` and nothing else.
@@ -103,6 +105,14 @@ Tip: open the dashboard on the phone and choose **Add to Home screen** – it th
   Hugging Face** (text-to-video, image-to-video, text-to-image, text-to-speech – most run free on your own PC with
   ComfyUI) · TechCrunch AI, The Verge AI, The Decoder, Reddit r/aivideo. The dashboard tab **🎬 AI tools** also has a
   tools guide (`ai_tools.json`, edit it freely).
+- **Games:** the App Store **game charts** (Games only) for the USA, Germany, UK and France – top free, new games, top
+  grossing – with each game's genre, size, ratings and release date (iTunes lookup), **Steam** most played (with last
+  week's rank) + new releases + top sellers, **itch.io** featured, and game news (PocketGamer.biz, MobileGamer.biz, Game
+  Developer). Every game gets a **🧩 clone score**: new + climbing + simple mechanic (puzzle / casual / arcade / word) +
+  small download + small or hyper-casual publisher (Voodoo, Homa, Rollic, SayGames…). Settings: `config.json` → `games`.
+- **Books (Amazon KDP):** Amazon has no free data feed and blocks robots, so the radar reads the **Apple Books** charts
+  (USA, UK, Germany: best sellers + top free) and turns repeating trends into book ideas, each with Amazon / Kindle
+  search buttons and a warning when a name or brand is involved.
 - **GitHub:** the repos with the most new stars today and this week (github.com/trending, all languages) and the
   most-starred **new** repos of the last 30 days for AI video, video generation, AI images, ComfyUI, AI voice, AI agents,
   LLM tools and MCP / Claude tools (GitHub search). Shown in the **🎬 AI tools** tab. Change the topics and limits in
@@ -132,6 +142,7 @@ If a source fails (for example Reddit refusing servers), the radar continues wit
 | 🎬 NEW AI MODEL | a new open AI video / image / voice model reached the top 5 on Hugging Face |
 | 🏆 TODAY'S TOP 3 VIDEOS | twice a day (06:00 and 15:00 UTC): the 3 best videos to make now – phase, time left, YouTube competition, what people search |
 | ✈️ NOT IN GERMANY YET | trending in the USA / UK for 2+ hours but not yet in Germany / France / Italy / Spain – make that language version first |
+| 🎮 GAME RISING | a mobile game is new in a country's top-free games list or climbed 15+ places (not a big studio) – see the Games tab |
 | ⭐ GITHUB TRENDING / 🆕 NEW ON GITHUB | a repo entered the top 10 of GitHub Trending with 300+ new stars today, or a repo younger than 30 days passed 1,000 stars (very important if it is an AI tool with 1,500+ stars today) |
 
 "also: …" means several trends about the same story were grouped into one notification.
@@ -146,6 +157,12 @@ articles in the last hours + number of countries + how long it keeps coming back
 Online: **https://fatimazahra789078.github.io/trend-radar/** (add `#today`, `#github`, `#us`, `#de`, `#eu`, `#disasters`,
 `#sports`, `#ai` or `#ideas` to open a page directly).
 
+- **🎮 Games** – best models to remake (clone score), rising right now, new games already in the charts, hyper-casual
+  publishers, game news, Steam most played / new, itch.io, top free games per country; each game has YouTube gameplay,
+  TikTok, Google Play and App Store buttons.
+- **📚 Books** – book ideas from the repeating trends (Amazon / Kindle buttons) and what sells now on the Apple Books charts.
+- **🔍 Search everything** – the box in the header (Ctrl+K) searches trends, headlines, games, GitHub repos, AI models,
+  books and sent alerts at once; clearing it returns to the tab you were on.
 - **🎯 Make today** – which video to make **now**. Every topic gets a **video score** = trend strength × freshness ×
   phase × YouTube competition × categories that get views (+ a bonus when it has not reached your other countries yet):
   - **Phase:** 🌱 rising (about 6–12 h left) · 🔥 at the peak (about 3–6 h left) · 📉 falling (only with a new angle)

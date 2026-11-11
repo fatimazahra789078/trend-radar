@@ -11,5 +11,7 @@ contextBridge.exposeInMainWorld("tr", {
   geminiModels: (key) => ipcRenderer.invoke("gemini:models", key),
   geminiTestAll: (key) => ipcRenderer.invoke("gemini:testAll", key),
   briefGet: () => ipcRenderer.invoke("brief:get"),
+  inboxGet: () => ipcRenderer.invoke("inbox:get"),
+  inboxRead: (id) => ipcRenderer.invoke("inbox:read", id),
   open: (u) => ipcRenderer.invoke("open:url", u),
 });

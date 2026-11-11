@@ -34,7 +34,7 @@
   "repeat_notify_days": [2, 3, 5, 7],
   "_repeat_help": "STILL TRENDING = a notification when a trend is still big on day 2, 3, 5 and 7.",
   "max_toasts_per_run": 4,
-  "max_extra_toasts": 4,
+  "max_extra_toasts": 3,
   "renotify_hours": 4,
   "digest_hours": 3,
   "catchup_after_hours": 1.5,
@@ -46,7 +46,7 @@
                 "tesla", "elon musk", "spacex", "apple", "iphone", "super bowl", "taylor swift", "netflix", "openai"],
   "_watchlist_help": "Words you care about. Each one gets its own news search; you get a notification when there is new news (max once per watch_cooldown_hours) and immediately when it spikes.",
   "watch_news_editions": ["US"],
-  "watch_cooldown_hours": 6,
+  "watch_cooldown_hours": 12,
   "watch_spike_articles": 10,
 
   "google_trends_geos": ["US", "DE", "AT", "CH", "GB", "FR", "IT", "ES", "NL"],
@@ -79,7 +79,7 @@
     {"name": "franceinfo", "country": "FR", "url": "https://www.francetvinfo.fr/titres.rss"},
     {"name": "ANSA", "country": "IT", "url": "https://www.ansa.it/sito/notizie/topnews/topnews_rss.xml"},
     {"name": "Corriere", "country": "IT", "url": "https://xml2.corriereobjects.it/rss/homepage.xml"},
-    {"name": "Repubblica", "country": "IT", "url": "https://www.repubblica.it/rss/homepage/rss2.0.xml"},
+    {"name": "Corriere della Sera", "country": "IT", "url": "https://xml2.corriereobjects.it/rss/homepage.xml"},
     {"name": "El País", "country": "ES", "url": "https://feeds.elpais.com/mrss-s/pages/ep/site/elpais.com/portada"},
     {"name": "RTVE", "country": "ES", "url": "https://api2.rtve.es/rss/temas_noticias.xml"},
     {"name": "20minutos", "country": "ES", "url": "https://www.20minutos.es/rss/"},
@@ -90,6 +90,9 @@
     {"name": "The Verge AI", "country": "US", "cat": "Tech & AI", "url": "https://www.theverge.com/rss/ai-artificial-intelligence/index.xml"},
     {"name": "The Decoder", "country": "DE", "cat": "Tech & AI", "url": "https://the-decoder.com/feed/"},
     {"name": "Reddit r/aivideo", "country": "US", "kind": "community", "cat": "AI video & image", "url": "https://www.reddit.com/r/aivideo/.rss"},
+    {"name": "PocketGamer.biz", "country": "US", "cat": "Gaming", "url": "https://www.pocketgamer.biz/index.rss"},
+    {"name": "MobileGamer.biz", "country": "US", "cat": "Gaming", "url": "https://mobilegamer.biz/feed/"},
+    {"name": "Game Developer", "country": "US", "cat": "Gaming", "url": "https://www.gamedeveloper.com/rss.xml"},
     {"name": "Reddit r/popular", "country": "US", "kind": "community", "url": "https://www.reddit.com/r/popular/.rss"},
     {"name": "Reddit r/de", "country": "DE", "kind": "community", "url": "https://www.reddit.com/r/de/.rss"}
   ],
@@ -131,6 +134,11 @@
   "youtube": {"countries": ["US"], "daily_units": 9000, "max_checks_per_run": 8, "recheck_hours": 4},
   "_youtube_check_help": "YouTube competition check. countries = where it checks (default only US, so the free quota is not spent on other countries). Add e.g. \"DE\" to check Germany too.",
   "_video_planner_help": "Which video to make now. Every topic gets a phase (rising / at the peak / falling) and a time window. 'Travel': trending in travel_from but not yet in travel_to (TRAVELING alert, make that language version first). With the YOUTUBE_API_KEY secret (free) the best candidates get a YouTube check: how many videos were uploaded about it in the last 24h (GO NOW / GOOD / BUSY / CROWDED). The free quota is 10,000 units a day; one check costs 101, the radar spreads ~85 checks over the day (daily_units). A 'TOP 3' notification comes at top3_hours_utc.",
+  "games": {
+    "enabled": true, "countries": ["us", "de", "gb", "fr"], "charts": ["topfree", "new", "topgrossing"],
+    "book_countries": ["us", "gb", "de"], "notify": true, "min_climb": 15, "max_alerts": 1
+  },
+  "_games_help": "Games tab: App Store game charts (Games only) per country, Steam most played / new, itch.io, Apple Books charts. A game that is NEW in the top free list or climbed min_climb places makes a 'GAME' notification (max_alerts per check). Phone channel: your topic + -games.",
   "github": {
     "enabled": true,
     "topics": ["text-to-video", "video-generation", "image-generation", "comfyui", "text-to-speech", "ai-agents", "llm", "mcp"],

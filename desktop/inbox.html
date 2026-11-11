@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline'; img-src 'self' data: https:">
+<title>Trend Radar - Inbox</title>
+<style>
+:root{--bg:#0a0f1d;--panel:#111a2e;--line:#23304f;--text:#e8edf7;--muted:#8e9bb8;--accent:#ff7a50;--ok:#38d996}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font:14px/1.5 "Segoe UI",system-ui,-apple-system,Arial,sans-serif;padding:0 0 30px}
+.bar{position:sticky;top:0;z-index:5;background:color-mix(in srgb,var(--bg) 92%,transparent);backdrop-filter:blur(8px);border-bottom:1px solid var(--line);padding:12px 18px;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+h1{font-size:17px;margin:0 10px 0 0}
+input[type=search]{flex:1;min-width:160px;background:#0d1424;border:1px solid var(--line);color:var(--text);border-radius:10px;padding:8px 11px;font:inherit}
+button{border:1px solid var(--line);background:#172240;color:var(--text);border-radius:10px;padding:7px 12px;font:inherit;font-weight:600;cursor:pointer}
+button.on{background:var(--accent);border-color:var(--accent);color:#fff}
+.list{padding:10px 18px}
+.day{color:var(--muted);font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;margin:16px 0 6px}
+.n{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:10px 14px;margin:6px 0;cursor:pointer;display:grid;grid-template-columns:1fr auto;gap:4px 12px}
+.n.unread{border-left:4px solid var(--accent)}
+.n.muted{opacity:.55}
+.n .t{font-weight:700}
+.n .b{white-space:pre-wrap;color:#c9d2e6;font-size:13px;grid-column:1/-1}
+.n .m{color:var(--muted);font-size:12px;text-align:right;white-space:nowrap}
+.tag{display:inline-block;font-size:10.5px;font-weight:800;border-radius:5px;padding:1px 6px;background:#1b2746;margin-right:4px;text-transform:uppercase}
+.empty{color:var(--muted);text-align:center;margin-top:60px}
+.p5 .t{color:#ff6b6b}.p4 .t{color:#ffb38f}
+</style>
+</head>
+<body>
+<div class="bar"><h1>🔔 Inbox <span id="cnt" style="color:var(--muted);font-weight:400;font-size:13px"></span></h1>
+  <input type="search" id="q" placeholder="Search notifications..." autocomplete="off">
+  <button id="fShown" class="on" title="Only the notifications that passed your filters (the ones that popped up)">Mine</button>
+  <button id="fAll" title="Everything the cloud sent, including what your filters skipped">All received</button>
+  <button id="fUnread">Unread</button>
+  <button id="read">Mark all read</button>
+</div>
+<div class="list" id="list"></div>
+<script>
+const $ = (s) => document.querySelector(s);
+const esc = (s) => String(s ?? "").replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+let items = [], mode = "shown";
+const day = (iso) => new Date(iso).toLocaleDateString([], { weekday: "long", day: "2-digit", month: "long" });
+const hm = (iso) => new Date(iso).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+function draw() {
+  const q = $("#q").value.trim().toLowerCase();
+  let l = items.filter((n) => mode === "all" || (mode === "unread" ? !n.read && n.shown : n.shown));
+  if (q) l = l.filter((n) => (n.title + " " + n.body + " " + (n.tags || []).join(" ")).toLowerCase().includes(q));
+  $("#cnt").textContent = `${l.length} · ${items.filter((n) => n.shown && !n.read).length} unread`;
+  let html = "", last = "";
+  for (const n of l) {
+    const d = day(n.at);
+    if (d !== last) { html += `<div class="day">${esc(d)}</div>`; last = d; }
+    html += `<div class="n ${n.read ? "" : "unread"} ${n.shown ? "" : "muted"} p${n.priority || 3}" data-id="${esc(n.id)}">
+      <div class="t">${esc(n.title)}</div><div class="m">${hm(n.at)}${n.shown ? "" : " · skipped by your filters"}</div>
+      <div class="b">${esc(n.body)}${(n.tags || []).length ? `<div style="margin-top:4px">${n.tags.map((t) => `<span class="tag">${esc(t)}</span>`).join("")}</div>` : ""}</div></div>`;
+  }
+  $("#list").innerHTML = html || `<div class="empty">${mode === "unread" ? "Nothing unread." : "No notifications yet - they appear here as they arrive, even when you miss the pop-up."}</div>`;
+}
+async function load() { items = await window.tr.inboxGet(); draw(); }
+$("#q").oninput = draw;
+for (const [id, m] of [["fShown", "shown"], ["fAll", "all"], ["fUnread", "unread"]]) $("#" + id).onclick = () => { mode = m; document.querySelectorAll(".bar button").forEach((b) => b.classList.toggle("on", b.id === id)); draw(); };
+$("#read").onclick = async () => { await window.tr.inboxRead("*"); load(); };
+$("#list").onclick = async (e) => {
+  const el = e.target.closest(".n"); if (!el) return;
+  const n = items.find((x) => x.id === el.dataset.id); if (!n) return;
+  await window.tr.inboxRead(n.id); n.read = true; el.classList.remove("unread");
+  if (n.click) window.tr.open(n.click);
+};
+load();
+setInterval(load, 30000);
+</script>
+</body>
+</html>

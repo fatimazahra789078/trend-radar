@@ -29,13 +29,14 @@ const TYPES = [
   ["GITHUB", "GitHub repos everyone is starring (trending + new AI tools)"],
   ["TOP 3", "Today's top 3 videos to make (twice a day)"],
   ["TRAVELING", "Trending in the USA / UK, not yet in your other countries - be first"],
+  ["GAME", "Mobile game new in the top free list or climbing fast (Games tab)"],
 ];
 // types added after 1.3.1: switched on for people who saved their types before
-const NEW_TYPES = ["GITHUB", "TOP 3", "TRAVELING"];
+const NEW_TYPES = ["GITHUB", "TOP 3", "TRAVELING", "GAME"];
 const IMPORTANCE = [[4, "Very important only", "Breaking, hot, just in, repeating trends, big disasters, briefing"],
                     [3, "Important + trending", "Also normal trends, top news, sports results, watchlist"],
                     [1, "Everything", "Also digests, music charts, reminders"]];
-const COUNTRYLESS_OK = ["WATCHLIST", "BRIEFING", "DIGEST", "SUMMARY", "AI MODEL", "AI TOOLS", "GITHUB", "TOP 3"];
+const COUNTRYLESS_OK = ["WATCHLIST", "BRIEFING", "DIGEST", "SUMMARY", "AI MODEL", "AI TOOLS", "GITHUB", "TOP 3", "GAME"];
 const ICON = path.join(__dirname, "build", "icon.png");
 const START_HIDDEN = process.argv.includes("--hidden");
 
@@ -148,13 +149,14 @@ function buildTray() {
   if (!tray) {
     tray = new Tray(img);
     tray.setToolTip("Trend Radar");
-    tray.on("click", () => showDashboard());
+    tray.on("click", () => (inboxUnread() ? showInbox() : showDashboard()));   // unread -> inbox
   }
   const paused = Date.now() < pausedUntil;
   const only = (list) => cfg.countries.length === list.length && list.every((c) => cfg.countries.includes(c));
   const all = COUNTRIES.map(([v]) => v);
   tray.setContextMenu(Menu.buildFromTemplate([
     { label: "Open Trend Radar", click: () => showDashboard() },
+    { label: `🔔 Inbox${inboxUnread() ? ` (${inboxUnread()} unread)` : ""}`, click: showInbox },
     { type: "separator" },
     { label: "🎯 Make today (top videos)", click: () => showDashboard("today") },
     { label: "💡 Video ideas", click: () => showDashboard("ideas") },
@@ -234,6 +236,7 @@ function handleMessage(ev) {
   if ((ev.tags || []).includes("BRIEFING")) { cfg.lastCloudBrief = now; saveCfg(); }
   const ok = now >= pausedUntil && passes(ev);
   if (process.env.TR_DEBUG) console.log(`[filter] ${ok ? "SHOW" : "skip"} p=${ev.priority} tags=${(ev.tags || []).join(",")} ${ev.title}`);
+  inboxAdd(ev, ok);
   if (!ok) return;
   const tags = ev.tags || [];
   const flags = tags.map((t) => FLAGS[t]).filter(Boolean).join("");
@@ -244,8 +247,44 @@ function handleMessage(ev) {
     click: ev.click, urgent: (ev.priority || 3) >= 5,
   });
   // your language: translated with free Google Translate (falls back to English after 8 s)
-  if (cfg.trLang) translateNotif(ev.title || "", ev.message || "").then(([t, b]) => show(t, b)).catch(() => show(ev.title, ev.message));
+  if (cfg.trLang) translateNotif(ev.title || "", ev.message || "").then(([t, b]) => { show(t, b); inboxTranslate(ev, t, b); }).catch(() => show(ev.title, ev.message));
   else show(ev.title, ev.message);
+}
+
+// ---------------------------------------------------------------- inbox: every notification stays readable (also the ones you missed)
+const inboxFile = () => path.join(app.getPath("userData"), "inbox.json");
+let inbox = null, inboxWin = null;
+function inboxLoad() { if (inbox) return inbox; try { inbox = JSON.parse(fs.readFileSync(inboxFile(), "utf8")); } catch { inbox = []; } return inbox; }
+function inboxSave() { try { fs.writeFileSync(inboxFile(), JSON.stringify(inbox.slice(-1500))); } catch {} }
+function inboxAdd(ev, shown) {
+  const list = inboxLoad();
+  const id = String(ev.id || crypto.createHash("sha1").update((ev.title || "") + "|" + (ev.message || "") + "|" + (ev.time || "")).digest("hex").slice(0, 16));
+  if (list.some((n) => n.id === id)) return;
+  list.push({ id, at: new Date((ev.time || Date.now() / 1000) * 1000).toISOString(), title: ev.title || "Trend Radar", body: ev.message || "",
+              tags: (ev.tags || []).filter((t) => !FLAGS[t]).slice(0, 6), flags: (ev.tags || []).map((t) => FLAGS[t]).filter(Boolean).join(""),
+              click: ev.click || "", priority: ev.priority || 3, shown: !!shown, read: !shown });
+  if (list.length > 1500) list.splice(0, list.length - 1500);
+  inboxSave(); inboxBadge();
+  if (inboxWin && !inboxWin.isDestroyed()) inboxWin.webContents.send && inboxWin.webContents.executeJavaScript("typeof load === 'function' && load()").catch(() => {});
+}
+function inboxTranslate(ev, t, b) {   // keep the translated text too, so the inbox reads in your language
+  const list = inboxLoad();
+  const n = list.find((x) => x.title === (ev.title || "Trend Radar") && x.body === (ev.message || ""));
+  if (n) { n.title_tr = t; n.body_tr = b; inboxSave(); }
+}
+function inboxUnread() { return inboxLoad().filter((n) => n.shown && !n.read).length; }
+function inboxBadge() {
+  const u = inboxUnread();
+  if (tray) tray.setToolTip(u ? `Trend Radar · ${u} unread notification${u > 1 ? "s" : ""} (click = inbox)` : "Trend Radar");
+  try { if (process.platform !== "win32") app.setBadgeCount(u); } catch {}
+  if (win && !win.isDestroyed()) win.setTitle(u ? `Trend Radar (${u})` : "Trend Radar");
+}
+function showInbox() {
+  if (inboxWin && !inboxWin.isDestroyed()) { inboxWin.show(); inboxWin.focus(); inboxWin.webContents.executeJavaScript("typeof load === 'function' && load()").catch(() => {}); return; }
+  inboxWin = new BrowserWindow({ width: 720, height: 820, title: "Trend Radar - Inbox", backgroundColor: "#0a0f1d", icon: ICON, autoHideMenuBar: true,
+    webPreferences: { preload: path.join(__dirname, "preload.js"), contextIsolation: true, sandbox: true } });
+  inboxWin.removeMenu();
+  inboxWin.loadFile(path.join(__dirname, "inbox.html"));
 }
 
 function notify({ title, body, click, urgent, onClick }) {
@@ -798,6 +837,8 @@ ipcMain.handle("brief:now", async (_e, c) => {
   return makeBriefing(true);
 });
 ipcMain.handle("key:test", (_e, kind, key, model) => keyTest(String(kind), key, model));
+ipcMain.handle("inbox:get", () => inboxLoad().slice().reverse().map((n) => cfg.trLang && n.title_tr ? { ...n, title: n.title_tr, body: n.body_tr || n.body } : n));
+ipcMain.handle("inbox:read", (_e, id) => { const list = inboxLoad(); for (const n of list) if (id === "*" || n.id === id) n.read = true; inboxSave(); inboxBadge(); return inboxUnread(); });
 // Gemini models of your key + the saved test result of each one
 ipcMain.handle("gemini:models", async (_e, key) => {
   const old = cfg.geminiKey; cfg.geminiKey = String(key || cfg.geminiKey || "").trim();
@@ -861,6 +902,7 @@ if (!app.requestSingleInstanceLock()) {
   app.whenReady().then(() => {
     app.setAppUserModelId(app.isPackaged ? "com.trendradar.desktop" : process.execPath);
     // a visible menu bar: Settings is always one click away (also Ctrl+, / Cmd+,)
+    const inboxItem = { label: "🔔 Inbox", accelerator: "CmdOrCtrl+I", click: showInbox };
     const briefMenu = { label: "🧠 AI briefing", submenu: [
       { label: "Write a briefing now", click: () => makeBriefing(true).then((r) => { if (!r.ok) { notify({ title: "🧠 Briefing", body: r.msg }); openSettings("ai"); } }) },
       { label: "Show last briefing", click: showBriefing },
@@ -870,7 +912,7 @@ if (!app.requestSingleInstanceLock()) {
     ] };
     const pages = { label: "Pages", submenu: [
       { label: "All trends", click: () => showDashboard("") }, { label: "🇺🇸 USA", click: () => showDashboard("us") },
-      { label: "🎯 Make today", click: () => showDashboard("today") },
+      { label: "🎯 Make today", click: () => showDashboard("today") }, { label: "🎮 Games", click: () => showDashboard("games") }, { label: "📚 Books", click: () => showDashboard("books") },
       { label: "💡 Video ideas", click: () => showDashboard("ideas") }, { label: "🎬 AI tools & GitHub", click: () => showDashboard("ai") },
       { label: "🌍 Disasters", click: () => showDashboard("disasters") }, { label: "⚽ Sports", click: () => showDashboard("sports") },
       { type: "separator" }, { label: "Reload", accelerator: "F5", click: () => win && win.reload() },
@@ -879,12 +921,13 @@ if (!app.requestSingleInstanceLock()) {
     const settingsItem = { label: "⚙ Settings", accelerator: "CmdOrCtrl+,", click: () => openSettings() };
     Menu.setApplicationMenu(Menu.buildFromTemplate(process.platform === "darwin"
       ? [{ label: app.name, submenu: [{ role: "about" }, { type: "separator" }, { ...settingsItem, label: "Settings..." }, { type: "separator" }, { role: "quit" }] },
-         { role: "editMenu" }, pages, briefMenu, { role: "windowMenu" }]
-      : [settingsItem, briefMenu, pages, { label: "Quit", click: () => { quitting = true; app.quit(); } }]));
+         { role: "editMenu" }, { label: "Inbox", submenu: [inboxItem] }, pages, briefMenu, { role: "windowMenu" }]
+      : [settingsItem, inboxItem, briefMenu, pages, { label: "Quit", click: () => { quitting = true; app.quit(); } }]));
     loadCfg();
     applyAutostart();
     createWindow(!START_HIDDEN);
     buildTray();
+    inboxBadge();
     connect();
     if (!cfg.topic) openSettings();
     else if (!cfg.aiBoxShown) { cfg.aiBoxShown = true; saveCfg(); openSettings("ai"); }  // show the new AI box once after the update
@@ -899,6 +942,15 @@ if (!app.requestSingleInstanceLock()) {
       setTimeout(() => read("start"), 14000);
       setTimeout(() => { toggleLang(); setTimeout(() => read("after toggle"), 500); }, 15000);
       setTimeout(() => { toggleLang(); setTimeout(() => read("toggle back"), 1500); }, 17000);
+    }
+    if (!app.isPackaged && process.env.TR_INBOX_TEST) {   // developer test only: 3 fake notifications -> inbox
+      cfg.__test = true;
+      const t = Math.floor(Date.now() / 1000);
+      handleMessage({ id: "t1", time: t - 60, title: "🔥 HOT: Test trend one", message: "line 1\nline 2", priority: 4, tags: ["us", "Politics", "HOT"], click: "https://example.com/1" });
+      handleMessage({ id: "t2", time: t - 30, title: "🎮 GAME RISING: Parking Loop", message: "NEW in the top free games", priority: 3, tags: ["Gaming", "GAME"] });
+      handleMessage({ id: "t3", time: t, title: "🎵 low one", message: "music", priority: 2, tags: ["MUSIC CHART"] });
+      setTimeout(() => { console.log("[inbox]", JSON.stringify(inboxLoad().map((n) => [n.title.slice(0, 22), n.shown, n.read])), "unread=" + inboxUnread(), "tooltip ok=" + !!tray); showInbox();
+        setTimeout(() => inboxWin.webContents.executeJavaScript("[document.querySelectorAll('.n').length, document.querySelector('#cnt').textContent]").then((r) => console.log("[inbox page]", JSON.stringify(r))), 1500); }, 800);
     }
     if (!app.isPackaged && process.env.TR_GEMALL) {   // developer test only
       cfg.__test = true;

@@ -86,3 +86,4 @@ jobs:
 
       - id: deploy
         uses: actions/deploy-pages@v4
+        continue-on-error: true   # a GitHub Pages hiccup must not fail the whole check (the next run deploys again)

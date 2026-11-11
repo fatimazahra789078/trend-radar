@@ -581,6 +581,223 @@ def github_alerts(signals, state, cfg, now, quiet):
     return out, data
 
 
+# --------------------------------------------------------------------------- games + books radar
+# App Store game charts (Games only) per country, Steam most played / new, itch.io, Apple Books charts.
+# "Clone score": new + rising + simple genre + small download + small publisher = a game you could make a similar one of.
+HYPER_PUBS = ("voodoo", "homa", "rollic", "saygames", "say games", "azur", "supersonic", "kwalee", "lion studios", "crazy labs",
+              "crazylabs", "good job games", "ketchapp", "moonee", "zego", "gismart", "ducky", "yso corp", "freeplay", "tap2play",
+              "alictus", "coda", "madbox", "geisha tokyo", "popcore", "lumi games", "grand games", "hungry studio", "loop games",
+              "heseri", "oakever", "nebula", "ladaneta", "abi global", "vaulty")
+BIG_PUBS = ("epic games", "roblox", "king", "supercell", "scopely", "dream games", "microfun", "playrix", "zynga", "ea ", "electronic arts",
+            "activision", "nintendo", "netflix", "disney", "chess.com", "niantic", "moon active", "innersloth", "mojang", "take-two",
+            "ubisoft", "square enix", "bandai", "tencent", "netease", "garena", "miHoYo", "hoyoverse", "playtika", "peak games", "rovio")
+SIMPLE_GENRES = ("Puzzle", "Casual", "Arcade", "Board", "Word", "Trivia", "Card", "Family")
+GAME_CHARTS = {"topfree": "Top free", "new": "New games", "topgrossing": "Top grossing"}
+GAME_CC_NAMES = {"us": "USA", "de": "Germany", "gb": "UK", "fr": "France", "it": "Italy", "es": "Spain"}
+
+
+def src_appstore_games(cc, chart):
+    """Apple's Games-only chart (genre 6014) for one country: top free / new / top grossing."""
+    kind = {"topfree": "topfreeapplications", "new": "newfreeapplications", "topgrossing": "topgrossingapplications"}[chart]
+    d = fetch_json(f"https://itunes.apple.com/{cc}/rss/{kind}/limit=100/genre=6014/json", timeout=25)
+    out = []
+    for rank, e in enumerate((d.get("feed") or {}).get("entry") or [], 1):
+        if (e.get("category") or {}).get("attributes", {}).get("label") not in ("Games", "Spiele", "Jeux", "Giochi", "Juegos"):
+            continue
+        aid = (e.get("id") or {}).get("attributes", {}).get("im:id") or ""
+        link = e.get("link") or {}
+        if isinstance(link, list):
+            link = next((l for l in link if isinstance(l, dict) and (l.get("attributes") or {}).get("rel") in (None, "alternate")), link[0] if link else {})
+        imgs = e.get("im:image") or []
+        out.append({"kind": "game_chart", "source": f"App Store {cc.upper()}", "country": cc.upper(), "cc": cc, "chart": chart,
+                    "id": aid, "term": (e.get("im:name") or {}).get("label", ""), "publisher": (e.get("im:artist") or {}).get("label", ""),
+                    "rank": rank, "released": ((e.get("im:releaseDate") or {}).get("label") or "")[:10],
+                    "icon": (imgs[-1].get("label", "") if imgs and isinstance(imgs[-1], dict) else ""),
+                    "url": (link.get("attributes") or {}).get("href", "") if isinstance(link, dict) else ""})
+    return out
+
+
+def src_steam_top():
+    """Steam: the 100 most played games this week with last week's rank (names via the store's featured lists + steamcharts)."""
+    d = fetch_json("https://api.steampowered.com/ISteamChartsService/GetMostPlayedGames/v1/", timeout=25)
+    ranks = (d.get("response") or {}).get("ranks") or []
+    names = {}
+    try:
+        h = fetch("https://steamcharts.com/top", timeout=25).decode("utf-8", "replace")
+        for appid, name in re.findall(r'<a href="/app/(\d+)">\s*(.*?)\s*</a>', h):
+            names[int(appid)] = html.unescape(name)
+    except Exception:  # noqa: BLE001
+        pass
+    out = []
+    for r in ranks[:60]:
+        out.append({"kind": "steam_top", "source": "Steam", "country": "", "id": str(r["appid"]), "term": names.get(r["appid"], f"Steam app {r['appid']}"),
+                    "rank": r["rank"], "last_week": r.get("last_week_rank") or 0, "peak": r.get("peak_in_game") or 0,
+                    "url": f"https://store.steampowered.com/app/{r['appid']}/"})
+    return out
+
+
+def src_steam_featured():
+    d = fetch_json("https://store.steampowered.com/api/featuredcategories?cc=us&l=en", timeout=25)
+    out = []
+    for cat, lab in (("new_releases", "new"), ("top_sellers", "topsellers")):
+        for rank, it in enumerate(((d.get(cat) or {}).get("items") or [])[:20], 1):
+            out.append({"kind": "steam_list", "source": "Steam", "country": "", "list": lab, "id": str(it.get("id")), "term": it.get("name", ""),
+                        "rank": rank, "price": round((it.get("final_price") or 0) / 100, 2), "discount": it.get("discount_percent") or 0,
+                        "icon": it.get("small_capsule_image") or "", "url": f"https://store.steampowered.com/app/{it.get('id')}/"})
+    return out
+
+
+def src_itch():
+    x = fetch("https://itch.io/feed/featured.xml", timeout=25).decode("utf-8", "replace")
+    out = []
+    for rank, it in enumerate(_rss_items(x.encode("utf-8"))[:15], 1):
+        title = html.unescape(it.findtext("title") or "")
+        out.append({"kind": "itch", "source": "itch.io", "country": "", "term": re.sub(r"\s*\[.*$", "", title), "tags": re.findall(r"\[([^\]]+)\]", title),
+                    "rank": rank, "url": (it.findtext("link") or "").strip()})
+    return out
+
+
+def src_apple_books(cc, chart):
+    d = fetch_json(f"https://rss.marketingtools.apple.com/api/v2/{cc}/books/{chart}/50/books.json", timeout=25)
+    out = []
+    for rank, r in enumerate(((d.get("feed") or {}).get("results") or []), 1):
+        out.append({"kind": "book_chart", "source": f"Apple Books {cc.upper()}", "country": cc.upper(), "cc": cc, "chart": chart, "id": r.get("id", ""),
+                    "term": r.get("name", ""), "author": r.get("artistName", ""), "rank": rank, "released": (r.get("releaseDate") or "")[:10],
+                    "genres": [g["name"] for g in r.get("genres", []) if g.get("name") != "Books"][:3], "icon": r.get("artworkUrl100", ""),
+                    "url": r.get("url", "")})
+    return out
+
+
+def game_details(ids, cc, state, now):
+    """Genre, size, ratings, description for App Store games (iTunes lookup, cached 24h, 1 request for up to 100 ids)."""
+    cache = state.setdefault("game_info", {})
+    for k in [k for k, v in cache.items() if hours_since(v.get("at"), now) > 72]:
+        del cache[k]
+    todo = [i for i in ids if i and (i not in cache or hours_since(cache[i]["at"], now) > 24)][:100]
+    if todo:
+        try:
+            d = fetch_json(f"https://itunes.apple.com/lookup?id={','.join(todo)}&country={cc}&entity=software", timeout=25)
+            for x in d.get("results") or []:
+                cache[str(x.get("trackId"))] = {"at": now.isoformat(), "genres": [g for g in x.get("genres", []) if g != "Games"][:3],
+                                                "mb": round(int(x.get("fileSizeBytes") or 0) / 1e6), "rating": x.get("averageUserRating"),
+                                                "ratings": x.get("userRatingCount") or 0, "released": (x.get("releaseDate") or "")[:10],
+                                                "desc": (x.get("description") or "")[:300].replace("\n", " "), "shots": (x.get("screenshotUrls") or [])[:3],
+                                                "seller": x.get("sellerName") or ""}
+        except Exception as e:  # noqa: BLE001
+            log(f"game details failed: {type(e).__name__}: {str(e)[:80]}")
+    return cache
+
+
+def games_alerts(signals, state, cfg, now, quiet):
+    """Rank history per country chart -> new entries, climbers, hyper-casual publishers, clone score. One GAME alert max per check."""
+    gc = cfg.get("games") or {}
+    hist = state.setdefault("game_ranks", {})      # "cc:chart:id" -> {"first": iso, "best": rank, "prev": rank, "name"}
+    charts = [s for s in signals if s["kind"] == "game_chart"]
+    day_ago = (now - timedelta(days=1)).isoformat()
+    rows = {}
+    for s in charts:
+        key = f"{s['cc']}:{s['chart']}:{s['id']}"
+        h = hist.get(key)
+        entry = {"first": now.isoformat(), "best": s["rank"], "prev": None, "name": s["term"]} if not h else h
+        prev = None if not h else (h.get("rank") if hours_since(h.get("seen"), now) >= 6 else h.get("prev"))
+        entry.update({"rank": s["rank"], "seen": now.isoformat(), "best": min(entry.get("best", s["rank"]), s["rank"]), "prev": prev})
+        hist[key] = entry
+        r = rows.setdefault(s["id"], {"id": s["id"], "name": s["term"], "publisher": s["publisher"], "released": s["released"], "icon": s["icon"],
+                                     "url": s["url"], "charts": {}, "new_entry": False, "climb": 0, "first_seen": entry["first"]})
+        r["charts"][f"{s['cc']}:{s['chart']}"] = s["rank"]
+        if s["chart"] == "topfree":
+            if not h and gc.get("learned", False):
+                r["new_entry"] = True
+            if prev and prev - s["rank"] > r["climb"]:
+                r["climb"] = prev - s["rank"]
+    for k in [k for k, v in hist.items() if hours_since(v.get("seen"), now) > 24 * 14]:
+        del hist[k]
+    # details for the games that matter (US lookup covers most ids)
+    want = sorted(rows.values(), key=lambda r: min([v for k, v in r["charts"].items() if k.endswith(":topfree")] or [999]))[:80]
+    want += [r for r in rows.values() if r["new_entry"] or r["climb"] >= 10 or r["released"] >= (now - timedelta(days=90)).strftime("%Y-%m-%d")]
+    info = game_details(list(dict.fromkeys(r["id"] for r in want)), "us", state, now)
+    out_rows = []
+    for r in rows.values():
+        i = info.get(r["id"], {})
+        pub = (r["publisher"] or "").lower()
+        genres = i.get("genres") or []
+        simple = any(g in SIMPLE_GENRES for g in genres)
+        hyper = any(p in pub for p in HYPER_PUBS)
+        big = any(p in pub for p in BIG_PUBS)
+        age_d = (now.date() - datetime.strptime(r["released"], "%Y-%m-%d").date()).days if r["released"] else 9999
+        best_free = min([v for k, v in r["charts"].items() if k.endswith(":topfree")] or [999])
+        n_cc = len({k.split(":")[0] for k in r["charts"]})
+        score = 0
+        score += 30 if age_d <= 45 else 20 if age_d <= 120 else 8 if age_d <= 365 else 0
+        score += min(25, r["climb"] * 1.5) + (15 if r["new_entry"] else 0)
+        score += 15 if simple else 0
+        score += 10 if hyper else (-15 if big else 5)
+        score += 8 if (i.get("mb") or 999) <= 300 else 0
+        score += 5 * min(3, n_cc - 1)
+        score += max(0, 10 - best_free / 5) if best_free < 50 else (-12 if best_free == 999 else 0)   # not in any top-free chart yet = unproven
+        r.update({"genres": genres, "mb": i.get("mb"), "rating": i.get("rating"), "ratings": i.get("ratings"), "desc": i.get("desc", ""),
+                  "shots": i.get("shots", []), "age_d": age_d if age_d < 9999 else None, "simple": simple, "hyper": hyper, "big": big,
+                  "best_free": best_free, "countries": sorted({k.split(":")[0].upper() for k in r["charts"]}), "clone": round(score)})
+        out_rows.append(r)
+    out_rows.sort(key=lambda r: -r["clone"])
+    gc_state = state.setdefault("games_meta", {})
+    first_run = not gc_state.get("learned")
+    gc_state["learned"] = True
+    # ---- alerts: the best new / climbing game, once per game
+    sent = state.setdefault("game_sent", {})
+    alerts = []
+    if gc.get("notify", True) and not quiet and not first_run:
+        cands = [r for r in out_rows if (r["new_entry"] or r["climb"] >= gc.get("min_climb", 15)) and r["best_free"] <= 60
+                 and r["id"] not in sent and not r["big"]]
+        for r in cands[:gc.get("max_alerts", 1)]:
+            cc_txt = ", ".join(f"{GAME_CC_NAMES.get(k.split(':')[0], k)} #{v}" for k, v in sorted(r["charts"].items(), key=lambda x: x[1]) if k.endswith(":topfree"))[:120]
+            why = ("NEW in the top free games" if r["new_entry"] else f"climbed {r['climb']} places") + f" · {cc_txt}"
+            lines = [why, f"{' / '.join(r['genres']) or 'Game'} · {r['publisher']}" + (" (hyper-casual publisher)" if r["hyper"] else "")
+                     + (f" · released {r['released']}" if r["released"] else "") + (f" · {r['mb']} MB" if r.get("mb") else ""),
+                     f"\U0001F9E9 clone score {r['clone']}/100 - " + ("simple mechanic, could be remade" if r["simple"] else "check the mechanic") + " · see the Games tab"]
+            alerts.append(mk_alert(f"\U0001F3AE GAME RISING: {r['name']}", lines[0], lines[1], r["url"], tag="gm" + sid(r["id"]), priority=3,
+                                   short=r["name"], kind="game", category="Gaming", label="GAME", push_text="\n".join(lines),
+                                   pic_url=r.get("icon"), hash="#games"))
+            sent[r["id"]] = now.isoformat()
+    for k in [k for k, v in sent.items() if hours_since(v, now) > 30 * 24]:
+        del sent[k]
+    # ---- dashboard data
+    steam = sorted([s for s in signals if s["kind"] == "steam_top"], key=lambda s: s["rank"])
+    for s in steam:
+        s["move"] = (s["last_week"] - s["rank"]) if s["last_week"] else None
+    slim = lambda r: {k: r.get(k) for k in ("id", "name", "publisher", "released", "icon", "url", "charts", "new_entry", "climb", "genres", "mb",
+                                            "rating", "ratings", "desc", "shots", "age_d", "simple", "hyper", "big", "best_free", "countries", "clone")}
+    data = {"at": now.isoformat(), "clone": [slim(r) for r in out_rows[:30]],
+            "rising": [slim(r) for r in sorted([r for r in out_rows if r["new_entry"] or r["climb"] >= 5], key=lambda r: (-r["new_entry"], -r["climb"]))[:30]],
+            "new": [slim(r) for r in sorted([r for r in out_rows if (r["age_d"] or 9999) <= 120 and r["best_free"] < 999], key=lambda r: r["best_free"])[:30]],
+            "hyper": [slim(r) for r in sorted([r for r in out_rows if r["hyper"]], key=lambda r: r["best_free"])[:30]],
+            "charts": {}, "steam": [{k: s[k] for k in ("id", "term", "rank", "last_week", "peak", "url", "move")} for s in steam[:40]],
+            "steam_lists": {lab: [{k: s[k] for k in ("id", "term", "rank", "price", "discount", "icon", "url")}
+                                  for s in sorted([s for s in signals if s["kind"] == "steam_list" and s["list"] == lab], key=lambda s: s["rank"])]
+                            for lab in ("new", "topsellers")},
+            "itch": [{k: s[k] for k in ("term", "tags", "url")} for s in sorted([s for s in signals if s["kind"] == "itch"], key=lambda s: s["rank"])],
+            "pubs": Counter(r["publisher"] for r in out_rows if r["best_free"] <= 100).most_common(12)}
+    for s in charts:
+        data["charts"].setdefault(f"{s['cc']}:{s['chart']}", []).append({"id": s["id"], "name": s["term"], "publisher": s["publisher"], "rank": s["rank"], "url": s["url"], "icon": s["icon"]})
+    for v in data["charts"].values():
+        v.sort(key=lambda x: x["rank"])
+        del v[25:]
+    # books
+    books = {}
+    for s in sorted([s for s in signals if s["kind"] == "book_chart"], key=lambda s: s["rank"]):
+        books.setdefault(f"{s['cc']}:{s['chart']}", []).append({k: s[k] for k in ("id", "term", "author", "rank", "released", "genres", "icon", "url")})
+    bh = state.setdefault("book_seen", {})
+    for key, lst in books.items():
+        for b in lst:
+            k = f"{key}:{b['id']}"
+            b["new_entry"] = k not in bh and bool(bh)
+            bh.setdefault(k, now.isoformat())
+    for k in [k for k, v in bh.items() if hours_since(v, now) > 30 * 24]:
+        del bh[k]
+    data["books"] = books
+    return alerts, data
+
+
 def src_wikipedia(lang, cc):
     data = None
     for back in (1, 2):
@@ -960,6 +1177,16 @@ def collect(cfg, state, gap_h=0.0):
                  ("GitHub Trending this week", src_github_trending, ("weekly",), 360)]
         for topic in gc.get("topics", list(GH_TOPIC_LABEL)):
             jobs.append((f"GitHub new repos: {topic}", src_github_new, (topic, gc.get("new_repo_days", 30)), 180))
+    gm = cfg.get("games") or {}
+    if gm.get("enabled", True):
+        for cc in gm.get("countries", ["us", "de", "gb", "fr"]):
+            for chart in gm.get("charts", ["topfree", "new", "topgrossing"]):
+                jobs.append((f"App Store games {cc.upper()} {chart}", src_appstore_games, (cc, chart), 120))
+        jobs += [("Steam most played", src_steam_top, (), 180), ("Steam new + top sellers", src_steam_featured, (), 180),
+                 ("itch.io featured", src_itch, (), 360)]
+        for cc in gm.get("book_countries", ["us", "gb", "de"]):
+            for chart in ("top-paid", "top-free"):
+                jobs.append((f"Apple Books {cc.upper()} {chart}", src_apple_books, (cc, chart), 360))
     for path, label, cc in cfg.get("sports_leagues", []):
         jobs.append((f"ESPN {label}", src_espn, (path, label, cc), 0))
     for cc in cfg.get("music_countries", []):
@@ -1066,7 +1293,7 @@ def build_topics(signals, cfg, now):
     cw = cfg.get("country_weight", {})
     terms, heads = [], []
     for s in signals:
-        if s["kind"] in ("sport", "movie_chart", "watch", "briefing", "disaster", "ai_model", "gh_repo", "gh_new"):
+        if s["kind"] in ("sport", "movie_chart", "watch", "briefing", "disaster", "ai_model", "gh_repo", "gh_new", "game_chart", "steam_top", "steam_list", "itch", "book_chart"):
             continue
         s["key"] = norm(s["term"])
         s["toks"] = s["key"].split()
@@ -1428,6 +1655,10 @@ def gdelt_boost(topics, state, cfg, health):
 # --------------------------------------------------------------------------- state / memory
 
 
+def cfg_days_keep():
+    return 4   # days a topic's history is kept (repeat detection needs day 2-3; 7 made the cloud memory 15 MB)
+
+
 def update_state(topics, state, now):
     st = state.setdefault("topics", {})
     index = {}
@@ -1465,8 +1696,8 @@ def update_state(topics, state, now):
                        "breaking_sent": parent.get("breaking_sent", False)}
         rec = st.setdefault(tid, {"first_seen": now.isoformat(), "hours": [], "days": [], "notified_tier": 0,
                                   "notified_at": None, "notified_countries": [], "best": 0, "last_score": 0})
-        rec["keys"] = sorted(set(rec.get("keys", [])) | set(t["keys"]))[-40:]
-        rec["sig"] = t["sig"][:30]
+        rec["keys"] = sorted(set(rec.get("keys", [])) | set(t["keys"]))[-20:]
+        rec["sig"] = t["sig"][:20]
         rec["name"] = t["name"]
         if hour not in rec["hours"]:
             rec["hours"] = (rec["hours"] + [hour])[-300:]
@@ -1485,7 +1716,7 @@ def update_state(topics, state, now):
         t["hours_seen"], t["days_seen"] = n_hours, n_days
         t["age_h"] = round(hours_since(rec["first_seen"], now), 1)
         t["rising"] = round(t["score"] - rec["prev_score"], 1) if rec["prev_score"] else None
-    cutoff = now - timedelta(days=7)
+    cutoff = now - timedelta(days=cfg_days_keep())
     for tid in [k for k, r in st.items() if datetime.fromisoformat(r.get("last_seen", r["first_seen"])) < cutoff]:
         del st[tid]
 
@@ -1826,7 +2057,7 @@ def cache_picture(url):
 #   3 trending / normal · 2 low (digest, music charts, reminders)
 KIND_LABEL = {"disaster": "DISASTER", "watch": "WATCHLIST", "music": "MUSIC CHART", "event": "EVENT",
               "digest": "DIGEST", "catchup": "SUMMARY", "briefing": "BRIEFING", "ai": "AI MODEL",
-              "github": "GITHUB", "travel": "TRAVELING", "top3": "TOP 3"}
+              "github": "GITHUB", "travel": "TRAVELING", "top3": "TOP 3", "game": "GAME"}
 KIND_PRIORITY = {"music": 2, "digest": 2, "catchup": 4, "briefing": 4}
 
 
@@ -1913,7 +2144,7 @@ CHANNEL_FILTERS = {
     "-eu": ("Europe", lambda cs: any(c in EU_SET for c in cs)),
 }
 CHANNEL_HASH = {"": "", "-all": "", "-us": "#us", "-de": "#de", "-eu": "#eu", "-sports": "#sports",
-                "-disasters": "#disasters", "-ai": "#ai"}
+                "-disasters": "#disasters", "-ai": "#ai", "-games": "#games"}
 
 
 def channels_for(a, cfg):
@@ -1930,6 +2161,8 @@ def channels_for(a, cfg):
         ch += [suf for suf, (_, keep) in CHANNEL_FILTERS.items() if keep(cs)]
     if a.get("category") == "Sports":
         ch.append("-sports")
+    if a.get("category") == "Gaming" or a["kind"] == "game":
+        ch.append("-games")
     if a.get("category") == "Natural disasters" or a["kind"] == "disaster" or a.get("label") == "BREAKING":
         ch.append("-disasters")
     if a.get("category") == "AI video & image" or a["kind"] in ("ai", "github"):
@@ -2588,6 +2821,7 @@ def render_dashboard(topics, health, events, cfg, now, signals, watch_summary, g
         "briefing": state.get("briefing"), "cloud": CLOUD, "online_url": cfg.get("online_dashboard", ""),
         "disasters": state.get("disaster_data") or {},
         "github": state.get("gh_data") or {},
+        "games": state.get("games_data") or {},
         "plan": state.get("video_plan") or {},
         "ai": {"models": state.get("ai_data") or {}, "tools": load_json(ROOT / "ai_tools.json", {}).get("groups", [])},
         "catchup": state.get("catchup") if hours_since((state.get("catchup") or {}).get("at"), now) < 12 else None,
@@ -2865,8 +3099,9 @@ def run_check(dry=False, report=False, sim_gap=None, preview=False, brief_now=Fa
         d_alerts, dis_data = disaster_alerts(signals, state, cfg, now, quiet)
         ai_new, ai_data = ai_alerts(signals, state, cfg, now, quiet)
         gh_new, gh_data = github_alerts(signals, state, cfg, now, quiet)
+        gm_new, gm_data = games_alerts(signals, state, cfg, now, quiet)
         tr_alerts = travel_alerts(topics, state, cfg, now, quiet, plan_meta.get("lag", {}))
-        e_alerts = ai_new + gh_new + tr_alerts + e_alerts
+        e_alerts = ai_new + gh_new + gm_new + tr_alerts + e_alerts
         d_alerts = fold(d_alerts, (cfg.get("disasters") or {}).get("max_toasts", 3), "\U0001F30D Disasters")
         if catchup:
             alerts = d_alerts + catchup_alerts(topics, queue, s_alerts, w_alerts, m_alerts, e_alerts, state, now, gap_h, last_ok)
@@ -2891,6 +3126,7 @@ def run_check(dry=False, report=False, sim_gap=None, preview=False, brief_now=Fa
         state["disaster_data"] = dis_data
         state["ai_data"] = ai_data
         state["gh_data"] = gh_data
+        state["games_data"] = gm_data
         render_dashboard(topics, health, events, cfg, now, signals, watch_summary, games, state)
         export_latest(topics, signals, watch_summary, games, events, now)
         state["last_run"] = state["last_ok_run"] = now.isoformat()

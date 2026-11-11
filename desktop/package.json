@@ -1,7 +1,7 @@
 {
   "name": "trend-radar-desktop",
   "productName": "Trend Radar",
-  "version": "1.4.1",
+  "version": "1.5.0",
   "description": "Trend Radar - trends, breaking news, sports and natural disasters for the USA, Germany and Europe",
   "main": "main.js",
   "author": "Trend Radar",
@@ -30,7 +30,8 @@
       "settings.html",
       "offline.html",
       "build/icon.png",
-      "briefing.html"
+      "briefing.html",
+      "inbox.html"
     ],
     "win": {
       "icon": "build/icon.png"
