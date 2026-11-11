@@ -710,7 +710,7 @@ def src_amazon_suggest(aud, seed):
     d = fetch_json(url, timeout=20)
     time.sleep(0.4)
     sug = [x.get("value") for x in d.get("suggestions", []) if x.get("value")
-           and not re.search(r"(stand|slippers?|rings?|necklace|pendant|clothes|shirt|mug|socks|holder|organizer|case)", x.get("value"), re.I)]
+           and not re.search(r"\b(stand|slippers?|rings?|necklace|pendant|clothes|shirt|mug|socks|holder|organizer|case)\b", x.get("value"), re.I)]
     return [{"kind": "amazon_kw", "source": "Amazon suggestions", "country": "US", "aud": aud, "seed": seed, "term": seed, "rank": 1, "sug": sug[:10]}]
 
 
