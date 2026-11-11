@@ -142,6 +142,7 @@ If a source fails (for example Reddit refusing servers), the radar continues wit
 | 🎬 NEW AI MODEL | a new open AI video / image / voice model reached the top 5 on Hugging Face |
 | 🏆 TODAY'S TOP 3 VIDEOS | twice a day (06:00 and 15:00 UTC): the 3 best videos to make now – phase, time left, YouTube competition, what people search |
 | ✈️ NOT IN GERMANY YET | trending in the USA / UK for 2+ hours but not yet in Germany / France / Italy / Spain – make that language version first |
+| 📚 PREPARE NOW / 🎬 VIDEO TIME / 📈 EVENT WAKING UP | a seasonal event: time to publish books, time for videos, or searches jumped 40 %+ in a week (Upcoming tab) |
 | 🎮 GAME RISING | a mobile game is new in a country's top-free games list or climbed 15+ places (not a big studio) – see the Games tab |
 | ⭐ GITHUB TRENDING / 🆕 NEW ON GITHUB | a repo entered the top 10 of GitHub Trending with 300+ new stars today, or a repo younger than 30 days passed 1,000 stars (very important if it is an AI tool with 1,500+ stars today) |
 
@@ -157,6 +158,13 @@ articles in the last hours + number of countries + how long it keeps coming back
 Online: **https://fatimazahra789078.github.io/trend-radar/** (add `#today`, `#github`, `#us`, `#de`, `#eu`, `#disasters`,
 `#sports`, `#ai` or `#ideas` to open a page directly).
 
+- **📅 Upcoming → 📈 Events** – 49 events (Christmas, Valentine's, Ramadan, Eid, Super Bowl, Oscars, Easter, Mother's Day,
+  Halloween, Black Friday, back to school…) with their **search volume now vs last time** (English Wikipedia daily views):
+  x normal this week, change vs last week, last time's peak and 30-day total, **how many days before the day people
+  start searching**, and the deadlines – **books live by** (3+ weeks before the searches start, min. 45 days) and
+  **videos by**. Ideas for kids, teens, adults and videos (filter buttons), Amazon / Google Trends / YouTube buttons.
+  Alerts: **📚 PREPARE NOW** (time to publish) and **📈 EVENT WAKING UP** (searches +40 % in a week). Add your own
+  events in `seasons.json`; dates marked ~ are estimates (Islamic holidays, award shows).
 - **🎮 Games** – best models to remake (clone score), rising right now, new games already in the charts, hyper-casual
   publishers, game news, Steam most played / new, itch.io, top free games per country; each game has YouTube gameplay,
   TikTok, Google Play and App Store buttons.

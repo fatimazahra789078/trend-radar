@@ -425,7 +425,8 @@ function renderIdeas(){
 }
 
 /* ---------- Make today: which video to make now ---------- */
-const FLAGE = c => c && c.length === 2 && /^[A-Z]+$/.test(c) ? String.fromCodePoint(...[...c].map(x => 0x1F1E6 + x.charCodeAt(0) - 65)) : "";
+// country as a small code chip (flag emojis show as plain letters on Windows)
+const FLAGE = c => c && c.length === 2 && /^[A-Z]+$/.test(c) ? `<span class="cc ${FOCUS.includes(c) ? "focus" : ""}" style="margin-right:3px">${c}</span>` : "";
 const PHASE = {rising: ["&#127793; Rising", "b-new"], peak: ["&#128293; At the peak", "b-trend"], falling: ["&#128201; Falling", "b-low"]};
 const OPPC = {go: "b-new", good: "b-new", busy: "b-trend", crowded: "b-hot"};
 const LANGN = {en: "EN", de: "DE", fr: "FR", it: "IT", es: "ES"};
