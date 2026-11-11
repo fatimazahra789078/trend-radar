@@ -798,6 +798,208 @@ def games_alerts(signals, state, cfg, now, quiet):
     return alerts, data
 
 
+# --------------------------------------------------------------------------- seasonal events: search volume now vs last time
+# For each event in seasons.json: Wikipedia daily views (free, official API) as the search-interest signal.
+# last time's peak + 30-day total, how many days before the day people start searching, this week vs last week,
+# now vs the same distance before last time -> "prepare now" (books / videos) and "waking up" alerts.
+
+def easter_date(y):
+    a, b, c = y % 19, y // 100, y % 100
+    d, e = b // 4, b % 4
+    f = (b + 8) // 25
+    g = (b - f + 1) // 3
+    h = (19 * a + b - d - g + 15) % 30
+    i, k = c // 4, c % 4
+    l = (32 + 2 * e + 2 * i - h - k) % 7
+    m = (a + 11 * h + 22 * l) // 451
+    month = (h + l - 7 * m + 114) // 31
+    day = (h + l - 7 * m + 114) % 31 + 1
+    return date(y, month, day)
+
+
+def season_dates(rule, years):
+    kind, _, arg = rule.partition(":")
+    out = []
+    if kind == "dates":
+        return sorted(date.fromisoformat(x.strip()) for x in arg.split(",") if x.strip())
+    for y in years:
+        try:
+            if kind == "fixed":
+                mm, dd = arg.split("-")
+                out.append(date(y, int(mm), int(dd)))
+            elif kind == "easter":
+                out.append(easter_date(y) + timedelta(days=int(arg or 0)))
+            elif kind == "advent":   # 4th Sunday before Christmas
+                xmas = date(y, 12, 25)
+                out.append(xmas - timedelta(days=(xmas.weekday() + 1) % 7 or 7) - timedelta(weeks=3))
+            elif kind == "nth":
+                parts = arg.split(":")
+                n, wd, mon = int(parts[0]), int(parts[1]), int(parts[2])
+                off = int(parts[3]) if len(parts) > 3 else 0
+                if n > 0:
+                    d = date(y, mon, 1)
+                    d += timedelta(days=(wd - d.weekday()) % 7 + 7 * (n - 1))
+                else:
+                    nxt = date(y + (mon == 12), mon % 12 + 1, 1)
+                    d = nxt - timedelta(days=1)
+                    d -= timedelta(days=(d.weekday() - wd) % 7)
+                out.append(d + timedelta(days=off))
+        except ValueError:
+            pass
+    return sorted(out)
+
+
+def wiki_daily(article, start, end):
+    url = (f"https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/en.wikipedia/all-access/user/"
+           f"{urllib.parse.quote(article, safe='')}/daily/{start:%Y%m%d}/{end:%Y%m%d}")
+    for attempt in range(4):
+        try:
+            d = fetch_json(url, timeout=25, ua=APP_UA)
+            break
+        except urllib.error.HTTPError as e:
+            if e.code != 429 or attempt == 3:
+                raise
+            time.sleep(2 + 3 * attempt)
+    time.sleep(0.5)
+    return {datetime.strptime(x["timestamp"][:8], "%Y%m%d").date(): x["views"] for x in d.get("items", [])}
+
+
+def season_stats(ev, today):
+    occ = season_dates(ev["rule"], range(today.year - 1, today.year + 2))
+    nxt = next((d for d in occ if d >= today), None)
+    prev = next((d for d in reversed(occ) if d < today), None)
+    if not nxt or not prev:
+        return None
+    start = prev - timedelta(days=130)
+    v = wiki_daily(ev["wiki"], start, today - timedelta(days=1))
+    if len(v) < 30:
+        return None
+    day = lambda d: v.get(d, 0)
+    span = lambda a, b: [day(a + timedelta(days=i)) for i in range((b - a).days + 1)]
+    base_l = sorted(span(prev - timedelta(days=120), prev - timedelta(days=60))) or [1]
+    base = max(1, base_l[len(base_l) // 2])
+    peak = max(span(prev - timedelta(days=3), prev + timedelta(days=1)) or [0])
+    total30 = sum(span(prev - timedelta(days=30), prev))
+    # when did the climb to the peak start? walk back from the day until the 7-day average falls under
+    # 20 % of the way from the normal level to the final week's level
+    final = sum(span(prev - timedelta(days=6), prev)) / 7
+    thr = base + 0.2 * max(0, final - base)
+    lead = 3
+    for back in range(1, 100):
+        d = prev - timedelta(days=back)
+        w = span(d - timedelta(days=6), d)
+        if sum(w) / 7 < thr:
+            lead = back
+            break
+    lead = max(3, min(90, lead))
+    yest = today - timedelta(days=1)
+    now7 = sum(span(yest - timedelta(days=6), yest))
+    prev7 = sum(span(yest - timedelta(days=13), yest - timedelta(days=7)))
+    days_left = (nxt - today).days
+    same = prev - timedelta(days=days_left)
+    ly7 = sum(span(same - timedelta(days=6), same)) if same - timedelta(days=6) >= start else None
+    # this year's normal level (Wikipedia's total traffic changes from year to year, so compare "x normal", not raw views)
+    nb = sorted(span(today - timedelta(days=120), today - timedelta(days=60))) or [base]
+    base_now = max(1, nb[len(nb) // 2]) if (today - timedelta(days=120)) > prev + timedelta(days=7) else base
+    x_now, x_ly = now7 / (7 * base_now), (ly7 / (7 * base) if ly7 else None)
+    book_by = nxt - timedelta(days=max(lead + 30, 45))   # Amazon shoppers search earlier than Wikipedia readers
+    video_by = nxt - timedelta(days=max(lead, 2))
+    if days_left == 0:
+        status = "today"
+    elif days_left <= lead and x_now >= 1.3:
+        status = "searching"
+    elif today > book_by and today <= video_by + timedelta(days=lead):
+        status = "videos"
+    elif today >= book_by - timedelta(days=21):
+        status = "prepare"
+    elif today >= book_by - timedelta(days=45):
+        status = "soon"
+    else:
+        status = "early"
+    size = "huge" if peak >= 200000 else "big" if peak >= 50000 else "medium" if peak >= 10000 else "small"
+    return {"next": nxt.isoformat(), "prev": prev.isoformat(), "days_left": days_left, "peak": peak, "total30": total30, "base": base,
+            "lead": lead, "now7": now7, "prev7": prev7, "change": round(100 * (now7 - prev7) / prev7) if prev7 else None,
+            "ly7": ly7, "vs_ly": round(100 * (x_now / x_ly - 1)) if x_ly else None, "x_normal": round(x_now, 1), "x_ly": round(x_ly, 1) if x_ly else None,
+            "book_by": book_by.isoformat(), "video_by": video_by.isoformat(), "status": status, "size": size,
+            "just_passed": (today - prev).days < 21}
+
+
+SEASON_STATUS = {"today": "\U0001F4C5 today", "searching": "\U0001F525 people are searching now", "videos": "\U0001F3AC time for videos",
+                 "prepare": "\U0001F4DA publish books now", "soon": "\u270D\uFE0F start writing", "early": "\u23F3 early"}
+
+
+def season_radar(state, cfg, now, quiet):
+    sc = cfg.get("seasons") or {}
+    evs = load_json(ROOT / "seasons.json", {}).get("events", [])
+    if not sc.get("enabled", True) or not evs:
+        return [], {}
+    today = now.date()
+    cache = state.setdefault("season_cache", {})
+    todo = [e for e in evs if e["id"] not in cache or hours_since(cache[e["id"]].get("at"), now) > 20
+            or cache[e["id"]].get("day") != today.isoformat() and hours_since(cache[e["id"]].get("at"), now) > 6]
+    # spread the work: the oldest 15 per check (Wikimedia rate limit; a full refresh would add minutes to one check)
+    todo = sorted(todo, key=lambda e: (cache.get(e["id"]) or {}).get("at", ""))[:sc.get("per_check", 15)]
+
+    def one(e):
+        try:
+            return e["id"], season_stats(e, today)
+        except Exception as ex:  # noqa: BLE001
+            log(f"season {e['id']} failed: {type(ex).__name__}: {str(ex)[:80]}")
+            return e["id"], None
+    if todo:
+        with ThreadPoolExecutor(max_workers=1) as ex:   # Wikimedia rate limit
+            for eid, st in ex.map(one, todo):
+                if st:
+                    cache[eid] = {"at": now.isoformat(), "day": today.isoformat(), "stats": st}
+    rows = []
+    for e in evs:
+        st = (cache.get(e["id"]) or {}).get("stats")
+        if not st:
+            continue
+        nxt = date.fromisoformat(st["next"])
+        st = dict(st, days_left=(nxt - today).days)   # keep counters right between refreshes
+        if st.get("just_passed"):   # the views are still the tail of last time's peak - not a new rise
+            st.update(change=None, x_normal=None, vs_ly=None)
+        rows.append({"id": e["id"], "name": e["name"], "countries": e.get("countries", []), "approx": bool(e.get("approx")),
+                     "wiki": e["wiki"], "ideas": e.get("ideas", {}), **st})
+    rows.sort(key=lambda r: r["next"])
+    # ---- alerts: once per event and occurrence
+    sent = state.setdefault("season_sent", {})
+    alerts = []
+    if sc.get("notify", True) and not quiet:
+        for r in sorted(rows, key=lambda r: -r["peak"]):
+            if len(alerts) >= sc.get("max_alerts", 1):
+                break
+            if r["size"] == "small":
+                continue
+            ideas = r.get("ideas") or {}
+            first = lambda k: (ideas.get(k) or [""])[0]
+            book_line = " · ".join(x for x in (f"kids: {first('kids')}" if first("kids") else "", f"adults: {first('adults')}" if first("adults") else "") if x)
+            fmt_n = lambda n: f"{n / 1e6:.1f}M" if n >= 1e6 else f"{round(n / 1e3)}K" if n >= 1e3 else str(n)
+            last = f"last time: peak {fmt_n(r['peak'])} views/day, people started searching ~{r['lead']} days before"
+            k_wake, k_prep = f"{r['id']}:{r['next']}:wake", f"{r['id']}:{r['next']}:prep"
+            if (r["change"] or 0) >= sc.get("wake_change", 40) and (r["x_normal"] or 0) >= 1.5 and r["days_left"] <= r["lead"] + 21 and k_wake not in sent:
+                lines = [f"Searches +{r['change']}% this week ({r['x_normal']}x normal) · {r['days_left']} days left ({r['next']})",
+                         last + (f" · now {'+' if r['vs_ly'] >= 0 else ''}{r['vs_ly']}% vs the same time last time" if r.get("vs_ly") is not None else ""),
+                         (f"\U0001F4DA {book_line}" if book_line else "") + (f"\n\U0001F3AC {first('video')}" if first("video") else "")]
+                alerts.append(mk_alert(f"\U0001F4C8 EVENT WAKING UP: {r['name']}", lines[0], lines[1], None, tag="se" + sid(k_wake), priority=3,
+                                       short=r["name"], kind="season", countries=[c for c in r["countries"] if c in FOCUS][:4],
+                                       push_text="\n".join(l for l in lines if l), hash="#events"))
+                sent[k_wake] = now.isoformat()
+            elif r["status"] in ("prepare", "videos") and k_prep not in sent and r["size"] in ("huge", "big", "medium"):
+                todo_txt = (f"publish books by {r['book_by']}, videos by {r['video_by']}" if r["status"] == "prepare"
+                            else f"book deadline passed (Kindle ebooks still OK) - make the videos by {r['video_by']}")
+                lines = [f"{r['days_left']} days left ({r['next']}{' ~' if r['approx'] else ''}) · {todo_txt}",
+                         last, (f"\U0001F4DA {book_line}" if book_line else "") + (f"\n\U0001F3AC {first('video')}" if first("video") else "")]
+                alerts.append(mk_alert(("\U0001F4DA PREPARE NOW: " if r["status"] == "prepare" else "\U0001F3AC VIDEO TIME: ") + r["name"], lines[0], lines[1], None, tag="se" + sid(k_prep), priority=3,
+                                       short=r["name"], kind="season", countries=[c for c in r["countries"] if c in FOCUS][:4],
+                                       push_text="\n".join(l for l in lines if l), hash="#events"))
+                sent[k_prep] = now.isoformat()
+    for k in [k for k, v in sent.items() if hours_since(v, now) > 400 * 24]:
+        del sent[k]
+    return alerts, {"at": now.isoformat(), "events": rows}
+
+
 def src_wikipedia(lang, cc):
     data = None
     for back in (1, 2):
@@ -2057,7 +2259,7 @@ def cache_picture(url):
 #   3 trending / normal · 2 low (digest, music charts, reminders)
 KIND_LABEL = {"disaster": "DISASTER", "watch": "WATCHLIST", "music": "MUSIC CHART", "event": "EVENT",
               "digest": "DIGEST", "catchup": "SUMMARY", "briefing": "BRIEFING", "ai": "AI MODEL",
-              "github": "GITHUB", "travel": "TRAVELING", "top3": "TOP 3", "game": "GAME"}
+              "github": "GITHUB", "travel": "TRAVELING", "top3": "TOP 3", "game": "GAME", "season": "EVENT"}
 KIND_PRIORITY = {"music": 2, "digest": 2, "catchup": 4, "briefing": 4}
 
 
@@ -2822,6 +3024,7 @@ def render_dashboard(topics, health, events, cfg, now, signals, watch_summary, g
         "disasters": state.get("disaster_data") or {},
         "github": state.get("gh_data") or {},
         "games": state.get("games_data") or {},
+        "seasons": state.get("seasons_data") or {},
         "plan": state.get("video_plan") or {},
         "ai": {"models": state.get("ai_data") or {}, "tools": load_json(ROOT / "ai_tools.json", {}).get("groups", [])},
         "catchup": state.get("catchup") if hours_since((state.get("catchup") or {}).get("at"), now) < 12 else None,
@@ -3100,8 +3303,9 @@ def run_check(dry=False, report=False, sim_gap=None, preview=False, brief_now=Fa
         ai_new, ai_data = ai_alerts(signals, state, cfg, now, quiet)
         gh_new, gh_data = github_alerts(signals, state, cfg, now, quiet)
         gm_new, gm_data = games_alerts(signals, state, cfg, now, quiet)
+        se_new, se_data = season_radar(state, cfg, now, quiet)
         tr_alerts = travel_alerts(topics, state, cfg, now, quiet, plan_meta.get("lag", {}))
-        e_alerts = ai_new + gh_new + gm_new + tr_alerts + e_alerts
+        e_alerts = se_new + ai_new + gh_new + gm_new + tr_alerts + e_alerts
         d_alerts = fold(d_alerts, (cfg.get("disasters") or {}).get("max_toasts", 3), "\U0001F30D Disasters")
         if catchup:
             alerts = d_alerts + catchup_alerts(topics, queue, s_alerts, w_alerts, m_alerts, e_alerts, state, now, gap_h, last_ok)
@@ -3127,6 +3331,7 @@ def run_check(dry=False, report=False, sim_gap=None, preview=False, brief_now=Fa
         state["ai_data"] = ai_data
         state["gh_data"] = gh_data
         state["games_data"] = gm_data
+        state["seasons_data"] = se_data
         render_dashboard(topics, health, events, cfg, now, signals, watch_summary, games, state)
         export_latest(topics, signals, watch_summary, games, events, now)
         state["last_run"] = state["last_ok_run"] = now.isoformat()

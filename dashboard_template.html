@@ -212,6 +212,8 @@ function tabs(){
   n.github = ((DATA.github || {}).daily || []).length || "";
   n.games = ((DATA.games || {}).rising || []).length || "";
   n.books = "";
+  const SEv = (DATA.seasons || {}).events || [];
+  n.events = SEv.filter(e => e.status === "searching" || e.status === "prepare").length || n.events;
   n.search = "";
   const T = [["today","&#127919; Make today"],["trends","Trends"],["ideas","&#128161; Ideas"],["news","Top news"],["disasters","&#127757; Disasters"],["ai","&#127916; AI tools"],["github","&#128025; GitHub"],["games","&#127918; Games"],["books","&#128218; Books"],["watch","Watchlist"],["sports", (DATA.sports||[]).some(g=>g.state==="in") ? "Sports &#128308;" : "Sports"],
              ["charts","Charts"],["events","Upcoming"],["sites","Best sites"],["history","Sent"]];
@@ -575,6 +577,8 @@ function renderBooks(){
   }).join("");
   $("#main").innerHTML = `<p class="hint" style="margin-top:16px">For Amazon KDP. Amazon has no free data feed and blocks robots, so the radar reads the <b>Apple Books charts</b> (USA, UK, Germany - the same titles sell on Amazon) and turns the trends into book ideas. Every idea has one-click <b>Amazon</b> and <b>Kindle</b> search buttons to check the competition.</p>
     ${genres ? `<div class="meta" style="margin:8px 0 0">Genres selling most right now: ${genres}</div>` : ""}
+    ${(() => { const S = ((DATA.seasons || {}).events || []).filter(e => e.size !== "small" && e.days_left >= 20).sort((a, b) => a.book_by.localeCompare(b.book_by)).slice(0, 6);
+      return S.length ? `<section style="margin-top:22px"><h2 style="margin:0 0 4px;font-size:17px">&#128197; Seasonal books - next deadlines</h2><p class="hint" style="margin:0 0 12px">Big events with a lot of searches: publish before the date so Amazon has time to rank the book. All events: <a href="#events">Upcoming tab</a>.</p><div class="grid">${S.map(e => seasonCard(e, "all")).join("")}</div></section>` : ""; })()}
     <section style="margin-top:22px"><h2 style="margin:0 0 4px;font-size:17px">&#128161; Book ideas from the trends</h2><p class="hint" style="margin:0 0 12px">Trends that keep repeating or are very hot - people search them for weeks, long enough to write and publish.</p><div class="grid">${ideas || `<div class="empty">No strong ideas right now.</div>`}</div></section>
     <h2 style="margin:22px 0 4px;font-size:17px">&#128218; What sells now (Apple Books charts)</h2><div class="cols">${charts || `<div class="muted">No data yet - it appears after the next check.</div>`}</div>
     <div class="links" style="margin-top:16px">${A("https://www.amazon.com/gp/bestsellers/books", "Amazon best sellers")}${A("https://www.amazon.com/gp/movers-and-shakers/books", "Amazon movers & shakers (climbing now)")}${A("https://www.amazon.com/gp/new-releases/books", "Amazon new releases")}${A("https://kdp.amazon.com/", "KDP")}${A("https://books.google.com/", "Google Books")}</div>`;
@@ -720,6 +724,46 @@ function renderCharts(){
     ${yt ? "" : `<p class="hint" style="margin-top:14px">Tip: put a free YouTube Data API key in <code>config.json</code> → "youtube_api_key" to also see YouTube trending USA + Germany.</p>`}`;
 }
 
+/* ---------- Seasonal events: search volume now vs last time, deadlines, ideas ---------- */
+const SE_STATUS = {today:["&#128197; Today","b-live"], searching:["&#128293; People are searching now","b-hot"], videos:["&#127916; Time for videos","b-trend"],
+  prepare:["&#128218; Publish books now","b-new"], soon:["&#9997;&#65039; Start writing","b-watch"], early:["&#9203; Early","b-low"]};
+const SE_AUD = [["all","All"],["kids","&#129490; Kids"],["teens","&#129489; Teens"],["adults","&#129489;&#8205;&#129456; Adults"],["video","&#127916; Videos"]];
+const fmtK = n => n == null ? "-" : n >= 1e6 ? (n/1e6).toFixed(1) + "M" : n >= 1e3 ? Math.round(n/1e3) + "K" : String(n);
+const dShort = iso => new Date(iso + "T00:00:00").toLocaleDateString("en-GB", {day:"2-digit", month:"short"});
+function seasonCard(e, aud){
+  const st = SE_STATUS[e.status] || SE_STATUS.early;
+  const I = e.ideas || {};
+  const groups = (aud === "all" ? ["kids","teens","adults","video"] : [aud]).filter(k => (I[k] || []).length);
+  const lab = {kids:"&#129490; Kids", teens:"&#129489; Teens", adults:"&#129489;&#8205;&#129456; Adults", video:"&#127916; Video"};
+  const chg = e.change == null ? "" : `<span class="badge ${e.change >= 25 ? "b-new" : e.change <= -25 ? "b-low" : "b-story"}">${e.change > 0 ? "&#9650; +" : e.change < 0 ? "&#9660; " : ""}${e.change}% this week</span>`;
+  const q = encodeURIComponent(e.name.replace(/\(.*?\)/g, "").split("/")[0].trim());
+  const today = new Date(); today.setHours(0,0,0,0);
+  const bookLeft = Math.round((new Date(e.book_by + "T00:00:00") - today) / 86400000), vidLeft = Math.round((new Date(e.video_by + "T00:00:00") - today) / 86400000);
+  return `<article class="card ${e.status === "searching" || e.status === "prepare" ? "t2" : "t1"}">
+    <div class="row"><span class="badge ${st[1]}">${st[0]}</span>${chg}<span class="cat">${esc(e.size)}</span><span class="score" title="Last time's peak: views per day">${fmtK(e.peak)}/day</span></div>
+    <div class="head"><h3>${esc(e.name)}</h3></div>
+    <div class="meta">&#128197; <b>${dShort(e.next)}${e.approx ? " ~" : ""}</b> · in ${e.days_left} days · ${e.countries.map(c => FLAGE(c)).join("")}</div>
+    <div class="meta">&#128200; Now: <b>${e.x_normal != null ? e.x_normal + "x" : "-"}</b> normal${e.x_ly != null && e.x_normal != null ? ` · same time last time: ${e.x_ly}x (${e.vs_ly >= 0 ? "+" : ""}${e.vs_ly}%)` : ""}</div>
+    <div class="meta">&#128336; Last time: peak <b>${fmtK(e.peak)}</b> views on the day, <b>${fmtK(e.total30)}</b> in the 30 days before · people started searching <b>~${e.lead} days</b> before</div>
+    <div class="meta">&#128218; Books live by <b>${dShort(e.book_by)}</b> ${bookLeft >= 0 ? `(${bookLeft} days)` : `<span style="color:var(--hot)">(passed - Kindle ebook still OK)</span>`} · &#127916; videos by <b>${dShort(e.video_by)}</b> ${vidLeft >= 0 ? `(${vidLeft} days)` : "(now)"}</div>
+    ${groups.length ? `<div class="idea">${groups.map(k => `<p><span class="muted">${lab[k]}:</span> ${I[k].map(esc).join(" · ")}</p>`).join("")}</div>` : ""}
+    <div class="links">${A("https://www.amazon.com/s?k=" + q + "+book&i=stripbooks", "Amazon books")}${A("https://www.amazon.com/s?k=" + q + "+coloring+book+kids&i=stripbooks", "Kids books")}${A("https://trends.google.com/trends/explore?date=today%2012-m&q=" + q, "Google Trends 12 months")}${A("https://www.youtube.com/results?search_query=" + q, "YouTube")}${A("https://en.wikipedia.org/wiki/" + encodeURIComponent(e.wiki), "Wikipedia")}</div>
+  </article>`;
+}
+function seasonsHTML(limit){
+  const S = (DATA.seasons || {}).events || [];
+  if (!S.length) return "";
+  const aud = store.get("seaud", "all");
+  const order = {searching:0, today:0, prepare:1, videos:2, soon:3, early:4};
+  const list = [...S].filter(e => aud === "all" || ((e.ideas || {})[aud] || []).length)
+    .sort((a, b) => (order[a.status] ?? 5) - (order[b.status] ?? 5) || a.days_left - b.days_left).slice(0, limit || 60);
+  return `<section style="margin-top:16px"><h2 style="margin:0 0 4px;font-size:17px">&#128200; Events: search volume now vs last time</h2>
+    <p class="hint" style="margin:0 0 10px">Search interest = English Wikipedia daily views (free, official). <b>x normal</b> = this week vs the usual level; <b>last time</b> = the peak and when people started searching, so you know how early to publish. Book deadline = 3+ weeks before the searches start (min. 45 days). Add your own events in <code>seasons.json</code>.</p>
+    <div class="row" style="gap:6px;margin-bottom:12px">${SE_AUD.map(([k, l]) => `<button class="chipbtn" aria-pressed="${aud === k}" data-seaud="${k}">${l}</button>`).join("")}</div>
+    <div class="grid">${list.map(e => seasonCard(e, aud)).join("")}</div></section>`;
+}
+document.addEventListener("click", e => { const b = e.target.closest("[data-seaud]"); if (!b) return; store.set("seaud", b.dataset.seaud); render(); });
+
 function renderEvents(){
   const today = new Date(); today.setHours(0,0,0,0);
   const evs = DATA.events.filter(e => new Date(e.date + "T00:00:00") >= today);
@@ -734,7 +778,7 @@ function renderEvents(){
         <div class="t">${e.url ? A(e.url, esc(e.title)) : esc(e.title)} <span class="cc">${esc(e.region||"")}</span> <span class="cc">${esc(e.category||"")}</span>${e.approx?` <span class="cc" title="Date estimated - check it">~ date</span>`:""}${e.note?`<small>${esc(e.note)}</small>`:""}</div>
         <span class="cd">${cd}</span></div>`; }).join("")}</section>`;
   }).join("");
-  $("#main").innerHTML = `<p class="hint" style="margin-top:16px">Prepare videos BEFORE the day: the trend starts 2-7 days early. Edit <code>events.json</code> to add your own events - you get a reminder 7 days, 2 days and on the day.</p><div class="events">${html || `<div class="empty">No events. Add some in events.json.</div>`}</div>`;
+  $("#main").innerHTML = `${seasonsHTML()}<h2 style="margin:26px 0 4px;font-size:17px">&#128197; Your calendar</h2><p class="hint" style="margin-top:4px">Prepare videos BEFORE the day: the trend starts 2-7 days early. Edit <code>events.json</code> to add your own events - you get a reminder 7 days, 2 days and on the day.</p><div class="events">${html || `<div class="empty">No events. Add some in events.json.</div>`}</div>`;
 }
 
 function renderSites(){
