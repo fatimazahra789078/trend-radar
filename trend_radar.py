@@ -1435,6 +1435,8 @@ def collect(cfg, state, gap_h=0.0):
             for sec in cfg.get("google_news_sections", []):
                 jobs.append((f"Google News {cc} {sec.title()}", src_google_news, (cc, params, sec), 0))
     for feed in cfg.get("extra_feeds", []):
+        if CLOUD and "reddit.com" in feed.get("url", "") and not cfg.get("reddit_in_cloud", False):
+            continue   # Reddit answers 429 to cloud servers; it still runs on a PC
         jobs.append((feed["name"], src_feed, (feed,), 45 if feed.get("kind") == "community" else 0))
     for lang, cc in cfg.get("wikipedia", {}).items():
         jobs.append((f"Wikipedia {lang}", src_wikipedia, (lang, cc), 180))
@@ -1790,6 +1792,7 @@ def score_topic(t, cw, cfg):
         t["base"] *= 0.5
     t["score"] = round(t["base"], 1)
     t["countries"] = sorted(countries, key=lambda c: (-cw.get(c, 0.5), c))
+    t["trend_countries"] = sorted(trend_countries)
     t["kinds"] = sorted(kinds)
     t["outlets"] = len(outlets)
     t["recent"] = recent
@@ -2000,6 +2003,14 @@ def update_state(topics, state, now):
     cutoff = now - timedelta(days=cfg_days_keep())
     for tid in [k for k, r in st.items() if datetime.fromisoformat(r.get("last_seen", r["first_seen"])) < cutoff]:
         del st[tid]
+    # a topic that never got near "trending" is not worth remembering for days (this made the memory 14 MB)
+    weak = 0.5 * (state.get("_trend_score") or 10)
+    for tid in [k for k, r in st.items() if r.get("best", 0) < weak and not r.get("notified_at")
+                and hours_since(r.get("last_seen", r["first_seen"]), now) > 12]:
+        del st[tid]
+    if len(st) > 3000:
+        for tid in sorted(st, key=lambda k: st[k].get("last_seen", ""))[:len(st) - 3000]:
+            del st[tid]
 
 # --------------------------------------------------------------------------- video planner: which video to make NOW
 # phase + time window, trends travelling between countries, YouTube supply (opportunity), what people type on YouTube,
@@ -2131,6 +2142,8 @@ def plan_videos(topics, state, cfg, now, dry=False):
             t["video"] = None
         return {}
     sources, targets = vc.get("travel_from", ["US", "GB"]), [c for c in vc.get("travel_to", ["DE", "FR", "IT", "ES"]) if c in FOCUS]
+    if state.get("travel_lag_v") != 2:   # old samples counted weak topics too - start again
+        state["travel_lag"], state["travel_lag_v"] = {}, 2
     stats = state.setdefault("travel_lag", {})
     for t in topics:
         rec = t.get("rec") or {}
@@ -2141,7 +2154,9 @@ def plan_videos(topics, state, cfg, now, dry=False):
             if c not in first:
                 first[c] = now.isoformat()
                 src = [first[s] for s in sources if s in first and s != c]
-                if c in targets and src and len(first) > 1:   # it reached a target country: learn the delay
+                real = (not t["story"] and t["score"] >= cfg["trend_score"]
+                        and any(sc_ in t.get("trend_countries", []) for sc_ in sources if sc_ in first))
+                if c in targets and src and len(first) > 1 and real:   # a real US/UK trend reached a target country
                     lag = hours_since(min(src), now)
                     if 1 <= lag <= 96:
                         stats.setdefault(c, []).append(round(lag, 1))
@@ -2311,12 +2326,24 @@ def tier_of(score, cfg, story=False):
     return 2 if score >= cfg["hot_score"] else 1 if score >= cfg["trend_score"] else 0
 
 
+def local_now(cfg, now):
+    """now in your time zone (config quiet_tz, e.g. Africa/Casablanca) - the cloud runs in UTC."""
+    tz = cfg.get("quiet_tz")
+    if tz:
+        try:
+            from zoneinfo import ZoneInfo
+            return now.astimezone(ZoneInfo(tz))
+        except Exception:  # noqa: BLE001 - no tz database: fall back to the offset in config
+            return now.astimezone(timezone(timedelta(hours=cfg.get("quiet_utc_offset", 1))))
+    return now
+
+
 def in_quiet_hours(cfg, now):
     q = cfg.get("quiet_hours") or []
     if len(q) != 2:
         return False
     a, b = q
-    h = now.hour
+    h = local_now(cfg, now).hour
     return (a <= h < b) if a < b else (h >= a or h < b)
 
 
@@ -2391,8 +2418,8 @@ def plan_topic_alerts(topics, cfg, now):
             reason = "repeat"     # keeps coming back day after day
         elif tier > 0 and new_focus and cool and not t["story"]:
             reason = "spread"
-        if reason and quiet and tier < 2 and reason not in ("breaking", "justin"):
-            reason = None
+        if reason and quiet and reason != "breaking":
+            reason = None     # night: only breaking news; the rest comes in the morning summary
         if reason:
             queue.append((t, reason))
     order = {"breaking": 0, "justin": 1, "hot": 2, "new": 3, "repeat": 4, "spread": 5}
@@ -2591,7 +2618,7 @@ def watch_alerts(signals, topics, state, cfg, now, quiet, since=None):
             out.append(mk_alert(f"\u2B50 {term.upper()}: {a['term']}"[:150],
                                 f"{a['outlet']} · {len(uniq)} articles today, {len(recent2)} in 2h{extra}",
                                 (new_items[1]["term"][:140] if len(new_items) > 1 else ""), a["url"],
-                                tag="w" + sid(term), short=term, kind="watch", **extra_tags))
+                                tag="w" + sid(term), short=term, kind="watch", priority=2, **extra_tags))   # low: "-all" channel only
             rec["last"] = now.isoformat()
     if first and not quiet:
         first.sort(key=lambda x: -x[1])
@@ -2902,6 +2929,46 @@ def push_remote(alerts, cfg, force=False):
     return sent
 
 
+BUDGET_KIND = {"more": "topic", "catchup": "topic"}
+
+
+def apply_budget(alerts, state, cfg, now):
+    """Daily budget per alert type: when a type has used 60 % of its budget only very important (4+) ones pass,
+    at 100 % only urgent (5). At night (quiet hours) only urgent ones pass; the others are kept for the morning summary."""
+    budgets = cfg.get("alert_budget") or {}
+    day = local_now(cfg, now).strftime("%Y-%m-%d")
+    b = state.setdefault("budget", {})
+    if b.get("day") != day:
+        b.clear()
+        b.update(day=day, used={})
+    used = b["used"]
+    quiet = in_quiet_hours(cfg, now)
+    held = state.setdefault("night_held", [])
+    out = []
+    for a in alerts:
+        pr = a.get("priority", 3)
+        kind = BUDGET_KIND.get(a["kind"], a["kind"])
+        if quiet and pr < 5 and a["kind"] not in ("briefing",):
+            held.append({"title": a["title"], "url": a["url"], "kind": kind, "priority": pr, "at": now.isoformat()})
+            continue
+        cap = budgets.get(kind)
+        n = used.get(kind, 0)
+        if cap is not None and pr < 5 and (n >= cap or (n >= 0.6 * cap and pr < 4)):
+            continue
+        used[kind] = n + 1
+        out.append(a)
+    del held[:-60]
+    # morning: one summary of what was held during the night
+    if not quiet and held:
+        top = sorted(held, key=lambda x: -x["priority"])[:8]
+        out.insert(0, mk_alert(f"\U0001F319 While you slept: {len(held)} alerts", top[0]["title"][:150],
+                               " · ".join(x["title"][:40] for x in top[1:4]), None, tag="night" + day, priority=3,
+                               short="night summary", kind="digest", label="SUMMARY",
+                               push_text="\n".join("\u2022 " + x["title"][:110] for x in top)))
+        held.clear()
+    return out
+
+
 def deliver(alerts, state, cfg, now, dry):
     if not alerts:
         return
@@ -2913,8 +2980,9 @@ def deliver(alerts, state, cfg, now, dry):
     push_remote([a for a in alerts if a["kind"] != "more"], cfg)
     hist = state.setdefault("alert_log", [])
     for a in (a for a in alerts if not a.get("phone_only")):
-        hist.append({"at": now.isoformat(), "title": a["title"], "url": a["url"], "kind": a["kind"]})
-    state["alert_log"] = hist[-150:]
+        hist.append({"at": now.isoformat(), "title": a["title"], "url": a["url"], "kind": a["kind"], "priority": a.get("priority"),
+                     "label": a.get("label"), "channels": channels_for(a, cfg) if a["kind"] != "more" else []})
+    state["alert_log"] = hist[-400:]
     log(f"notified {len(alerts)}: " + " | ".join(a["title"] for a in alerts))
 
 
@@ -3108,6 +3176,10 @@ def render_dashboard(topics, health, events, cfg, now, signals, watch_summary, g
         "ai": {"models": state.get("ai_data") or {}, "tools": load_json(ROOT / "ai_tools.json", {}).get("groups", [])},
         "catchup": state.get("catchup") if hours_since((state.get("catchup") or {}).get("at"), now) < 12 else None,
     }
+    if CLOUD:   # the online page: heavy parts go to extra.json (loaded right after the page shows)
+        extra = {k: data.pop(k) for k in ("games", "github", "seasons") if k in data}
+        save_json(ROOT / "extra.json", extra)
+        data["extra_url"] = "extra.json"
     blob = json.dumps(data, ensure_ascii=False).replace("</", "<\\/")
     tmp = DASHBOARD.with_suffix(".tmp")
     tmp.write_text(tpl.replace("/*__DATA__*/null", blob), encoding="utf-8")
@@ -3355,6 +3427,7 @@ def run_check(dry=False, report=False, sim_gap=None, preview=False, brief_now=Fa
         topics = build_topics(signals, cfg, now)
         topics.sort(key=lambda t: -t["base"])
         gdelt_boost(topics, state, cfg, health)
+        state["_trend_score"] = cfg["trend_score"]
         update_state(topics, state, now)
         topics.sort(key=lambda t: -t["score"])
         plan_meta = plan_videos(topics, state, cfg, now, dry=dry and not os.environ.get("TR_YT_TEST"))
@@ -3402,6 +3475,7 @@ def run_check(dry=False, report=False, sim_gap=None, preview=False, brief_now=Fa
             alerts.append(br)
         if not quiet:
             alerts += top3_alert(plan, state, cfg, now)
+        alerts = apply_budget(alerts, state, cfg, now) if not dry else alerts
         deliver(alerts, state, cfg, now, dry)
         if not dry:
             mark_topics([(t, r) for t, r, _ in queue] + also, now)

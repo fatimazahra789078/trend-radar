@@ -4,7 +4,7 @@
 // - listens to your ntfy topic and shows native notifications, filtered by YOUR choices:
 //   importance, countries, topics and types (also the ones missed while the computer slept)
 // The radar itself runs in the cloud (GitHub Actions), so this app needs nothing else installed.
-const { app, BrowserWindow, Tray, Menu, Notification, shell, ipcMain, nativeImage, powerMonitor, screen } = require("electron");
+const { app, BrowserWindow, Tray, Menu, Notification, shell, ipcMain, nativeImage, powerMonitor, screen, safeStorage } = require("electron");
 const path = require("path");
 const fs = require("fs");
 const https = require("https");
@@ -46,8 +46,26 @@ const recent = new Map();
 
 // ---------------------------------------------------------------- settings
 const cfgFile = () => path.join(app.getPath("userData"), "settings.json");
+const SECRET_FIELDS = ["topic", "geminiKey", "openaiKey", "youtubeKey"];
+// On Windows the encryption key lives in "Local State" and is saved a little after the first start: encrypt only once
+// it is on disk, otherwise a crash in the first seconds would make the saved keys unreadable (they stay plain until then).
+const canEncrypt = () => {
+  try {
+    if (!safeStorage.isEncryptionAvailable()) return false;
+    if (process.platform !== "win32") return true;
+    const ls = JSON.parse(fs.readFileSync(path.join(app.getPath("userData"), "Local State"), "utf8"));
+    return !!(ls.os_crypt && ls.os_crypt.encrypted_key);
+  } catch { return false; }
+};
 function loadCfg() {
   try { cfg = JSON.parse(fs.readFileSync(cfgFile(), "utf8")); } catch { cfg = {}; }
+  // Windows creates the encryption key on first use and saves it a bit later: create it now, encrypt from the next start
+  try { if (process.platform === "win32" && safeStorage.isEncryptionAvailable() && !canEncrypt()) safeStorage.encryptString("init"); } catch {}
+  for (const k of SECRET_FIELDS) {          // encrypted on disk -> plain only in memory
+    const e = cfg["enc_" + k];
+    if (e && canEncrypt()) { try { cfg[k] = safeStorage.decryptString(Buffer.from(e, "base64")); } catch { cfg[k] = cfg[k] || ""; } }
+    delete cfg["enc_" + k];
+  }
   cfg.url = cfg.url || DEFAULT_URL;
   cfg.server = cfg.server || DEFAULT_SERVER;
   if (![1, 3, 4].includes(cfg.minPriority)) cfg.minPriority = 4;           // default: very important only
@@ -66,7 +84,13 @@ function loadCfg() {
 }
 function saveCfg() {
   if (cfg.__test) return;   // never store a developer test topic
-  try { fs.mkdirSync(path.dirname(cfgFile()), { recursive: true }); fs.writeFileSync(cfgFile(), JSON.stringify(cfg, null, 1)); } catch {}
+  const out = { ...cfg };
+  if (canEncrypt()) {
+    for (const k of SECRET_FIELDS) {
+      if (out[k]) { try { out["enc_" + k] = safeStorage.encryptString(String(out[k])).toString("base64"); delete out[k]; } catch {} }
+    }
+  }
+  try { fs.mkdirSync(path.dirname(cfgFile()), { recursive: true }); fs.writeFileSync(cfgFile(), JSON.stringify(out, null, 1)); } catch {}
 }
 function applyAutostart() {
   if (!app.isPackaged) return;
@@ -275,7 +299,8 @@ function inboxTranslate(ev, t, b) {   // keep the translated text too, so the in
 function inboxUnread() { return inboxLoad().filter((n) => n.shown && !n.read).length; }
 function inboxBadge() {
   const u = inboxUnread();
-  if (tray) tray.setToolTip(u ? `Trend Radar · ${u} unread notification${u > 1 ? "s" : ""} (click = inbox)` : "Trend Radar");
+  const silent = radarAgeH >= 3 ? ` · ⚠️ radar silent ${Math.round(radarAgeH)}h` : "";
+  if (tray) tray.setToolTip((u ? `Trend Radar · ${u} unread notification${u > 1 ? "s" : ""} (click = inbox)` : "Trend Radar") + silent);
   try { if (process.platform !== "win32") app.setBadgeCount(u); } catch {}
   if (win && !win.isDestroyed()) win.setTitle(u ? `Trend Radar (${u})` : "Trend Radar");
 }
@@ -811,6 +836,24 @@ function applyAiFields(c) {
   if (BRIEF_LANGS.includes(c.briefLang)) cfg.briefLang = c.briefLang;
 }
 
+// ---------------------------------------------------------------- radar health: warn when the cloud stops checking
+let lastHealthWarn = 0, radarAgeH = 0;
+async function healthTick() {
+  try {
+    const r = await fetch(cfg.url.replace(/#.*$/, "").replace(/\/?$/, "/") + "latest.json", { cache: "no-store" });
+    if (!r.ok) return;
+    const j = await r.json();
+    radarAgeH = (Date.now() - new Date(j.generated).getTime()) / 3600e3;
+    if (radarAgeH >= 3 && Date.now() - lastHealthWarn > 6 * 3600e3) {
+      lastHealthWarn = Date.now();
+      notify({ title: `⚠️ Trend Radar is silent for ${Math.round(radarAgeH)} h`,
+               body: "The cloud check has not run. Click to open GitHub Actions (re-enable or re-run the workflow).",
+               onClick: () => shell.openExternal("https://github.com/fatimazahra789078/trend-radar/actions/workflows/radar.yml") });
+    }
+    inboxBadge();
+  } catch {}
+}
+
 // ---------------------------------------------------------------- update check (GitHub download page)
 const RELEASES = "https://api.github.com/repos/fatimazahra789078/trend-radar/releases/latest";
 const RELEASE_PAGE = "https://github.com/fatimazahra789078/trend-radar/releases/latest";
@@ -924,6 +967,8 @@ if (!app.requestSingleInstanceLock()) {
          { role: "editMenu" }, { label: "Inbox", submenu: [inboxItem] }, pages, briefMenu, { role: "windowMenu" }]
       : [settingsItem, inboxItem, briefMenu, pages, { label: "Quit", click: () => { quitting = true; app.quit(); } }]));
     loadCfg();
+    // keys still stored as plain text (older version / key not ready last time)? re-save them encrypted
+    setTimeout(() => { try { if (canEncrypt() && /"(topic|geminiKey|openaiKey|youtubeKey)":/.test(fs.readFileSync(cfgFile(), "utf8"))) saveCfg(); } catch {} }, 5000);
     applyAutostart();
     createWindow(!START_HIDDEN);
     buildTray();
@@ -935,6 +980,7 @@ if (!app.requestSingleInstanceLock()) {
     setInterval(briefTick, 5 * 60e3); setTimeout(briefTick, 60e3);
     setTimeout(() => checkUpdate(false), 30e3); setInterval(() => checkUpdate(false), 6 * 3600e3);
     setTimeout(() => ytTick(false), 90e3); setInterval(() => ytTick(false), 60 * 60e3);   // YouTube check with your key
+    setTimeout(healthTick, 45e3); setInterval(healthTick, 30 * 60e3);                      // radar silent? -> warning
     if (!app.isPackaged && process.env.TR_LANG) {   // developer test only
       cfg.trLang = process.env.TR_LANG; cfg.__test = true;
       const read = (tag) => win.webContents.executeJavaScript(`[(document.querySelector("#trbtn")||{}).textContent, (document.querySelector("#tabs")||{}).innerText.slice(0, 120)]`)
@@ -942,6 +988,9 @@ if (!app.requestSingleInstanceLock()) {
       setTimeout(() => read("start"), 14000);
       setTimeout(() => { toggleLang(); setTimeout(() => read("after toggle"), 500); }, 15000);
       setTimeout(() => { toggleLang(); setTimeout(() => read("toggle back"), 1500); }, 17000);
+    }
+    if (!app.isPackaged && process.env.TR_ENC_TEST) {     // developer test only: keys decrypted after a restart?
+      console.log("[enc]", JSON.stringify({ topic: cfg.topic, gemini: cfg.geminiKey, youtube: cfg.youtubeKey }));
     }
     if (!app.isPackaged && process.env.TR_INBOX_TEST) {   // developer test only: 3 fake notifications -> inbox
       cfg.__test = true;

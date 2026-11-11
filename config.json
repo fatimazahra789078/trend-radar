@@ -39,7 +39,11 @@
   "digest_hours": 3,
   "catchup_after_hours": 1.5,
   "_catchup_help": "If the PC was off or asleep longer than this, the first check sends ONE 'While you were away' summary (top trends, sports results, watchlist) instead of many notifications.",
-  "quiet_hours": [],
+  "quiet_hours": [0, 7],
+  "quiet_tz": "Africa/Casablanca",
+  "_quiet_help": "Hours in YOUR time zone (quiet_tz) without notifications. Only urgent alerts (breaking, big disasters) pass; the rest comes as one 'While you slept' summary when the quiet hours end. [] = never quiet.",
+  "alert_budget": {"topic": 30, "watch": 6, "season": 3, "travel": 3, "game": 3, "github": 2, "ai": 3, "music": 3, "sport": 10, "event": 4, "digest": 8},
+  "_alert_budget_help": "Maximum alerts per type and day (your time zone). After 60 % of a budget only very important ones (priority 4+) pass, after 100 % only urgent ones (5). Missing type = no limit.",
   "_quiet_hours_help": "Example [1, 8] = from 01:00 to 08:00 only HOT trends and breaking news make a notification. Empty = always.",
 
   "watchlist": ["avengers", "doomsday", "marvel", "michael jackson", "murphy's law", "gta 6", "gta vi", "dune",

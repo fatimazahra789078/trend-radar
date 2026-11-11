@@ -282,6 +282,16 @@ Note: GitHub runs scheduled jobs "best effort" – when GitHub is busy, the 15-m
 
 ---
 
+### Alert limits (config.json)
+
+- `quiet_hours` / `quiet_tz` – default **00:00–07:00 Morocco time**: only urgent alerts (breaking, big disasters) during the
+  night; everything else arrives as one **🌙 While you slept** summary in the morning.
+- `alert_budget` – maximum alerts per type and day (e.g. 30 trends, 6 watchlist). After 60 % of a budget only very
+  important alerts pass, after 100 % only urgent ones.
+- Normal watchlist news are low priority (phone channel `-all` only); watchlist **spikes** stay very important.
+- Checks every 15 minutes instead of about hourly: see **FAST_CHECKS.md** (free outside timer, 5 minutes to set up).
+- Tests: `python -m unittest discover -s tests -v` (they also run on GitHub after every change).
+
 ## 9. Troubleshooting
 
 - **No notification on Windows:** Settings → System → Notifications → "Trend Radar" must be on, Focus assist off.

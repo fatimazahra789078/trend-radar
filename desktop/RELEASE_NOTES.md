@@ -5,6 +5,8 @@ The radar runs in the cloud 24/7; this app shows it and notifies you. Nothing el
 
 **New in 1.3:** Settings has a **🧠 AI & API key** box at the top (Ctrl+, / Cmd+,). Choose the briefing engine:
 No AI (free, no key), Ollama (free, on your computer), Google Gemini (free key) or OpenAI. The app also tells you when a new version is out.
+**1.5.1:** your keys (Gemini, YouTube, OpenAI) and ntfy topic are stored **encrypted** with Windows / macOS protection instead of plain text · warning when the cloud radar has been **silent for 3 hours** (notification + tray tooltip).
+
 **New in 1.5:** 🔔 **Inbox** (menu → Inbox, Ctrl+I, or click the tray icon when something is unread): every notification stays readable - the ones that popped up and the ones your filters skipped - with search and unread count. 🎮 **Games** and 📚 **Books** pages in the menu. New alert type **GAME** (a mobile game new in the top free list or climbing fast).
 
 **1.4.1:** 🌐 button on the dashboard and **Alt+Shift+T** to switch between your language and English on the spot · Gemini **model list** in Settings: pick a model, **Test** it or **Test all** (✓ / ✗ saved); Auto uses the newest *flash-lite* (more free requests) · clearer explanation of the ntfy topic.

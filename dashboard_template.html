@@ -188,7 +188,10 @@ function fmtDay(iso){ return new Date(iso).toLocaleString([], {weekday:"short", 
 function header(){
   const next = new Date(new Date(DATA.generated).getTime() + DATA.every*60000);
   const ok = DATA.sources.filter(s => s.ok).length;
-  $("#status").innerHTML = `Updated <b>${fmtTime(DATA.generated)}</b> · next check ~${fmtTime(next.toISOString())} · ${ok}/${DATA.sources.length} sources OK`;
+  const ageH = (Date.now() - new Date(DATA.generated).getTime()) / 3600000;
+  const stale = ageH >= 3 ? `<span style="color:var(--hot);font-weight:800"> · &#9888;&#65039; radar silent for ${Math.round(ageH)}h - check GitHub Actions</span>` : "";
+  const bad = DATA.sources.length - ok;
+  $("#status").innerHTML = `Updated <b>${fmtTime(DATA.generated)}</b>${stale} · next check ~${fmtTime(next.toISOString())} · <span title="${esc(DATA.sources.filter(s => !s.ok).map(s => s.name + ": " + (s.err || "")).join("\n"))}" style="${bad > 10 ? "color:var(--hot);font-weight:700" : ""}">${ok}/${DATA.sources.length} sources OK</span>`;
   const zones = [["New York","America/New_York"],["Los Angeles","America/Los_Angeles"],["Berlin","Europe/Berlin"],["You (PC)",undefined]];
   const draw = () => { $("#clocks").innerHTML = zones.map(([n,z]) => {
       let t; try { t = new Date().toLocaleTimeString([], z ? {hour:"2-digit", minute:"2-digit", timeZone:z} : {hour:"2-digit", minute:"2-digit"}); } catch(e){ t = "--"; }
@@ -861,6 +864,10 @@ function fromHash(){
 addEventListener("hashchange", () => { if (fromHash()){ tabs(); render(); window.scrollTo(0,0); } });
 
 if (DATA){ fromHash(); header(); tabs(); render(); footer();
+  if (DATA.extra_url) fetch(DATA.extra_url, { cache: "no-store" }).then(r => r.json()).then(x => {
+    Object.assign(DATA, x); tabs();
+    if (["games", "books", "github", "events", "search"].includes(state.tab)) render();
+  }).catch(() => {});
   // global search: typing opens the Search tab; clearing it goes back to the tab you were on
   const gq = $("#gq"); let backTab = state.tab === "search" ? "trends" : state.tab;
   gq.oninput = () => { const v = gq.value; if (v.trim()) { if (state.tab !== "search") backTab = state.tab; state.tab = "search"; state.q = v; }
