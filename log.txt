@@ -1,0 +1,6 @@
+2026-11-21 16:54:19 source failed: itch.io featured: HTTPError: HTTP Error 429: Too Many Requests
+2026-11-21 16:55:12 source failed: Apple Books US top-free: TimeoutError: The read operation timed out
+2026-11-21 16:55:23 source failed: Apple Music DE: TimeoutError: The read operation timed out
+2026-11-21 16:55:23 PC was off or asleep for 7.6h -> 'while you were away' summary
+2026-11-21 16:56:08 notified 9: 🌍 EARTHQUAKE M6.8 · 105 km NE of Lospalos, Timor Leste | 🌍 EARTHQUAKE M5.9 · 238 km SW of Yanglong, China | 📥 While you were away (8h): top trends | 🏆 Results while you were away (3) | ⭐ Watchlist while you were away | 🎵 New #1 in Spain: BbY WOW | 🎮 GAME RISING: Tank Busters: Cannon Battle | ✈️ NOT IN FRANCE YET: Bitcoin Gold | 🏆 TODAY'S TOP 3 VIDEOS
+2026-11-21 16:56:08 check done in 117.3s: 4950 signals, 438 topics, 220/224 sources ok, 9 notifications
