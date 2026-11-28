@@ -1,0 +1,5 @@
+2026-11-28 17:45:05 source failed: Apple Music US: HTTPError: HTTP Error 502: Bad Gateway
+2026-11-28 17:45:06 PC was off or asleep for 8.3h -> 'while you were away' summary
+2026-11-28 17:45:45 season chinesenewyear failed: HTTPError: HTTP Error 429: Too Many Requests
+2026-11-28 17:46:08 notified 10: 🌍 EARTHQUAKE M5.0 · 6 km WSW of Manhattan Beach, CA | 🌍 EARTHQUAKE M6.7 · 62 km NNW of Yelizovo, Russia | 📥 While you were away (8h): top trends | 🏆 Results while you were away (2) | ⭐ Watchlist while you were away | 🎵 New #1 in UK: Last Christmas (Single Version) | 📚 PREPARE NOW: Groundhog Day | 🆕 NEW ON GITHUB: DeadInternetStudios/100x-engineer-skill | 🎮 GAME RISING: Brain Test: Tricky Puzzles | 🏆 TODAY'S TOP 3 VIDEOS
+2026-11-28 17:46:08 check done in 105.2s: 5020 signals, 445 topics, 250/252 sources ok, 10 notifications

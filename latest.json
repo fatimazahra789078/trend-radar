@@ -1,0 +1,4501 @@
+{
+ "generated": "2026-11-28T17:44:23.324152+00:00",
+ "trends": [
+  {
+   "name": "#LMSYFanMeetingMadrid",
+   "category": "Sports",
+   "tier": 2,
+   "score": 63.4,
+   "story": false,
+   "countries": [
+    "DE",
+    "US",
+    "GB",
+    "ES",
+    "FR",
+    "IT",
+    "AT",
+    "CH",
+    "NL"
+   ],
+   "summary": "DE US GB ES FR · Sports · Google 20K+ (ES) · X #7 for 24h · Wiki 86K views · 18 news sites · 4 articles in 1h · since 9h",
+   "context": "Simeone names 23-man squad for clash with Elche CF",
+   "url": "https://onefootball.com/en/news/simeone-names-23-man-squad-for-clash-with-elche-cf-43852791",
+   "first_pub_h": 9.38,
+   "last_pub_h": 0.07,
+   "recent1": 4,
+   "just_in": false,
+   "hours_seen": 11,
+   "days_seen": 6,
+   "watch": null,
+   "related": [
+    "Elche Vs Atlético",
+    "Elche – Atlético Madrid",
+    "Elche C. F. - Atlético Madrid",
+    "Elche - Atlético Madrid",
+    "#ValenciaGP",
+    "Marquez",
+    "Marc",
+    "Marc Márquez",
+    "Ducati",
+    "Pubill"
+   ],
+   "video": {
+    "phase": "rising",
+    "window": "about 6-12h left",
+    "travel": null,
+    "sensitive": false,
+    "yt": null,
+    "social": {},
+    "score": 91.1
+   },
+   "id": "d99abf2ee2af",
+   "news": [
+    {
+     "t": "Bezzecchi vince la Sprint di Valencia. Va a fuoco al via la moto di Marquez: penalizzato",
+     "u": "https://news.google.com/rss/articles/CBMiuAFBVV95cUxORWNnQ0h0WUNWUWViS1JzRVJPNk4ybXIwTGJNeGpwNG02dlVsbE1kcHpQSDZmTS1pQWEtRjF6TmdsenZoRjlKVzdOSFBwWUoxWURUckQ5OEtoS3RxeWtZWGNaSGZNdTBMZWh4NmJOc2RUQlJjRXlHYzBkX3E0TjlNZ3RxOUJnOTJ1a3pUd0xUQnFJNXcwRUl1anJEU3ZnUDVONWR6WXRva1F0cjJuZTBsdnZJaHozdGhp0gG-AUFVX3lxTE4ySGtNa0MzdUhkNlZ3aUJrMDE0QmxpNFVFZ09VNXhwZ04xTW1nY2hmU1gxajl6Wl9Ea0tDWTJRR1loUTlfQjdFZEVnTTJ6eXkxZC1KbFRYdWhhZDl6bHBxczBwZGdrc2VxUnBZNzgxOGJteXNYNHJ3NXA5S2lpVHJud1paWTJpNWFMai04Zy1pVVJJRzRaR1daQVhNZTFDQWstOHJ6NTV5Wl9zOUJRd0FnODBiUVJxa1dtN1ZMcnc?oc=5",
+     "s": "La Gazzetta dello Sport",
+     "c": "IT",
+     "r": true,
+     "a": 0.06842337555555555
+    },
+    {
+     "t": "Marc Márquez ironiza sobre el reglamento tras su incidente en la salida de la sprint: \"Yo creo que lo van a cambiar ¡eh!\"",
+     "u": "https://news.google.com/rss/articles/CBMi4gFBVV95cUxPbXNCVWRsM1JaWkpWVlJMQjBEV1IyWDA3elZlbHFpUFYwd29Xc1RVb3Q3clpaX1QwTnRodGFCdEtyNmthdWtzUHFxazVSSlRYRXhveV94SE1nVmp4ak9uYVlvUWdpQlNCUG1HRVBkZUdyN2pzZTNiaE9RMlIzYjV3RHotLUxRdlBPNFA5VDVyR3dUTHU2UHNfVXIzVUlkYmhUTEVSOVJUM3o2blhzVjgtLWgtSUc2SkRyelVCa1hyeDZ0RlY2ZHl2MTBLQ01lVk53NDh5cnB6eDlYVDh4VG8xMEh3?oc=5",
+     "s": "DAZN",
+     "c": "ES",
+     "r": true,
+     "a": 0.9514789311111111
+    },
+    {
+     "t": "Elche - Atlético de Madrid, en directo hoy el partido de la jornada 14 de Liga",
+     "u": "https://news.google.com/rss/articles/CBMiwAFBVV95cUxNU3llTUp1V2s4aTJpdGxxeWFweVp3ZEFBSlE4SUJ0emlCNlQ2OXNzZ2tXUHlNbjNQWGV4MTVhUnoyR1VSa1FjX1ZrUVJidDlQUWsybUdCWGVhZ2QyU3F4eU94UFNDUHFpemRVYnRXeWZsZ0h0MndxU2Zyaldqa3JnNVp3QnR3REZkcDkwVVRjcTVmR3d6NGVoeGtyRmV5TWplMFpkMDdZZFc4QVl2cUdNUWxIMjBObVdnV2FWYjJLeGg?oc=5",
+     "s": "RTVE.es",
+     "c": "ES",
+     "r": true,
+     "a": 1.2250900422222222
+    },
+    {
+     "t": "Marco Bezzecchi domine le sprint, la moto de Marquez en feu sur la grille de départ de GP de Valence",
+     "u": "https://news.google.com/rss/articles/CBMi5gFBVV95cUxNLW9oT0hhZnAtakItRXV1RGlCc3k2RVV5My1xc3dHdTUyRVlpLTY2WGhrY1RKQjUxVURlSS1XcnYyb3RCek5wMWJyZWsxRnNNM3BlWTR1ZURjVTRiYXNpcWdpWE92WnZ4eHYtbEN0d1QwTzgyUGFJcll2OE9rZWFhQzhjM2ppeThzQjRlS1hDR3VHVkM1dzlNaXQ5R2hHRm1HZzJyNnl2WGh3T1ViNnVYUFo4emplM1NDNEQtNmhacHQ3WDZCSE9zN3M5RklDdGF0LWFhWkQ1MlN5YUp2UUcyYmVnRVhVQQ?oc=5",
+     "s": "L'Équipe",
+     "c": "FR",
+     "r": true,
+     "a": 1.544256708888889
+    },
+    {
+     "t": "Jorge Martín cuenta cómo reaccionó al error del semáforo en la salida de MotoGP que perjudicó a Marc Márquez: \"Ya estaba contando tres y he empezado a cortar gas\"",
+     "u": "https://news.google.com/rss/articles/CBMitAJBVV95cUxNdE5PR3RScElaYmNPVmJaNjJwYm4xa0VYUmRQdFJ5VldFdFZISXdDOVdwckd0QU5mdDlVNmowM21JOExwRlAtTlRZRWRXTkZtZGk4REZYOVZYdi1CN3NtOV9jVlFzZXpwOWpVeUVKQzQxNEx2VzFHMG9tQ2JXYmg2eWhHT0daZzltdnF4VTZ1NUVzdExvcnFjcnE2NFZqQWt3Nk1JdnpHX25qTDJiQWF0NXlKZVlMakJfNWZDdmdtMk9ZenZKWnktbXNwaEQ1VVlSM1hsOE5EbUVzTDB0RzhGMnJiTWM5alV1OXZaZW0xYTF5Q1RSVlZmMW1BTXJtWjF4Z2xmNDV1X2xabVNDQUtyM2QwakxETGhBczE4Q0NucTVxTXliRDltWmVvdE5aay1LajNjQg?oc=5",
+     "s": "DAZN",
+     "c": "ES",
+     "r": true,
+     "a": 0.5956455977777778
+    }
+   ],
+   "query": "LMSYFan Meeting Madrid"
+  },
+  {
+   "name": "Brentford",
+   "category": "Sports",
+   "tier": 2,
+   "score": 43.5,
+   "story": false,
+   "countries": [
+    "DE",
+    "US",
+    "GB",
+    "ES",
+    "FR",
+    "IT",
+    "AT",
+    "CH",
+    "NL"
+   ],
+   "summary": "DE US GB ES FR · Sports · Google 500+ (CH) · X #1 for 5h · 4 news sites · since 4h",
+   "context": "Manchester United vs Brentford: Premier League preview, team news, stats & head-to-head",
+   "url": "https://www.bbc.co.uk/sport/football/live/cmn0d5804z76t?page=2",
+   "first_pub_h": 4.24,
+   "last_pub_h": 0.7,
+   "recent1": 1,
+   "just_in": false,
+   "hours_seen": 4,
+   "days_seen": 3,
+   "watch": null,
+   "related": [
+    "Manchester United"
+   ],
+   "video": {
+    "phase": "rising",
+    "window": "about 6-12h left",
+    "travel": null,
+    "sensitive": false,
+    "yt": null,
+    "social": {},
+    "score": 75.0
+   },
+   "id": "2eb556ab6e78",
+   "news": [
+    {
+     "t": "Le naufrage continue pour Manchester United qui coule à domicile contre Brentford",
+     "u": "https://news.google.com/rss/articles/CBMizAFBVV95cUxQeWxVY3VjVW1EN1YzS2Q0V3pEUjh2R2NWdVMxSW5TR0ZYOEZiMlhrWHVFQk1xU2lZVGd5cmlqcE9jTEYtRWFnSmJ1emhZTFVaZTJsS3p1bVN5THpUR01iaFNmRk1VdnhZcENkT2lJa0ducmptWjd1QjE0ME05WXFycTlLWnpPbGtEQldSTzR4VHRmSkt0Y2VjdlBaUXVLTGJyNG9jQWw4NFRhbXdXc3ltZVdiWFA1dVRpdlJPdXU0ckZJU3hzaDFDRi1VN2Q?oc=5",
+     "s": "L'Équipe",
+     "c": "FR",
+     "r": true,
+     "a": 0.6973122644444445
+    },
+    {
+     "t": "Manchester United 0-4 Brentford, Leeds 3-0 Coventry, and more: football clockwatch – live",
+     "u": "https://news.google.com/rss/articles/CBMi2wFBVV95cUxPcVBDS1J5anNxTDZ5OGR1U1dYN0FSWkJhY21hWkdhUWtDT0xGWEdBR29CajlXQzNobXNMMVlnNkpnQkJ4bHRtNDZLOVV0Rm9IX1VIaWpIUW9icko2U2V5SHVVREMxYTRvOWRJTDhLdjZrUDZUZi1LWU1lWWRBbVVaR3RFV1lnY0FTZWwyZUxxaXZGN0FRSGdPRmVMcnVjazZpa0JzOVdBLTFrZ2lhN2Rvd2RGaHFUS1NLcVVMZW1TWVBiUi1RamdmQk1TdE4wZGdLTFZDcF9ndjRfMWM?oc=5",
+     "s": "The Guardian",
+     "c": "GB",
+     "r": false,
+     "a": 4.239812264444444
+    },
+    {
+     "t": "Manchester United vs Brentford: Premier League preview, team news, stats & head-to-head",
+     "u": "https://www.bbc.co.uk/sport/football/live/cmn0d5804z76t?page=2",
+     "s": "BBC",
+     "c": "AT",
+     "r": false,
+     "a": null
+    },
+    {
+     "t": "Match Summary",
+     "u": "https://www.bbc.com/sport/football/live/cmz9823qpznet",
+     "s": "BBC",
+     "c": "CH",
+     "r": false,
+     "a": null
+    },
+    {
+     "t": "Premier League: Ipswich host Villa after Brentford thrash Man Utd and Leeds beat Coventry",
+     "u": "https://sports.yahoo.com/soccer/articles/premier-league-ipswich-host-villa-165902202.html",
+     "s": "Yahoo Sports",
+     "c": "CH",
+     "r": false,
+     "a": null
+    }
+   ],
+   "query": "Brentford"
+  },
+  {
+   "name": "Earthquake",
+   "category": "Natural disasters",
+   "tier": 2,
+   "score": 33.7,
+   "story": false,
+   "countries": [
+    "US"
+   ],
+   "summary": "US · Natural disasters · Google 100K+ (US) · 17 news sites",
+   "context": "Strong magnitude 6.7 earthquake strikes far-east Russia along active Pacific Ring of Fire",
+   "url": "https://www.foxweather.com/extreme-weather/strong-magnitude-6-7-earthquake-strikes-far-east-russia",
+   "first_pub_h": null,
+   "last_pub_h": null,
+   "recent1": 0,
+   "just_in": false,
+   "hours_seen": 1,
+   "days_seen": 1,
+   "watch": null,
+   "related": [
+    "Earthquake Near Me",
+    "Earthquake Today",
+    "California Earthquake",
+    "Earthquake California",
+    "Earthquake California Today",
+    "5.2 Earthquake",
+    "Earthquake 5 Minutes Ago In Los Angeles"
+   ],
+   "video": {
+    "phase": "rising",
+    "window": "about 6-12h left",
+    "travel": null,
+    "sensitive": false,
+    "yt": null,
+    "social": {},
+    "score": 42.1
+   },
+   "id": "b663872af6a2",
+   "news": [
+    {
+     "t": "Strong magnitude 6.7 earthquake strikes far-east Russia along active Pacific Ring of Fire",
+     "u": "https://www.foxweather.com/extreme-weather/strong-magnitude-6-7-earthquake-strikes-far-east-russia",
+     "s": "FOX Weather",
+     "c": "US",
+     "r": false,
+     "a": null
+    },
+    {
+     "t": "A 6.7 magnitude earthquake strikes near Yelizovo in the Kamchatka Peninsula of eastern Russia",
+     "u": "https://www.voiceofemirates.com/en/news/2026/11/28/a-6-7-magnitude-earthquake-strikes-near-yelizovo-in-the-kamchatka-peninsula-of-eastern-russia/",
+     "s": "صوت الإمارات",
+     "c": "US",
+     "r": false,
+     "a": null
+    },
+    {
+     "t": "6.7-magnitude quake hits Russia’s Kamchatka region",
+     "u": "https://egyptian-gazette.com/world/6-7-magnitude-quake-hits-russias-kamchatka-region/",
+     "s": "Egyptian Gazette",
+     "c": "US",
+     "r": false,
+     "a": null
+    },
+    {
+     "t": "3.6 quake reported in eastern San Diego County near Mount Laguna",
+     "u": "https://www.nbcsandiego.com/news/local/3-6-quake-reported-eastern-san-diego-county/4106824/",
+     "s": "NBC 7 San Diego",
+     "c": "US",
+     "r": false,
+     "a": null
+    },
+    {
+     "t": "Did you feel it? Earthquake recorded near Mount Laguna",
+     "u": "https://www.cbs8.com/article/weather/earthquakes/did-you-feel-it-earthquake-recorded-near-mount-laguna/509-05997294-f55c-4b0f-9a08-0a60ba15232c",
+     "s": "cbs8.com",
+     "c": "US",
+     "r": false,
+     "a": null
+    }
+   ],
+   "query": "Earthquake"
+  },
+  {
+   "name": "#MacysParade",
+   "category": "Natural disasters",
+   "tier": 2,
+   "score": 30.2,
+   "story": false,
+   "countries": [
+    "DE",
+    "US",
+    "GB",
+    "EU"
+   ],
+   "summary": "DE US GB EU · Natural disasters · Google 200+ (DE) · X #2 for 5h · Wiki 11K views · 13 news sites · 4 new in 2h · since 2 days",
+   "context": "Britney Spears reportedly comes home to Louisiana for Thanksgiving",
+   "url": "https://www.wbrz.com/news/britney-spears-reportedly-comes-home-to-louisiana-for-thanksgiving/",
+   "first_pub_h": 55.48,
+   "last_pub_h": 0.02,
+   "recent1": 2,
+   "just_in": false,
+   "hours_seen": 70,
+   "days_seen": 17,
+   "watch": null,
+   "related": [
+    "Britney Spears",
+    "Thanksgiving"
+   ],
+   "video": {
+    "phase": "falling",
+    "window": "late - only with a new angle",
+    "travel": null,
+    "sensitive": false,
+    "yt": null,
+    "social": {},
+    "score": 13.6
+   },
+   "id": "482554adddb9",
+   "news": [
+    {
+     "t": "Thousands without power after Thanksgiving storms",
+     "u": "https://www.cbsnews.com/news/east-coast-thanksgiving-storm-power-outages-cleanup/",
+     "s": "CBS News",
+     "c": "US",
+     "r": true,
+     "a": 0.016201153333333333
+    },
+    {
+     "t": "Macy's Thanksgiving Day Parade brings out crowds after being postponed",
+     "u": "https://www.cbsnews.com/news/macys-thanksgiving-day-parade-2026-nyc/",
+     "s": "CBS News",
+     "c": "US",
+     "r": true,
+     "a": 0.15592337555555558
+    },
+    {
+     "t": "New York City: Macy’s 100th Thanksgiving Day Parade takes place after historic weather delay",
+     "u": "https://www.euronews.com/2026/11/28/new-york-city-macys-100th-thanksgiving-day-parade-takes-place-after-historic-weather-delay",
+     "s": "Euronews",
+     "c": "EU",
+     "r": true,
+     "a": 1.9364789311111112
+    },
+    {
+     "t": "Macy's Thanksgiving Day Parade marches on after weather delay",
+     "u": "https://www.cbsnews.com/video/macys-thanksgiving-day-parade-marches-on-after-weather-delay/",
+     "s": "CBS News",
+     "c": "US",
+     "r": true,
+     "a": 1.7670344866666667
+    },
+    {
+     "t": "What it was like to keep a 410-person band in NYC for the rescheduled Macy’s parade",
+     "u": "https://news.google.com/rss/articles/CBMitwFBVV95cUxNenVqZVd3ekN4SGExamxBY0ZzNzBxWEd0OG54V1pneWtRQzdWeXEyV1NVdE9mZ2RTSXNGS3JmbHhLLVR1YlhiZDFNZ2ZseVpuTXBRTmZiVzFYNlNXUlFRTk5IamVTX2xONHphazlMZEllOXVTVDN3cDJrWTNITjBkZHY1V0xBbS1VQXhSQUVkS0JpOTduX2RqeVBGZ2oyeVV4WVZsbHN1VmpnU3h2RzA0SUlFS0tsWmc?oc=5",
+     "s": "The Washington Post",
+     "c": "US",
+     "r": false,
+     "a": 2.3648122644444443
+    }
+   ],
+   "query": "Macys Parade"
+  },
+  {
+   "name": "Kimmich",
+   "category": "Sports",
+   "tier": 2,
+   "score": 23.3,
+   "story": false,
+   "countries": [
+    "DE",
+    "FR",
+    "CH"
+   ],
+   "summary": "DE FR CH · Sports · Google 500+ (CH) · X #4 for 12h · 5 news sites · 3 new in 2h · since 2h",
+   "context": "Kimmich sees red as Bayern Munich held, Paderborn thump Schalke",
+   "url": "https://www.reuters.com/sports/soccer/kimmich-sees-red-bayern-munich-held-paderborn-thump-schalke-2026-11-28/",
+   "first_pub_h": 1.99,
+   "last_pub_h": 1.09,
+   "recent1": 0,
+   "just_in": false,
+   "hours_seen": 5,
+   "days_seen": 4,
+   "watch": null,
+   "related": [
+    "Joshua Kimmich"
+   ],
+   "video": {
+    "phase": "rising",
+    "window": "about 6-12h left",
+    "travel": null,
+    "sensitive": false,
+    "yt": null,
+    "social": {},
+    "score": 46.9
+   },
+   "id": "ed56bb97f96a",
+   "news": [
+    {
+     "t": "Bayern rettet sich nach Kimmich-Rot zu einem Punkt – Schalke holt sich unglaubliche Abreibung",
+     "u": "https://news.google.com/rss/articles/CBMiggJBVV95cUxQZVRfT1ByUlhmdjBpQXRiNVVwUHB0azhoUllGbTZYbmpGb2xUUWdRVnB2SVdFLW05Z1c4cW1qZkhxNlZ4QWVudnpVQ3RoVURSYmczVEs2Yzk4cW9rcGNrQW96QllPSnJUbk9TNms1di16S0ZrYkVUOEFaUW1vRDd6YjJWUlJ3d2pzSFlyMmlmVl9fZnBOdjZyMVNLa1l4Z1pCamlMaWNvT3RidDZhRVZfV1B1UzBlZVVleGdwV2VkTndidzN2QlFGVFhKbHRmUGl6Z1ZfVGtaU2FrXzRDbGVtWmFCckVjT0tTR1A3UFhUd1J1VjF5alkxNWV1VVRscFVaaEE?oc=5",
+     "s": "WELT",
+     "c": "DE",
+     "r": true,
+     "a": 1.0948122644444445
+    },
+    {
+     "t": "Bayern : Kimmich pète un plomb et voit rouge contre Hambourg",
+     "u": "https://news.google.com/rss/articles/CBMiqwFBVV95cUxPZGtzSXFXRGVlNURHQzU4NWhlYTBqZHZwb2ZIWS1SeVdBZ3JyYVJDczVDN3ByaW1HS0hWYU5Fb0w1RERWNWdza01zdGVhdzNjR2hJZ25oVDB1akdqaGZiV0lDU0k5NEdrSFVteHI3TVVURWZaOFdqUUxHZHNxZ1otWmxKMGZYVUR4ajljOERsVGg1VUxxMjFBQTRvOEJ6TGMtNEU4a3RIQUtabWc?oc=5",
+     "s": "Foot Mercato",
+     "c": "FR",
+     "r": true,
+     "a": 1.9900900422222223
+    },
+    {
+     "t": "Kimmich sees red as Bayern Munich held, Paderborn thump Schalke",
+     "u": "https://www.reuters.com/sports/soccer/kimmich-sees-red-bayern-munich-held-paderborn-thump-schalke-2026-11-28/",
+     "s": "Reuters",
+     "c": "DE",
+     "r": false,
+     "a": null
+    },
+    {
+     "t": "Bayern Captain Kimmich Pulls an Opponent's Hair and Is Sent Off",
+     "u": "https://www.bluewin.ch/en/sport/football/bayern-captain-kimmich-pulls-an-opponent-s-hair-and-is-sent-off-li.3690421",
+     "s": "blue News",
+     "c": "CH",
+     "r": false,
+     "a": null
+    },
+    {
+     "t": "Licensable picture: Hamburger SV v FC Bayern Munich: Matchday 11 - Bundesliga",
+     "u": "https://www.reutersconnect.com/item/hamburger-sv-v-fc-bayern-munich-matchday-11-bundesliga/dGFnOnJldXRlcnMuY29tLDIwMjY6bmV3c21sX01UMU5VUlBITzAwME5VTlZTSw",
+     "s": "Reuters Connect",
+     "c": "CH",
+     "r": false,
+     "a": null
+    }
+   ],
+   "query": "Kimmich"
+  },
+  {
+   "name": "Ipswich Town",
+   "category": "Sports",
+   "tier": 2,
+   "score": 22.8,
+   "story": false,
+   "countries": [
+    "GB",
+    "ES",
+    "IT",
+    "AT",
+    "NL"
+   ],
+   "summary": "GB ES IT AT NL · Sports · Google 2K+ (GB) · 5 news sites · since 8 min",
+   "context": "(1) Ipswich Town v Aston Villa: Premier League – live",
+   "url": "https://www.theguardian.com/football/live/2026/nov/28/ipswich-town-v-aston-villa-premier-league-live",
+   "first_pub_h": 0.13,
+   "last_pub_h": 0.13,
+   "recent1": 1,
+   "just_in": false,
+   "hours_seen": 1,
+   "days_seen": 1,
+   "watch": null,
+   "related": [
+    "Ipswich – Aston Villa",
+    "Ipswich Town - Aston Villa",
+    "Ipswich - Aston Villa"
+   ],
+   "video": {
+    "phase": "rising",
+    "window": "about 6-12h left",
+    "travel": null,
+    "sensitive": false,
+    "yt": null,
+    "social": {},
+    "score": 45.9
+   },
+   "id": "7b6fc988f7a2",
+   "news": [
+    {
+     "t": "Ipswich Town v Aston Villa: Premier League – live",
+     "u": "https://www.theguardian.com/football/live/2026/nov/28/ipswich-town-v-aston-villa-premier-league-live",
+     "s": "The Guardian",
+     "c": "GB",
+     "r": true,
+     "a": 0.12870115333333335
+    },
+    {
+     "t": "(1) Ipswich Town v Aston Villa: Premier League – live",
+     "u": "https://www.theguardian.com/football/live/2026/nov/28/ipswich-town-v-aston-villa-premier-league-live",
+     "s": "The Guardian",
+     "c": "AT",
+     "r": false,
+     "a": null
+    },
+    {
+     "t": "Manchester United vs Brentford: Premier League preview, team news, stats & head-to-head",
+     "u": "https://www.bbc.co.uk/sport/football/live/cmn0d5804z76t?page=2",
+     "s": "BBC",
+     "c": "AT",
+     "r": false,
+     "a": null
+    },
+    {
+     "t": "Why Alysson holds the key to prolonging Unai Emery streak in Ipswich vs Aston Villa",
+     "u": "https://sports.yahoo.com/articles/why-alysson-holds-key-prolonging-121641626.html",
+     "s": "Yahoo Sports",
+     "c": "AT",
+     "r": false,
+     "a": null
+    },
+    {
+     "t": "Premier League predictions & Jones Knows' best bets: Arsenal vs Manchester City and more!",
+     "u": "https://www.skysports.com/football/news/13616076/premier-league-predictions-and-jones-knows-best-bets-nottingham-forest-vs-chelsea-arsenal-vs-manchester-city-and-more",
+     "s": "Sky Sports",
+     "c": "GB",
+     "r": false,
+     "a": null
+    }
+   ],
+   "query": "Ipswich Town"
+  },
+  {
+   "name": "Justice",
+   "category": "Music",
+   "tier": 2,
+   "score": 22.1,
+   "story": false,
+   "countries": [
+    "DE",
+    "US",
+    "GB",
+    "FR",
+    "IT"
+   ],
+   "summary": "DE US GB FR IT · Music · #3 chart FR · 2 news sites · since 8h",
+   "context": "Affaires Al-Khelaïfi : la fuite judiciaire au sommet de l’Etat qui intrigue la justice",
+   "url": "https://www.lemonde.fr/societe/article/2026/11/28/affaires-al-khelaifi-la-fuite-judiciaire-au-sommet-de-l-etat-qui-intrigue-la-justice_6816125_3224.html",
+   "first_pub_h": 7.74,
+   "last_pub_h": 1.74,
+   "recent1": 0,
+   "just_in": false,
+   "hours_seen": 100,
+   "days_seen": 22,
+   "watch": null,
+   "related": [],
+   "video": {
+    "phase": "rising",
+    "window": "about 6-12h left",
+    "travel": null,
+    "sensitive": false,
+    "yt": null,
+    "social": {},
+    "score": 39.8
+   },
+   "id": "187bda847b70",
+   "news": [
+    {
+     "t": "Affaires Al-Khelaïfi : la fuite judiciaire au sommet de l’Etat qui intrigue la justice",
+     "u": "https://www.lemonde.fr/societe/article/2026/11/28/affaires-al-khelaifi-la-fuite-judiciaire-au-sommet-de-l-etat-qui-intrigue-la-justice_6816125_3224.html",
+     "s": "Le Monde",
+     "c": "FR",
+     "r": true,
+     "a": 1.7387011533333334
+    },
+    {
+     "t": "New wave of Democratic attorneys general may reshape the justice system",
+     "u": "https://news.google.com/rss/articles/CBMilwFBVV95cUxNQjA3S3VadGtLLWtaRWl4dVFMVll1VU0yXzV5TlNMYzhlWnlHWC04TkdYNE5KTHl0WW9zVUJNUUkxd3pSS3dfdWtSTnN4elVEZm9Da1JSWm1rVGVQb2xoUF9FUkN5MkR2RXFFZlJrZzBzLTFCT2hXS3BvMEtHWEZjbEhRelRvZTg3WGQtSE1Hckx3Vmc4Szgw?oc=5",
+     "s": "NPR",
+     "c": "US",
+     "r": false,
+     "a": 7.739812264444445
+    }
+   ],
+   "query": "Justice"
+  },
+  {
+   "name": "Costa Rica",
+   "category": "General",
+   "tier": 2,
+   "score": 21.4,
+   "story": false,
+   "countries": [
+    "FR",
+    "IT"
+   ],
+   "summary": "FR IT · X #2 for 24h · 3 news sites · since 9h",
+   "context": "Francesca Albanese lascia la Costa Rica: \"Tornerò quando sarà un Paese libero\"",
+   "url": "https://news.google.com/rss/articles/CBMidEFVX3lxTFBpUlBWM1BMcjV6UTVYVUZMX1J5RVN2OTh1Z2hzWDBuVEhNdWlsQWhnTzVYS1U5S2RpbEd2UUhDZ1dlWVpLVTZjZnVPSVdoQ2ZBSGFuLWFHOFFnaHFLSll1Z3VxS2hERmNZTGRsU0RwRDk0Y3pu?oc=5",
+   "first_pub_h": 9.09,
+   "last_pub_h": 2.21,
+   "recent1": 0,
+   "just_in": false,
+   "hours_seen": 5,
+   "days_seen": 2,
+   "watch": null,
+   "related": [
+    "Francesca Albanese"
+   ],
+   "video": {
+    "phase": "peak",
+    "window": "about 3-6h left",
+    "travel": null,
+    "sensitive": false,
+    "yt": null,
+    "social": {},
+    "score": 21.4
+   },
+   "id": "7519a2e062e4",
+   "news": [
+    {
+     "t": "Francesca Albanese lascia la Costa Rica: \"Tornerò quando sarà un Paese libero\"",
+     "u": "https://news.google.com/rss/articles/CBMidEFVX3lxTFBpUlBWM1BMcjV6UTVYVUZMX1J5RVN2OTh1Z2hzWDBuVEhNdWlsQWhnTzVYS1U5S2RpbEd2UUhDZ1dlWVpLVTZjZnVPSVdoQ2ZBSGFuLWFHOFFnaHFLSll1Z3VxS2hERmNZTGRsU0RwRDk0Y3pu?oc=5",
+     "s": "Sky TG24",
+     "c": "IT",
+     "r": false,
+     "a": 9.086756708888888
+    },
+    {
+     "t": "La rapporteure de l'ONU Francesca Albanese refoulée par le Costa Rica",
+     "u": "https://www.france24.com/fr/vid%C3%A9o/20261128-la-rapporteure-de-l-onu-francesca-albanese-refoul%C3%A9e-par-le-costa-rica",
+     "s": "France24",
+     "c": "FR",
+     "r": false,
+     "a": 2.597312264444444
+    },
+    {
+     "t": "La rapporteuse de l’ONU pour les Palestiniens, Francesca Albanese, part pour le Mexique, après avoir été refoulée par le Costa Rica",
+     "u": "https://www.lemonde.fr/international/article/2026/11/28/la-rapporteure-de-l-onu-pour-les-palestiniens-francesca-albanese-part-pour-le-mexique-apres-avoir-ete-refoulee-par-le-costa-rica_6816123_3210.html",
+     "s": "Le Monde",
+     "c": "FR",
+     "r": false,
+     "a": 2.21286782
+    }
+   ],
+   "query": "Costa Rica"
+  },
+  {
+   "name": "Psv - Ga Eagles",
+   "category": "Sports",
+   "tier": 2,
+   "score": 20.7,
+   "story": false,
+   "countries": [
+    "GB",
+    "ES",
+    "FR",
+    "NL"
+   ],
+   "summary": "GB ES FR NL · Sports · Google 10K+ (NL) · 10 news sites",
+   "context": "PSV vs Go Ahead Eagles: Dutch Eredivisie stats & head-to-head",
+   "url": "https://www.bbc.co.uk/sport/football/live/cw8dv1ld93e6t",
+   "first_pub_h": null,
+   "last_pub_h": null,
+   "recent1": 0,
+   "just_in": false,
+   "hours_seen": 1,
+   "days_seen": 1,
+   "watch": null,
+   "related": [
+    "Psv Vs Go Ahead Eagles",
+    "Psv Eindhoven – Go Ahead Eagles",
+    "Psv - Go Ahead Eagles"
+   ],
+   "video": {
+    "phase": "rising",
+    "window": "about 6-12h left",
+    "travel": null,
+    "sensitive": false,
+    "yt": null,
+    "social": {},
+    "score": 29.8
+   },
+   "id": "de3fe2e8541d",
+   "news": [
+    {
+     "t": "PSV vs Go Ahead Eagles: Dutch Eredivisie stats & head-to-head",
+     "u": "https://www.bbc.co.uk/sport/football/live/cw8dv1ld93e6t",
+     "s": "BBC",
+     "c": "GB",
+     "r": false,
+     "a": null
+    },
+    {
+     "t": "All About | PSV Handed Go Ahead Eagles Their Biggest Loss Ever",
+     "u": "https://www.psv.nl/en/media/artikel/alles-over-psv-bezorgde-go-ahead-eagles-grootste-nederlaag-ooit",
+     "s": "PSV",
+     "c": "GB",
+     "r": false,
+     "a": null
+    },
+    {
+     "t": "PSV Eindhoven vs Go Ahead Eagles Preview and Prediction",
+     "u": "https://www.football.com/ng/news/159726",
+     "s": "Football.com",
+     "c": "GB",
+     "r": false,
+     "a": null
+    },
+    {
+     "t": "Preview: PSV Eindhoven vs. Go Ahead Eagles - prediction, team news, lineups",
+     "u": "https://www.sportsmole.co.uk/football/psv-eindhoven/preview/psv-vs-go-ahead-eagles-prediction-team-news-lineups_609867.html",
+     "s": "Sports Mole",
+     "c": "FR",
+     "r": false,
+     "a": null
+    },
+    {
+     "t": "LIVE Eredivisie | PSV met Ricardo Pepi in de basis thuis tegen Go Ahead Eagles",
+     "u": "https://www.telegraaf.nl/sport/voetbal/live-eredivisie-psv-met-ricardo-pepi-in-de-basis-thuis-tegen-go-ahead-eagles/165245033.html",
+     "s": "De Telegraaf",
+     "c": "ES",
+     "r": false,
+     "a": null
+    }
+   ],
+   "query": "Psv - Ga Eagles"
+  },
+  {
+   "name": "Charlotte Arnould",
+   "category": "Sports",
+   "tier": 2,
+   "score": 19.2,
+   "story": false,
+   "countries": [
+    "DE",
+    "GB",
+    "FR"
+   ],
+   "summary": "DE GB FR · Sports · Google 200+ (DE) · Wiki 21K views · 6 news sites",
+   "context": "Charlotte FC eye playoff history vs. Chicago Fire: \"It's no easy task\"",
+   "url": "https://onefootball.com/en/news/charlotte-fc-eye-playoff-history-vs-chicago-fire-its-no-easy-task-43851763",
+   "first_pub_h": null,
+   "last_pub_h": null,
+   "recent1": 0,
+   "just_in": false,
+   "hours_seen": 5,
+   "days_seen": 3,
+   "watch": null,
+   "related": [
+    "Charlotte Fc – Fire",
+    "Charlotte Müller"
+   ],
+   "video": {
+    "phase": "rising",
+    "window": "about 6-12h left",
+    "travel": {
+     "from": [
+      "GB"
+     ],
+     "missing": [
+      "IT",
+      "ES"
+     ],
+     "since_h": 50.1
+    },
+    "sensitive": true,
+    "yt": null,
+    "social": {},
+    "score": 27.0
+   },
+   "id": "4920df6644ad",
+   "news": [
+    {
+     "t": "Charlotte FC eye playoff history vs. Chicago Fire: \"It's no easy task\"",
+     "u": "https://onefootball.com/en/news/charlotte-fc-eye-playoff-history-vs-chicago-fire-its-no-easy-task-43851763",
+     "s": "OneFootball",
+     "c": "DE",
+     "r": false,
+     "a": null
+    },
+    {
+     "t": "Abada lauds Charlotte's attacking strength in MLS playoffs",
+     "u": "https://www.beinsports.com/en-nz/football/mls/articles/abada-lauds-charlottes-attacking-strength-in-mls-playoffs-2026-11-27",
+     "s": "beIN SPORTS",
+     "c": "DE",
+     "r": false,
+     "a": null
+    },
+    {
+     "t": "Chicago Fire vs Charlotte FC Betting Tips: Prediction & Lineups",
+     "u": "https://www.squawka.com/ca/news/mls/match-preview-chicago-fire-vs-charlotte-fc-12-02-26-mls/",
+     "s": "Squawka",
+     "c": "DE",
+     "r": false,
+     "a": null
+    },
+    {
+     "t": "Charlotte FC vs Chicago Fire: Lineups, Prediction, Odds & Bet Builder Tip",
+     "u": "https://www.whoscored.com/articles/cV8_FUk5jkyV0maHf-E83A/show/cng111-20261128-charlotte-fc-vs-chicago-fire-prediction-1795858530",
+     "s": "WhoScored.com",
+     "c": "GB",
+     "r": false,
+     "a": null
+    },
+    {
+     "t": "Watch Charlotte FC vs Chicago Fire FC live today: Who is broadcasting the match on TV and via live stream?",
+     "u": "https://www.goal.com/en-gb/news/live-stream-online-tv-where-to-watch-charlotte-fc-v-chicago-fire-fc/blt4c7f2105ea4d0c3a",
+     "s": "Goal.com",
+     "c": "GB",
+     "r": false,
+     "a": null
+    }
+   ],
+   "query": "Charlotte Arnould"
+  },
+  {
+   "name": "Rossi",
+   "category": "General",
+   "tier": 1,
+   "score": 16.8,
+   "story": false,
+   "countries": [
+    "ES",
+    "FR",
+    "IT"
+   ],
+   "summary": "ES FR IT · X #30 for 24h · Wiki 18K views",
+   "context": "",
+   "url": "https://x.com/search?q=Rossi&f=live",
+   "first_pub_h": null,
+   "last_pub_h": null,
+   "recent1": 0,
+   "just_in": false,
+   "hours_seen": 11,
+   "days_seen": 6,
+   "watch": null,
+   "related": [
+    "Valentino Rossi"
+   ],
+   "video": {
+    "phase": "rising",
+    "window": "about 6-12h left",
+    "travel": null,
+    "sensitive": false,
+    "yt": null,
+    "social": {},
+    "score": 21.0
+   },
+   "id": "16e840d7199a",
+   "news": [],
+   "query": "Rossi"
+  },
+  {
+   "name": "Lisnard",
+   "category": "Movies & TV",
+   "tier": 1,
+   "score": 16.3,
+   "story": false,
+   "countries": [
+    "FR"
+   ],
+   "summary": "FR · Movies & TV · X #13 for 24h · Wiki 58K views · 2 news sites · since 26h",
+   "context": "Qui est Jacqueline Pozzi, l'épouse discrète de David Lisnard qui a dû faire un pas de côté à France Télévisions",
+   "url": "https://news.google.com/rss/articles/CBMiswJBVV95cUxPd3RvR2dUci00ZzB5ZmxtTS1JYmVDbXBTcmNiVi1lTHczcXRwdmE4ek9aLW9ja1lmNTkybTZFTTNRb05uTUl4bDN4MVZJR3dCc2t6aUt5cjNwTzc3cDVWaWRObjFuR2pNTGhIZVFza0hOZWlZMTBkYWV4SDBEWEVYYVhqQzVIZWNibjNOX211Z0tNVk5zNV9vZG5mWHJIMFcxWG0ydnhOV2FyYnNLVFdFdlRxLWVpWWJqQlc1eElLT0NlWURlZHFmejZlZEZ2czZaTE9hS1BBTDRFSkVCTDZNaWhJeFpOOUdRbzQ4aUVodjR0YXpvM0V2c0F6ejNLUDNuLWpCLWd2SFRtRlhuNEZoU2NPODNxUHJBNE55ekJaWXYwb0dmU0w4dkp6T2NsdWJ1ajB3?oc=5",
+   "first_pub_h": 25.92,
+   "last_pub_h": 18.03,
+   "recent1": 0,
+   "just_in": false,
+   "hours_seen": 16,
+   "days_seen": 6,
+   "watch": null,
+   "related": [
+    "David Lisnard"
+   ],
+   "video": {
+    "phase": "falling",
+    "window": "late - only with a new angle",
+    "travel": null,
+    "sensitive": false,
+    "yt": null,
+    "social": {},
+    "score": 9.2
+   },
+   "id": "9e0dcf1c1fe6",
+   "news": [
+    {
+     "t": "Qui est Jacqueline Pozzi, l'épouse discrète de David Lisnard qui a dû faire un pas de côté à France Télévisions",
+     "u": "https://news.google.com/rss/articles/CBMiswJBVV95cUxPd3RvR2dUci00ZzB5ZmxtTS1JYmVDbXBTcmNiVi1lTHczcXRwdmE4ek9aLW9ja1lmNTkybTZFTTNRb05uTUl4bDN4MVZJR3dCc2t6aUt5cjNwTzc3cDVWaWRObjFuR2pNTGhIZVFza0hOZWlZMTBkYWV4SDBEWEVYYVhqQzVIZWNibjNOX211Z0tNVk5zNV9vZG5mWHJIMFcxWG0ydnhOV2FyYnNLVFdFdlRxLWVpWWJqQlc1eElLT0NlWURlZHFmejZlZEZ2czZaTE9hS1BBTDRFSkVCTDZNaWhJeFpOOUdRbzQ4aUVodjR0YXpvM0V2c0F6ejNLUDNuLWpCLWd2SFRtRlhuNEZoU2NPODNxUHJBNE55ekJaWXYwb0dmU0w4dkp6T2NsdWJ1ajB3?oc=5",
+     "s": "La Libre.be",
+     "c": "FR",
+     "r": false,
+     "a": 25.92314559777778
+    },
+    {
+     "t": "Présidentielle 2027: la dynamique David Lisnard à la loupe",
+     "u": "https://www.france24.com/fr/vid%C3%A9o/20261127-pr%C3%A9sidentielle-2027-la-dynamique-david-lisnard-%C3%A0-la-loupe",
+     "s": "France24",
+     "c": "FR",
+     "r": false,
+     "a": 18.027590042222222
+    }
+   ],
+   "query": "Lisnard"
+  },
+  {
+   "name": "#DavisCup",
+   "category": "Sports",
+   "tier": 1,
+   "score": 16.0,
+   "story": false,
+   "countries": [
+    "IT"
+   ],
+   "summary": "IT · Sports · X #5 for 21h · Wiki 22K views · 2 news sites · since 7h",
+   "context": "Coppa Davis, il check up sugli Azzurri: Musetti è deluxe, Berrettini acciaccato, Cobolli stanco. E il doppio resta un rebus",
+   "url": "https://news.google.com/rss/articles/CBMiywFBVV95cUxQUjRjazAwWFpDZUhtaC1rY21fVG1ENjlLOERtbEh6VGRDNWNuR0dRUW0wcVNjdFlKaHcxbER0MzlCaWUyX3c2NlVSS0VnVklMOGs5WW1fa0k2eFh4OGZFNU03UnFZc3hKRGFhYTVPVU1ra09Hd3ZMSG9fU3M0RHRuclVKM3pSSHQyWXdYVUt3Y3VVN3FUTTd6U0FHZWdncjJzTWVkaHFWRUN0U2FSQVkydTF3R2Q2ck5GNmx0RnE4c3c0SXVLRlppaWV0WQ?oc=5",
+   "first_pub_h": 7.42,
+   "last_pub_h": 3.16,
+   "recent1": 0,
+   "just_in": false,
+   "hours_seen": 4,
+   "days_seen": 2,
+   "watch": null,
+   "related": [
+    "Coppa Davis",
+    "Vincitori della Coppa Davis",
+    "Coppa Davis 2026",
+    "Musetti",
+    "Lorenzo Musetti"
+   ],
+   "video": {
+    "phase": "rising",
+    "window": "about 6-12h left",
+    "travel": null,
+    "sensitive": false,
+    "yt": null,
+    "social": {},
+    "score": 27.6
+   },
+   "id": "88dbb180d191",
+   "news": [
+    {
+     "t": "Coppa Davis, il check up sugli Azzurri: Musetti è deluxe, Berrettini acciaccato, Cobolli stanco. E il doppio resta un rebus",
+     "u": "https://news.google.com/rss/articles/CBMiywFBVV95cUxQUjRjazAwWFpDZUhtaC1rY21fVG1ENjlLOERtbEh6VGRDNWNuR0dRUW0wcVNjdFlKaHcxbER0MzlCaWUyX3c2NlVSS0VnVklMOGs5WW1fa0k2eFh4OGZFNU03UnFZc3hKRGFhYTVPVU1ra09Hd3ZMSG9fU3M0RHRuclVKM3pSSHQyWXdYVUt3Y3VVN3FUTTd6U0FHZWdncjJzTWVkaHFWRUN0U2FSQVkydTF3R2Q2ck5GNmx0RnE4c3c0SXVLRlppaWV0WQ?oc=5",
+     "s": "Corriere della Sera",
+     "c": "IT",
+     "r": false,
+     "a": 7.423145597777778
+    },
+    {
+     "t": "È di nuovo Italia - Spagna in finale per la Coppa Davis 2026! Il programma e dove vedere la partita · Tennis",
+     "u": "https://news.google.com/rss/articles/CBMirgFBVV95cUxNdldReEhGY0FYUEJuY3RiY3pOTlhvRHp4UkhlU0RJeVRZWXRoV0R4aUxyUUFianhvNTUyZnJ6WVducFNDdjl2azVUVG5DQ1VQbkRZQXZkZUxNMEtJVWFrU2RpZVdDZ3B2ZnVpVTEwU0tFdS1HWEtJQVNiNDR0cGZvZU5DYURJaDYwRmVSemJyTFpNbGVuZV81UnpMOHBxZGlrNzRJNDIyeHRuRTE4MVE?oc=5",
+     "s": "Olympics",
+     "c": "IT",
+     "r": false,
+     "a": 3.1564789311111108
+    }
+   ],
+   "query": "Davis Cup"
+  },
+  {
+   "name": "Focker-in-Law",
+   "category": "Music",
+   "tier": 1,
+   "score": 15.5,
+   "story": false,
+   "countries": [
+    "DE",
+    "US"
+   ],
+   "summary": "DE US · Music · Wiki 66K views · #4 chart DE · 1 news sites · since 21h",
+   "context": "Ben Stiller Says Ariana Grande Exceeded His Expectations in ‘Focker-in-Law,’ Would Do a Fifth ‘Meet the Parents’ Film",
+   "url": "https://news.google.com/rss/articles/CBMivwFBVV95cUxNeHRFaURuUUtmSWgzbGw3RUNGbm1Ed1lRR0xQalZVSGFXXzlqRm0xbUt3NGl5Y2Npd00tYk9mbjlxR0FLcFdKS2RaclJQTm1RMlpJUkVkQUh5emRBOTdNOFNmRWJmRHpfZnhlYzNvaG51eUZKdzMxdm51WmNxRERMNDhOU2h2SUYxVFJmbWhYYUlDUmQ1cWdESTJacUt5aHV1TDRXYzluVi1XblhCS19PLXFNSTBGRHVnMTNHY2Rvbw?oc=5",
+   "first_pub_h": 21.28,
+   "last_pub_h": 21.28,
+   "recent1": 0,
+   "just_in": false,
+   "hours_seen": 100,
+   "days_seen": 17,
+   "watch": null,
+   "related": [
+    "Ariana Grande"
+   ],
+   "video": {
+    "phase": "rising",
+    "window": "about 6-12h left",
+    "travel": null,
+    "sensitive": false,
+    "yt": null,
+    "social": {},
+    "score": 23.2
+   },
+   "id": "d91483638b01",
+   "news": [
+    {
+     "t": "Ben Stiller Says Ariana Grande Exceeded His Expectations in ‘Focker-in-Law,’ Would Do a Fifth ‘Meet the Parents’ Film",
+     "u": "https://news.google.com/rss/articles/CBMivwFBVV95cUxNeHRFaURuUUtmSWgzbGw3RUNGbm1Ed1lRR0xQalZVSGFXXzlqRm0xbUt3NGl5Y2Npd00tYk9mbjlxR0FLcFdKS2RaclJQTm1RMlpJUkVkQUh5emRBOTdNOFNmRWJmRHpfZnhlYzNvaG51eUZKdzMxdm51WmNxRERMNDhOU2h2SUYxVFJmbWhYYUlDUmQ1cWdESTJacUt5aHV1TDRXYzluVi1XblhCS19PLXFNSTBGRHVnMTNHY2Rvbw?oc=5",
+     "s": "The Hollywood Reporter",
+     "c": "US",
+     "r": false,
+     "a": 21.280645597777777
+    }
+   ],
+   "query": "Focker-in-Law"
+  },
+  {
+   "name": "Zelensky",
+   "category": "World & conflicts",
+   "tier": 1,
+   "score": 14.8,
+   "story": false,
+   "countries": [
+    "GB",
+    "FR",
+    "IT",
+    "EU"
+   ],
+   "summary": "GB FR IT EU · World & conflicts · X #12 for 24h · 5 news sites · since 44h",
+   "context": "Zelensky n’a pas du tout apprécié que Trump qualifie Poutine d’« ami »",
+   "url": "https://news.google.com/rss/articles/CBMiygFBVV95cUxOYWxLRm5RM2tEVHQ0NDkwYmdiOURmUzRJSDZFN2Y1eVY1cUhPOGJKUUhacV9mMndENlFuSEFHOGhHd2MzM2RuOTc5aGs1Ri0yNjdoYzB5cDRSUzJMc2g0ekRpdGRhaUJpZVFPZ1djd0pQdlNvb0NvbWRaZGd4U2NIUkVEYl8wNFJGUnhZUmY0Q2hCTDAyaUs1UWZDUFVFbzg2Z3NPRUhmOG9kbFdYaVl0RzNyZkJGc1M1Wk51R0lkYWJnNWxKQlJOUHVR?oc=5",
+   "first_pub_h": 43.63,
+   "last_pub_h": 8.07,
+   "recent1": 0,
+   "just_in": false,
+   "hours_seen": 4,
+   "days_seen": 2,
+   "watch": null,
+   "related": [],
+   "video": {
+    "phase": "falling",
+    "window": "late - only with a new angle",
+    "travel": null,
+    "sensitive": false,
+    "yt": null,
+    "social": {},
+    "score": 5.3
+   },
+   "id": "6e996a5c697d",
+   "news": [
+    {
+     "t": "Zelensky n’a pas du tout apprécié que Trump qualifie Poutine d’« ami »",
+     "u": "https://news.google.com/rss/articles/CBMiygFBVV95cUxOYWxLRm5RM2tEVHQ0NDkwYmdiOURmUzRJSDZFN2Y1eVY1cUhPOGJKUUhacV9mMndENlFuSEFHOGhHd2MzM2RuOTc5aGs1Ri0yNjdoYzB5cDRSUzJMc2g0ekRpdGRhaUJpZVFPZ1djd0pQdlNvb0NvbWRaZGd4U2NIUkVEYl8wNFJGUnhZUmY0Q2hCTDAyaUs1UWZDUFVFbzg2Z3NPRUhmOG9kbFdYaVl0RzNyZkJGc1M1Wk51R0lkYWJnNWxKQlJOUHVR?oc=5",
+     "s": "Le HuffPost",
+     "c": "FR",
+     "r": false,
+     "a": 8.065923375555556
+    },
+    {
+     "t": "Zelensky criticises 'strange' Trump-Putin friendship in BBC interview",
+     "u": "https://www.bbc.co.uk/news/articles/c820q9wgrpyyo?at_medium=RSS&at_campaign=rss",
+     "s": "BBC Europe",
+     "c": "EU",
+     "r": false,
+     "a": 23.728701153333333
+    },
+    {
+     "t": "L'Armata russa avanza verso Kharkiv. Zelensky ammette: «La situazione è estremamente difficile»",
+     "u": "https://www.corriere.it/esteri/24_maggio_12/l-armata-russa-avanza-su-kharkiv-zelensky-ammette-la-situazione-e-estremamente-difficile-bc3733e3-7546-4e70-82e1-50c89b09bxlk.shtml",
+     "s": "Corriere",
+     "c": "IT",
+     "r": false,
+     "a": null
+    },
+    {
+     "t": "Zelensky questions 'strange' Trump-Putin friendship in BBC interview",
+     "u": "https://www.bbc.co.uk/news/videos/cm9309nwk7x9o?at_medium=RSS&at_campaign=rss",
+     "s": "BBC World",
+     "c": "GB",
+     "r": false,
+     "a": 43.634256708888884
+    }
+   ],
+   "query": "Zelensky"
+  },
+  {
+   "name": "Jodar",
+   "category": "Sports",
+   "tier": 1,
+   "score": 14.8,
+   "story": false,
+   "countries": [
+    "ES",
+    "IT"
+   ],
+   "summary": "ES IT · Sports · X #18 for 23h · 3 news sites · since 8h",
+   "context": "Rafa Jódar bate a Norrie y coloca a España a un paso de la final de la Copa Davis",
+   "url": "https://news.google.com/rss/articles/CBMingFBVV95cUxOam1ZTGFHdTBOc0lER1FjaWhqRWhaMUxDaFRuN19MUVJKYnc5c2Q5aC1ZT2p5aGpVV3dEd0NBN1pKaXkyejU3UXVaWW5JREVMWTZlNXFCS0dwZ1RiTlAtd0dFRjRWR3BxdDFTV3hqN3FIUFdmTDg0azdYeDJwak5NY2V3ZFgxQ3RsSDF6bnFyNGVHOU9zbVV3eUUtQ3hsdw?oc=5",
+   "first_pub_h": 7.69,
+   "last_pub_h": 3.2,
+   "recent1": 0,
+   "just_in": false,
+   "hours_seen": 73,
+   "days_seen": 14,
+   "watch": null,
+   "related": [],
+   "video": {
+    "phase": "rising",
+    "window": "about 6-12h left",
+    "travel": null,
+    "sensitive": false,
+    "yt": null,
+    "social": {},
+    "score": 25.5
+   },
+   "id": "eb5f499f7177",
+   "news": [
+    {
+     "t": "Rafa Jódar bate a Norrie y coloca a España a un paso de la final de la Copa Davis",
+     "u": "https://news.google.com/rss/articles/CBMingFBVV95cUxOam1ZTGFHdTBOc0lER1FjaWhqRWhaMUxDaFRuN19MUVJKYnc5c2Q5aC1ZT2p5aGpVV3dEd0NBN1pKaXkyejU3UXVaWW5JREVMWTZlNXFCS0dwZ1RiTlAtd0dFRjRWR3BxdDFTV3hqN3FIUFdmTDg0azdYeDJwak5NY2V3ZFgxQ3RsSDF6bnFyNGVHOU9zbVV3eUUtQ3hsdw?oc=5",
+     "s": "Federación de Tenis de Madrid",
+     "c": "ES",
+     "r": false,
+     "a": 4.822312264444445
+    },
+    {
+     "t": "Alcaraz y Rafa Jódar sellan el pase a la final de la Copa Davis y España buscará la revancha ante Italia",
+     "u": "https://www.20minutos.es/deportes/tenis/espana-gran-bretana-las-copa-davis-directo-ultima-hora-carlos-alcaraz-rafa-jodar-granollers-merida-pedro-martinez_7066971_6.html",
+     "s": "20minutos",
+     "c": "ES",
+     "r": false,
+     "a": 7.692590042222222
+    },
+    {
+     "t": "Jódar tenía la llave, Alcaraz pone la firma: España, una imponente finalista",
+     "u": "https://elpais.com/deportes/tenis/2026-11-28/jodar-tenia-la-llave-alcaraz-pone-la-firma-espana-una-imponente-finalista.html",
+     "s": "El País",
+     "c": "ES",
+     "r": false,
+     "a": 3.200090042222222
+    }
+   ],
+   "query": "Jodar"
+  },
+  {
+   "name": "Bundesliga",
+   "category": "Sports",
+   "tier": 1,
+   "score": 14.7,
+   "story": false,
+   "countries": [
+    "DE",
+    "AT",
+    "CH"
+   ],
+   "summary": "DE AT CH · Sports · Google 500+ (AT) · X #14 · 6 news sites · since 3h",
+   "context": "Bundesliga im Live-Ticker: Stuttgart gegen Frankfurt",
+   "url": "https://www.gmx.at/magazine/sport/fussball/bundesliga/bundesliga-live-ticker-stuttgart-frankfurt-41292002",
+   "first_pub_h": 3.24,
+   "last_pub_h": 0.61,
+   "recent1": 1,
+   "just_in": false,
+   "hours_seen": 1,
+   "days_seen": 1,
+   "watch": null,
+   "related": [
+    "Vfb Stuttgart – Eintracht Frankfurt"
+   ],
+   "video": {
+    "phase": "peak",
+    "window": "about 3-6h left",
+    "travel": null,
+    "sensitive": false,
+    "yt": null,
+    "social": {},
+    "score": 20.3
+   },
+   "id": "7bc1aed6e4f4",
+   "news": [
+    {
+     "t": "Fußball-Bundesliga: FC Bayern München gegen HSV 0:0, Schalke 04 geht 1:8 unter",
+     "u": "https://www.spiegel.de/sport/fussball/fussball-bundesliga-fc-bayern-muenchen-gegen-hsv-0-0-schalke-04-geht-1-8-unter-a-ab94db75-7580-481b-bce9-b7f25df48b74#ref=rss",
+     "s": "SPIEGEL",
+     "c": "DE",
+     "r": true,
+     "a": 0.6064789311111112
+    },
+    {
+     "t": "Bundesliga - So lief FSV Mainz 05 vs. Union Berlin: Mainz dreht die Partie durch zwei späte Tore - Liveticker",
+     "u": "https://news.google.com/rss/articles/CBMivgFBVV95cUxOaXFQS0M4YUFFUnhXQnhFR0VtSmd0djF5NWxfNnloMVRSdjZUMFVZMTJ3RVNLelRhU3czTnkzU1RKbFlhZVQ4bk5BZFF2YWhLdllJU1FZZGlGZUtJbmJrZnVDS3NmaWNCa2sya1RwRjlmNDNsRkVGMktickV4REx1YUZzWENseTdMZ2FERmgwa0diZVN3dTh0QTV3aUpCQUcyS2NDVDJJWGthTzk3ZGdXbmFoQ2lILVRYc0w5SGxn?oc=5",
+     "s": "Eurosport",
+     "c": "DE",
+     "r": false,
+     "a": 3.2398122644444443
+    },
+    {
+     "t": "2. Fußball-Bundesliga: Dynamo Dresden gewinnt 2:1 gegen St. Pauli, Hertha BSC und Holstein Kiel siegen",
+     "u": "https://www.spiegel.de/sport/fussball/2-fussball-bundesliga-dynamo-dresden-gewinnt-2-1-gegen-st-pauli-hertha-bsc-und-holstein-kiel-siegen-a-6e047f7f-cd90-429c-ab3a-ebbc50dcd0a2#ref=rss",
+     "s": "SPIEGEL",
+     "c": "DE",
+     "r": false,
+     "a": 3.0898122644444443
+    },
+    {
+     "t": "Bundesliga im Live-Ticker: Stuttgart gegen Frankfurt",
+     "u": "https://www.gmx.at/magazine/sport/fussball/bundesliga/bundesliga-live-ticker-stuttgart-frankfurt-41292002",
+     "s": "GMX.AT",
+     "c": "AT",
+     "r": false,
+     "a": null
+    },
+    {
+     "t": "Bundesliga - VfB Stuttgart vs. Eintracht Frankfurt heute live im Ticker: Schwaben empfangen Adler - Liveticker",
+     "u": "https://www.eurosport.de/fussball/bundesliga/2026-2027/vfb-stuttgart-eintracht-frankfurt_mtc21893295/live-commentary.shtml",
+     "s": "Eurosport",
+     "c": "AT",
+     "r": false,
+     "a": null
+    }
+   ],
+   "query": "Bundesliga"
+  },
+  {
+   "name": "Grand Theft Auto VI",
+   "category": "Gaming",
+   "tier": 1,
+   "score": 14.4,
+   "story": false,
+   "countries": [
+    "US",
+    "GB",
+    "NL"
+   ],
+   "summary": "US GB NL · Gaming · Wiki 109K views · 4 news sites · since 2 days",
+   "context": "How to Play Grand Theft Auto VI in the Cloud and with Remote Play",
+   "url": "https://news.xbox.com/en-us/2026/11/23/grand-theft-auto-vi-xbox-cloud-and-remote-play/",
+   "first_pub_h": 49.74,
+   "last_pub_h": 49.74,
+   "recent1": 0,
+   "just_in": false,
+   "hours_seen": 31,
+   "days_seen": 12,
+   "watch": null,
+   "related": [],
+   "video": {
+    "phase": "rising",
+    "window": "about 6-12h left",
+    "travel": null,
+    "sensitive": false,
+    "yt": null,
+    "social": {},
+    "score": 16.9
+   },
+   "id": "13cbda8e1163",
+   "news": [
+    {
+     "t": "Opinion: Grand Theft Auto VI and World of Warcraft: Forever show that mundanity is having a moment",
+     "u": "https://www.gamedeveloper.com/design/grand-theft-auto-vi-and-world-of-warcraft-forever-show-that-mundanity-is-having-a-moment",
+     "s": "Game Developer",
+     "c": "US",
+     "r": false,
+     "a": 98.03814559777778
+    },
+    {
+     "t": "Grand Theft Auto VI proves why efficiency isn’t a virtue",
+     "u": "https://techcrunch.com/2026/11/26/as-anthropic-ipos-grand-theft-auto-vi-proves-why-efficiency-isnt-a-virtue/",
+     "s": "TechCrunch AI",
+     "c": "US",
+     "r": false,
+     "a": 49.73981226444444
+    },
+    {
+     "t": "Grand Theft Auto VI is now the biggest video game launch in history",
+     "u": "https://www.gamedeveloper.com/business/grand-theft-auto-vi-is-officially-the-biggest-video-game-launch-ever",
+     "s": "Game Developer",
+     "c": "US",
+     "r": false,
+     "a": 187.89009004222223
+    },
+    {
+     "t": "Take-Two lays off Firaxis employees on eve of Grand Theft Auto VI launch",
+     "u": "https://www.gamedeveloper.com/business/take-two-lays-off-firaxis-employees-on-eve-of-grand-theft-auto-vi-launch",
+     "s": "Game Developer",
+     "c": "US",
+     "r": false,
+     "a": 265.61342337555556
+    },
+    {
+     "t": "How to Play Grand Theft Auto VI in the Cloud and with Remote Play",
+     "u": "https://news.xbox.com/en-us/2026/11/23/grand-theft-auto-vi-xbox-cloud-and-remote-play/",
+     "s": "XBOX Wire",
+     "c": "GB",
+     "r": false,
+     "a": null
+    }
+   ],
+   "query": "Grand Theft Auto VI"
+  },
+  {
+   "name": "Championship",
+   "category": "Sports",
+   "tier": 1,
+   "score": 14.3,
+   "story": false,
+   "countries": [
+    "US",
+    "GB",
+    "ES",
+    "FR",
+    "NL"
+   ],
+   "summary": "US GB ES FR NL · Sports · X #12 · 3 news sites · since 11h",
+   "context": "England vs New Zealand LIVE: Nations Championship 2026 - latest score, live text, radio commentary, lineups",
+   "url": "https://www.bbc.com/sport/rugby-union/live/cqgm38rjnej2t",
+   "first_pub_h": 11.45,
+   "last_pub_h": 0.21,
+   "recent1": 1,
+   "just_in": false,
+   "hours_seen": 2,
+   "days_seen": 2,
+   "watch": null,
+   "related": [],
+   "video": {
+    "phase": "rising",
+    "window": "about 6-12h left",
+    "travel": null,
+    "sensitive": false,
+    "yt": null,
+    "social": {},
+    "score": 20.6
+   },
+   "id": "59f9cf023696",
+   "news": [
+    {
+     "t": "England v New Zealand: Nations Championship rugby union – live",
+     "u": "https://www.theguardian.com/sport/live/2026/nov/28/england-v-new-zealand-nations-championship-rugby-union-live",
+     "s": "The Guardian",
+     "c": "GB",
+     "r": true,
+     "a": 0.20786782
+    },
+    {
+     "t": "England vs New Zealand LIVE: Nations Championship 2026 - latest score, live text, radio commentary, lineups",
+     "u": "https://news.google.com/rss/articles/CBMiZ0FVX3lxTE0wRnp1U0dXaS0zUWFsejR5c2dCRDBLbDd1Qjc3bjItU01keW92QmlWaGdUT1d6ZzRMWXRnQkxZWDhYOTRqaTZxZ3B0NzJFN3ZOUVF1MnZrMnRRYXA1SkFMLWppM0dqVjQ?oc=5",
+     "s": "BBC",
+     "c": "GB",
+     "r": false,
+     "a": 2.0175900422222224
+    },
+    {
+     "t": "Georgia opens as more than a touchdown favorite over Texas in SEC Championship Game",
+     "u": "https://news.google.com/rss/articles/CBMiwAFBVV95cUxNcC1yN1hUZkRoOFRvYjNMaUprZGxxWkFXako5R0dRX0s4SjZiZldBU0pnNkR0bHJUMVFkOWlEblp5VGJNV3oyUXVKWnBtSmpjUHdhX0pHa3haVzNRbHBSMks3aTRyS1JPT1dsdlFVSXVQemZoM29XcjU3bWlCeHRRQ01nZW5HcU5obVJ2ZlFHei1sbFVtVlFOVE1URmd5ZUV3aW9XVmxnalBERUF5Y2MwLTBPeDU3SlFuYkx3a2p5cVE?oc=5",
+     "s": "247Sports",
+     "c": "US",
+     "r": false,
+     "a": 11.450090042222223
+    },
+    {
+     "t": "Lincoln City 0-0 Wolves: Managerless Imp deny Wolves chance to go top of Championship",
+     "u": "https://news.google.com/rss/articles/CBMiZkFVX3lxTE96cjh5OTg4XzhWZFRMcHQxNzZITzR4TVdLbzNtbUR0eURHN3R6d3NmY1UxZF9uZjg0c0FmMGlhV19IRDVnRTNtbHBkX1dqQTZyR0VMOExIdWRvN2xlMmg0amp2Y25zQQ?oc=5",
+     "s": "BBC",
+     "c": "GB",
+     "r": false,
+     "a": 4.548145597777777
+    }
+   ],
+   "query": "Championship"
+  },
+  {
+   "name": "Ceuta",
+   "category": "Politics",
+   "tier": 1,
+   "score": 14.2,
+   "story": false,
+   "countries": [
+    "DE",
+    "ES",
+    "EU"
+   ],
+   "summary": "DE ES EU · Politics · X #1 for 8h · 5 news sites · since 10h",
+   "context": "Spanish PM candidate Feijóo visits Ceuta during election blackout day",
+   "url": "https://www.politico.eu/article/spanish-pm-candidate-alberto-nunez-feijoo-visits-ceuta-during-election-blackout-day/?utm_source=RSS_Feed&utm_medium=RSS&utm_campaign=RSS_Syndication",
+   "first_pub_h": 9.88,
+   "last_pub_h": 1.22,
+   "recent1": 0,
+   "just_in": false,
+   "hours_seen": 1,
+   "days_seen": 1,
+   "watch": null,
+   "related": [
+    "#JornadaDeReflexión"
+   ],
+   "video": {
+    "phase": "peak",
+    "window": "about 3-6h left",
+    "travel": null,
+    "sensitive": false,
+    "yt": null,
+    "social": {},
+    "score": 12.1
+   },
+   "id": "b8062b3d6dd1",
+   "news": [
+    {
+     "t": "Spanish PM candidate Feijóo visits Ceuta during election blackout day",
+     "u": "https://www.politico.eu/article/spanish-pm-candidate-alberto-nunez-feijoo-visits-ceuta-during-election-blackout-day/?utm_source=RSS_Feed&utm_medium=RSS&utm_campaign=RSS_Syndication",
+     "s": "Politico Europe",
+     "c": "EU",
+     "r": true,
+     "a": 1.9095344866666668
+    },
+    {
+     "t": "Elecciones generales del 29-N, la jornada de reflexión en directo | Sánchez pasa el día haciendo deporte, Montero pasea con su perra y Rufián come con la familia, mientras Feijóo viaja a Ceuta",
+     "u": "https://elpais.com/espana/elecciones-generales/2026-11-28/ultima-hora-de-la-jornada-de-reflexion-de-las-elecciones-generales-del-29-n-en-directo.html",
+     "s": "El País",
+     "c": "ES",
+     "r": true,
+     "a": 1.224256708888889
+    },
+    {
+     "t": "Deporte, paseos en familia y un viaje a Ceuta: así pasan los candidatos la jornada de reflexión antes del domingo electoral",
+     "u": "https://news.google.com/rss/articles/CBMi0gFBVV95cUxOU0xpazAzNm56RlFPYXE4YjBtNEp5MUNLYXl2VTN0MktOTEljOGd4WUNKcVk3WUFqeG95QjMzYmM1TVhINjl3dV93MmgxY2QzdVNad2ktc0JJMi1ma0w3ZkVmbGd4YUk5SzMwRjRvSWZCM0lZcmV3azdZOEdpZV9GUC1lcFdpaDBZWmxRaW9zYzdyWVVZU1o2MXJMdHM5MXJVV3VRSzBMVHBYSXBFMk9hLVk5ZE1leWlpS3VPNm9ybkNwVXZXOGlXTHVLbUVYSWthVVHSAewBQVVfeXFMUDVGcFZ6TkVBTmVscEJvcDNnN0l5Sk4xV0xwdUZlMkp4bndOR2ZaaUdNZkIyX3VhUjI3N2pyZV9BZlZyODN5RWtBNnBUTEZENXF3TUg3SDd4UTIzcE54dXJwMDQxaXY1Y0JUR3VaODdoYmM3S3ExV3A5MEZIa3ZBb1dCVG85cEpkbzZGRExuRHg1OW9CeWs4LUdXY2hMUWkwVi0xUFZyQThaMmlRNFo5NElGdnk4TkFETUktYU1PY0N0Z1NSMXpLZFV6UjRneEk0dUhtNkt2UFBjdnd3SXVqZTlMVm5fXy16bnE4VUo?oc=5",
+     "s": "Infobae",
+     "c": "ES",
+     "r": false,
+     "a": 4.7898122644444445
+    },
+    {
+     "t": "Feijóo cumple su promesa a Juan Vivas y pasa el día de reflexión junto a él en Ceuta",
+     "u": "https://www.20minutos.es/nacional/feijoo-pasa-manana-dia-reflexion-ceuta-juan-jesus-vivas_7067041_0.html",
+     "s": "20minutos",
+     "c": "ES",
+     "r": false,
+     "a": 4.3348122644444445
+    },
+    {
+     "t": "Jornada de reflexión | Feijóo viaja a Ceuta, Sánchez y Rufián hacen deporte, Montero pasa el día con 'Rumba' y Colau con la familia",
+     "u": "https://www.20minutos.es/nacional/jornada-reflexion-directo-ultima-hora-agenda-hoy-los-candidatos-29n-descanso-familia-deporte_7066959_6.html",
+     "s": "20minutos",
+     "c": "ES",
+     "r": false,
+     "a": 9.875090042222222
+    }
+   ],
+   "query": "Ceuta"
+  },
+  {
+   "name": "Old Trafford",
+   "category": "General",
+   "tier": 1,
+   "score": 14.0,
+   "story": false,
+   "countries": [
+    "US",
+    "GB",
+    "ES",
+    "FR"
+   ],
+   "summary": "US GB ES FR · X #7 for 3h",
+   "context": "",
+   "url": "https://x.com/search?q=Old%20Trafford&f=live",
+   "first_pub_h": null,
+   "last_pub_h": null,
+   "recent1": 0,
+   "just_in": false,
+   "hours_seen": 100,
+   "days_seen": 18,
+   "watch": null,
+   "related": [],
+   "video": {
+    "phase": "rising",
+    "window": "about 6-12h left",
+    "travel": null,
+    "sensitive": false,
+    "yt": null,
+    "social": {},
+    "score": 17.5
+   },
+   "id": "e4b8d7884453",
+   "news": [],
+   "query": "Old Trafford"
+  },
+  {
+   "name": "Marine Le Pen",
+   "category": "General",
+   "tier": 1,
+   "score": 13.7,
+   "story": false,
+   "countries": [
+    "FR"
+   ],
+   "summary": "FR · Wiki 9K views · 4 news sites · since 11h",
+   "context": "Présidentielle 2027 : Marine Le Pen s'apprête à lancer le mouvement jeune de sa campagne",
+   "url": "https://www.franceinfo.fr/elections/direct-election-presidentielle-raphael-glucksmann-soutiendra-francois-hollande-s-il-se-presente-en-recours_8304636.html#xtor=RSS-3-[lestitres]",
+   "first_pub_h": 11.01,
+   "last_pub_h": 1.73,
+   "recent1": 0,
+   "just_in": false,
+   "hours_seen": 100,
+   "days_seen": 20,
+   "watch": null,
+   "related": [],
+   "video": {
+    "phase": "rising",
+    "window": "about 6-12h left",
+    "travel": null,
+    "sensitive": false,
+    "yt": null,
+    "social": {},
+    "score": 17.1
+   },
+   "id": "9ff25c1b54d5",
+   "news": [
+    {
+     "t": "Présidentielle 2027 : Marine Le Pen s'apprête à lancer le mouvement jeune de sa campagne",
+     "u": "https://www.franceinfo.fr/elections/direct-election-presidentielle-raphael-glucksmann-soutiendra-francois-hollande-s-il-se-presente-en-recours_8304636.html#xtor=RSS-3-[lestitres]",
+     "s": "franceinfo",
+     "c": "FR",
+     "r": true,
+     "a": 1.7273122644444445
+    },
+    {
+     "t": "Fuites de Beauvau vers le RN : Ambroise de Rancourt, l’émissaire de Marine Le Pen auprès des grands patrons et de la haute fonction publique",
+     "u": "https://www.lemonde.fr/politique/article/2026/11/28/fuites-de-beauvau-vers-le-rn-ambroise-de-rancourt-le-missi-dominici-de-marine-le-pen-aupres-des-grands-patrons-et-de-la-haute-fonction-publique_6816116_823448.html",
+     "s": "Le Monde",
+     "c": "FR",
+     "r": false,
+     "a": 2.8670344866666664
+    },
+    {
+     "t": "Ce cadre du RN et très proche de Marine Le Pen soupçonné d’être le destinataire des fuites",
+     "u": "https://news.google.com/rss/articles/CBMiigJBVV95cUxNWUktdFAxeE9vVEhNWXlucjVjSC1IazZaQ2lndWRwU1E5eWFGOTBrNUdBY0ZERXMtTDRjdzdhMFU2NjlYWU0tTXc4TGg2M1hfMk9qeWg0dGRMSVZHaUJ2U2twaURDSnlBWWM1aGtIaXRmTVVmTUpJamFFbFk4TU51djVrMDVrbmZtQkE4QmIydk5LLU13ZUc4Z0hrZkRiX3NQdVJPMEc1c1RBQl9BcTZoY1RQanRhR0dIUzNRTEJKVUU5dUVjNGwteGFRVWFLRFlydEdvSm05X1JZTV93YmNpWTBRUXZTNUFZZGFFWGNJQUdHQ1JUVjFZNjFHc2ZMOTRkVEtDYUg3ZFcyQQ?oc=5",
+     "s": "Le HuffPost",
+     "c": "FR",
+     "r": false,
+     "a": 11.008145597777778
+    },
+    {
+     "t": "Fuites au ministère de l'Intérieur : l'ancien chef de cabinet de Marine Le Pen perquisitionné",
+     "u": "https://www.france24.com/fr/france/20261128-rassemblement-national-fuites-minist%C3%A8re-int%C3%A9rieur-ancien-chef-cabinet-marine-le-pen-perquisition-rancourt-moutouh",
+     "s": "France24",
+     "c": "FR",
+     "r": false,
+     "a": 2.374812264444444
+    }
+   ],
+   "query": "Marine Le Pen"
+  },
+  {
+   "name": "Saison",
+   "category": "General",
+   "tier": 1,
+   "score": 12.8,
+   "story": false,
+   "countries": [
+    "DE",
+    "FR"
+   ],
+   "summary": "DE FR · X #10 · 1 news sites",
+   "context": "Après avoir fait l'impasse sur la saison de biathlon, Emilien Jacquelin signe une année supplémentaire chez Decathlon-CMA CGM",
+   "url": "https://www.lequipe.fr/Cyclisme-sur-route/Actualites/Apres-avoir-fait-l-impasse-sur-la-saison-de-biathlon-emilien-jacquelin-signe-une-annee-supplementaire-chez-decathlon-cma-cgm/1746676",
+   "first_pub_h": null,
+   "last_pub_h": null,
+   "recent1": 0,
+   "just_in": false,
+   "hours_seen": 100,
+   "days_seen": 25,
+   "watch": null,
+   "related": [],
+   "video": {
+    "phase": "rising",
+    "window": "about 6-12h left",
+    "travel": null,
+    "sensitive": false,
+    "yt": null,
+    "social": {},
+    "score": 16.0
+   },
+   "id": "4eacf521cb1f",
+   "news": [
+    {
+     "t": "Après avoir fait l'impasse sur la saison de biathlon, Emilien Jacquelin signe une année supplémentaire chez Decathlon-CMA CGM",
+     "u": "https://www.lequipe.fr/Cyclisme-sur-route/Actualites/Apres-avoir-fait-l-impasse-sur-la-saison-de-biathlon-emilien-jacquelin-signe-une-annee-supplementaire-chez-decathlon-cma-cgm/1746676",
+     "s": "L'Équipe",
+     "c": "FR",
+     "r": false,
+     "a": null
+    }
+   ],
+   "query": "Saison"
+  },
+  {
+   "name": "Paderborn",
+   "category": "Sports",
+   "tier": 1,
+   "score": 12.5,
+   "story": false,
+   "countries": [
+    "DE"
+   ],
+   "summary": "DE · Sports · X #3 for 3h · 5 news sites · 6 new in 2h · since 1h",
+   "context": "Kimmich sees red as Bayern Munich held, Paderborn thump Schalke",
+   "url": "https://www.reuters.com/sports/soccer/kimmich-sees-red-bayern-munich-held-paderborn-thump-schalke-2026-11-28/",
+   "first_pub_h": 1.23,
+   "last_pub_h": 0.61,
+   "recent1": 1,
+   "just_in": false,
+   "hours_seen": 1,
+   "days_seen": 1,
+   "watch": null,
+   "related": [
+    "Schalke"
+   ],
+   "video": {
+    "phase": "rising",
+    "window": "about 6-12h left",
+    "travel": null,
+    "sensitive": false,
+    "yt": null,
+    "social": {},
+    "score": 25.2
+   },
+   "id": "fa8d801e6bfc",
+   "news": [
+    {
+     "t": "Bayern rettet sich nach Kimmich-Rot zu einem Punkt – Schalke holt sich unglaubliche Abreibung",
+     "u": "https://news.google.com/rss/articles/CBMiggJBVV95cUxQZVRfT1ByUlhmdjBpQXRiNVVwUHB0azhoUllGbTZYbmpGb2xUUWdRVnB2SVdFLW05Z1c4cW1qZkhxNlZ4QWVudnpVQ3RoVURSYmczVEs2Yzk4cW9rcGNrQW96QllPSnJUbk9TNms1di16S0ZrYkVUOEFaUW1vRDd6YjJWUlJ3d2pzSFlyMmlmVl9fZnBOdjZyMVNLa1l4Z1pCamlMaWNvT3RidDZhRVZfV1B1UzBlZVVleGdwV2VkTndidzN2QlFGVFhKbHRmUGl6Z1ZfVGtaU2FrXzRDbGVtWmFCckVjT0tTR1A3UFhUd1J1VjF5alkxNWV1VVRscFVaaEE?oc=5",
+     "s": "WELT",
+     "c": "DE",
+     "r": true,
+     "a": 1.0948122644444445
+    },
+    {
+     "t": "Fußball-Bundesliga: FC Bayern München gegen HSV 0:0, Schalke 04 geht 1:8 unter",
+     "u": "https://www.spiegel.de/sport/fussball/fussball-bundesliga-fc-bayern-muenchen-gegen-hsv-0-0-schalke-04-geht-1-8-unter-a-ab94db75-7580-481b-bce9-b7f25df48b74#ref=rss",
+     "s": "SPIEGEL",
+     "c": "DE",
+     "r": true,
+     "a": 0.6064789311111112
+    },
+    {
+     "t": "Historische Pleite: Schalke desaströs - schwerer Niederschlag in Paderborn",
+     "u": "https://news.google.com/rss/articles/CBMiqAFBVV95cUxQdnpiVkFSdGtONVl0X3BSNmttWWcwejZPVEFLLXJaWjBxZFV5THRlOEVDaGJHdENMRGhzTWY4eFNLOGdaYkVzM1ZFVUE3aUJJSTJabjBER3dZNS1Bb0ZyZ0ZVOWdsMEJaX2YyeVBxdmx3LVZoeFBnX3ZrQ2RsSEMyQ1Y4T25Oa2txTlZMQ0lRXzRSd1Ftd0gzWTJHd0hRUUlqbjcxTks0Ukc?oc=5",
+     "s": "sportschau.de",
+     "c": "DE",
+     "r": true,
+     "a": 1.2289789311111112
+    },
+    {
+     "t": "1:8! Schalke blamiert sich in Paderborn",
+     "u": "https://news.google.com/rss/articles/CBMinwFBVV95cUxQeVQ3UDUtN05OS2FqaDZraXdDekI5c1dsUHhBVEU1X2M5WGtTeVFqLUFIU0lteFlKRTI5ZzA2Y283X3pEOGIxbGE4eDc3TUhXQ1dqRmV4eWF3TEZpNF92TjQ2ZmtFN0RYSlcyZkplVVVxUERpUDlHN1lRNXk3UUVaeGQ3VEpITW51eEs5SllUbF8xX1VBTm52Qi1ndTM0NkU?oc=5",
+     "s": "BILD",
+     "c": "DE",
+     "r": true,
+     "a": 1.0606455977777778
+    },
+    {
+     "t": "Kimmich sees red as Bayern Munich held, Paderborn thump Schalke",
+     "u": "https://www.reuters.com/sports/soccer/kimmich-sees-red-bayern-munich-held-paderborn-thump-schalke-2026-11-28/",
+     "s": "Reuters",
+     "c": "DE",
+     "r": false,
+     "a": null
+    }
+   ],
+   "query": "Paderborn"
+  },
+  {
+   "name": "Torino - Lazio",
+   "category": "Sports",
+   "tier": 1,
+   "score": 12.3,
+   "story": false,
+   "countries": [
+    "DE",
+    "CH",
+    "NL"
+   ],
+   "summary": "DE CH NL · Sports · Google 200+ (DE) · 4 news sites",
+   "context": "Torino-Lazio, dove vedere la partita in tv e diretta streaming: orario e probabili formazioni",
+   "url": "https://www.dazn.com/it-IT/news/calcio/torino-lazio-2026-dove-vedere-diretta-streaming-orario-formazioni/556sawpj5dsw1m47hk5n45klu",
+   "first_pub_h": null,
+   "last_pub_h": null,
+   "recent1": 0,
+   "just_in": false,
+   "hours_seen": 1,
+   "days_seen": 1,
+   "watch": null,
+   "related": [],
+   "video": {
+    "phase": "rising",
+    "window": "about 6-12h left",
+    "travel": null,
+    "sensitive": false,
+    "yt": null,
+    "social": {},
+    "score": 17.7
+   },
+   "id": "2e399f00ec21",
+   "news": [
+    {
+     "t": "Torino-Lazio, dove vedere la partita in tv e diretta streaming: orario e probabili formazioni",
+     "u": "https://www.dazn.com/it-IT/news/calcio/torino-lazio-2026-dove-vedere-diretta-streaming-orario-formazioni/556sawpj5dsw1m47hk5n45klu",
+     "s": "DAZN",
+     "c": "DE",
+     "r": false,
+     "a": null
+    },
+    {
+     "t": "La Gazzetta dello Sport: \"Simeone, servono i gol contro la tua vittima preferita\"",
+     "u": "https://www.toronews.net/rassegna-stampa/la-gazzetta-dello-sport-simeone-servono-i-gol-contro-la-tua-vittima-preferita/",
+     "s": "Toro News",
+     "c": "DE",
+     "r": false,
+     "a": null
+    },
+    {
+     "t": "Mostrano a Gennaro Gattuso in diretta le immagini del passato con Ignazio Abate: \"Mi fanno impressione\"",
+     "u": "https://www.fanpage.it/sport/calcio/mostrano-a-gennaro-gattuso-in-diretta-le-immagini-del-passato-con-ignazio-abate-mi-fanno-impressione/",
+     "s": "Fanpage",
+     "c": "DE",
+     "r": false,
+     "a": null
+    },
+    {
+     "t": "LIVE Torino-Lazio 0-0 Serie A 2026/2027: Perri salva su Frattesi",
+     "u": "https://www.virgilio.it/sport/dirette/live/serie-a/28-11-2026/torino-lazio/2638249/",
+     "s": "Virgilio",
+     "c": "CH",
+     "r": false,
+     "a": null
+    },
+    {
+     "t": "LIVE Torino-Lazio 0-0 Serie A 2026/2027: Provstgaard chiude su Comuzzo",
+     "u": "https://www.virgilio.it/sport/dirette/live/serie-a/28-11-2026/torino-lazio/2638249/",
+     "s": "Virgilio",
+     "c": "NL",
+     "r": false,
+     "a": null
+    }
+   ],
+   "query": "Torino - Lazio"
+  },
+  {
+   "name": "Libia",
+   "category": "General",
+   "tier": 1,
+   "score": 12.3,
+   "story": false,
+   "countries": [
+    "IT"
+   ],
+   "summary": "IT · X #10 for 24h · 1 news sites",
+   "context": "I britannici difendono l’Ucraina: “Operazione in Libia del tutto legittima”",
+   "url": "https://www.repubblica.it/esteri/2026/11/28/news/ucraina_raid_libia_britannici_difendono_l_ucraina_operazione_legittima-425755489/",
+   "first_pub_h": null,
+   "last_pub_h": null,
+   "recent1": 0,
+   "just_in": false,
+   "hours_seen": 12,
+   "days_seen": 6,
+   "watch": null,
+   "related": [],
+   "video": {
+    "phase": "falling",
+    "window": "late - only with a new angle",
+    "travel": null,
+    "sensitive": false,
+    "yt": null,
+    "social": {},
+    "score": 7.4
+   },
+   "id": "d50661d8b232",
+   "news": [
+    {
+     "t": "I britannici difendono l’Ucraina: “Operazione in Libia del tutto legittima”",
+     "u": "https://www.repubblica.it/esteri/2026/11/28/news/ucraina_raid_libia_britannici_difendono_l_ucraina_operazione_legittima-425755489/",
+     "s": "la Repubblica",
+     "c": "IT",
+     "r": false,
+     "a": null
+    }
+   ],
+   "query": "Libia"
+  },
+  {
+   "name": "Pedro Sánchez",
+   "category": "Politics",
+   "tier": 1,
+   "score": 12.3,
+   "story": false,
+   "countries": [
+    "ES",
+    "FR"
+   ],
+   "summary": "ES FR · Politics · Wiki 18K views · 3 news sites · since 12h",
+   "context": "Elections législatives en Espagne : l’ultime pari de Pedro Sanchez",
+   "url": "https://www.lemonde.fr/international/visuel/2026/11/28/elections-legislatives-en-espagne-l-ultime-pari-de-pedro-sanchez_6816122_3210.html",
+   "first_pub_h": 11.78,
+   "last_pub_h": 2.24,
+   "recent1": 0,
+   "just_in": false,
+   "hours_seen": 100,
+   "days_seen": 20,
+   "watch": null,
+   "related": [],
+   "video": {
+    "phase": "falling",
+    "window": "late - only with a new angle",
+    "travel": null,
+    "sensitive": false,
+    "yt": null,
+    "social": {},
+    "score": 6.3
+   },
+   "id": "c7237e9c8cc6",
+   "news": [
+    {
+     "t": "Elections législatives en Espagne : l’ultime pari de Pedro Sanchez",
+     "u": "https://www.lemonde.fr/international/visuel/2026/11/28/elections-legislatives-en-espagne-l-ultime-pari-de-pedro-sanchez_6816122_3210.html",
+     "s": "Le Monde",
+     "c": "FR",
+     "r": false,
+     "a": 2.2398122644444447
+    },
+    {
+     "t": "Pedro Sánchez practica ciclismo de montaña junto a su mujer, Begoña Gómez, en la jornada de reflexión",
+     "u": "https://www.20minutos.es/nacional/pedro-sanchez-practica-ciclismo-montana-junto-su-mujer-begona-gomez-jornada-reflexion_7067059_0.html",
+     "s": "20minutos",
+     "c": "ES",
+     "r": false,
+     "a": 2.7478678199999997
+    },
+    {
+     "t": "\"Les immigrés sont instrumentalisés par les politiques\" : en Espagne, le modèle d'immigration défendu par Pedro Sanchez au cœur de la campagne des législatives",
+     "u": "https://www.franceinfo.fr/monde/espagne/reportage-les-immigres-sont-instrumentalises-par-les-politiques-en-espagne-le-modele-d-immigration-defendu-par-pedro-sanchez-au-c-ur-de-la-campagne-des-legislatives_8303004.html#xtor=RSS-3-[lestitres]",
+     "s": "franceinfo",
+     "c": "FR",
+     "r": false,
+     "a": 11.77536782
+    }
+   ],
+   "query": "Pedro Sánchez"
+  },
+  {
+   "name": "Andy Taylor",
+   "category": "General",
+   "tier": 1,
+   "score": 12.1,
+   "story": false,
+   "countries": [
+    "DE",
+    "US",
+    "IT"
+   ],
+   "summary": "DE US IT · Wiki 69K views",
+   "context": "",
+   "url": "https://de.wikipedia.org/wiki/Andy_Taylor_%28Musiker%29",
+   "first_pub_h": null,
+   "last_pub_h": null,
+   "recent1": 0,
+   "just_in": false,
+   "hours_seen": 9,
+   "days_seen": 4,
+   "watch": null,
+   "related": [],
+   "video": {
+    "phase": "falling",
+    "window": "late - only with a new angle",
+    "travel": null,
+    "sensitive": false,
+    "yt": null,
+    "social": {},
+    "score": 7.3
+   },
+   "id": "179ecaad787d",
+   "news": [],
+   "query": "Andy Taylor"
+  },
+  {
+   "name": "GTA Vi Black Friday",
+   "category": "Gaming",
+   "tier": 1,
+   "score": 11.9,
+   "story": false,
+   "countries": [
+    "ES"
+   ],
+   "summary": "ES · Gaming · Google 200+ (ES) · 3 news sites",
+   "context": "Limited-edition: The GTA 6 DualSense PS5 Controller is up at Best Buy for Black Friday",
+   "url": "https://mashable.com/tech/black-friday-day-deal-2026-gtavi-ps5-controller",
+   "first_pub_h": null,
+   "last_pub_h": null,
+   "recent1": 0,
+   "just_in": false,
+   "hours_seen": 21,
+   "days_seen": 8,
+   "watch": "gta 6",
+   "related": [],
+   "video": {
+    "phase": "falling",
+    "window": "late - only with a new angle",
+    "travel": null,
+    "sensitive": false,
+    "yt": null,
+    "social": {},
+    "score": 8.9
+   },
+   "id": "57662b696a86",
+   "news": [
+    {
+     "t": "Limited-edition: The GTA 6 DualSense PS5 Controller is up at Best Buy for Black Friday",
+     "u": "https://mashable.com/tech/black-friday-day-deal-2026-gtavi-ps5-controller",
+     "s": "Mashable",
+     "c": "ES",
+     "r": false,
+     "a": null
+    },
+    {
+     "t": "No esperábamos ver ‘GTA VI’ rebajado tan pronto, pero hoy es uno de los chollos más sorprendentes del Black Friday",
+     "u": "https://www.xataka.com/seleccion/nadie-esperaba-ver-gta-vi-rebajado-pronto-hoy-uno-chollos-sorprendentes-black-friday",
+     "s": "Xataka",
+     "c": "ES",
+     "r": false,
+     "a": null
+    },
+    {
+     "t": "GTA VI puede salirte mucho más barato si sabes dónde mirar",
+     "u": "https://es.ign.com/compras/236032/gta-vi-puede-salirte-mucho-mas-barato-si-sabes-donde-mirar",
+     "s": "IGN España",
+     "c": "ES",
+     "r": false,
+     "a": null
+    }
+   ],
+   "query": "GTA Vi Black Friday"
+  },
+  {
+   "name": "Canon Français",
+   "category": "General",
+   "tier": 1,
+   "score": 11.8,
+   "story": false,
+   "countries": [
+    "FR"
+   ],
+   "summary": "FR · X #3 for 11h · 3 news sites · 3 new in 2h · since 2h",
+   "context": "A un banquet du Canon français, à Biarritz, des manifestants bloquent les participants ; des policiers blessés",
+   "url": "https://news.google.com/rss/articles/CBMihAJBVV95cUxNNDNSZkFndWZyRWFFdnJzd3dIVlloX2pxV1dhaFBEeVFLUktWXzVET0pweFVwUHozUjFBUHVCVHJzeXVXRU1qUTkxUmhwaVhndjF0YldHOG1lUFhqdUNKYUxzVU1rOXVLUl8tWXZ3ZjJJSXZWcFRvYTBTdGNRbTlHcGlfakV0LXhjbWJQcDBYZ3BoTmgtdGY2NDloQTRiRGxUZmJpTHRLMU9iNi1Db251S05OMm1IUnNCT1N4UzNQN29DbExYVHFkWkxsQkdTTkVoN0ExeTQzV2VBSmhaWnNiaGxpaThVYUZ6eXhSU3FsV3lTLWxPNENlNnZqV1U0SE8zYnRJZA?oc=5",
+   "first_pub_h": 1.73,
+   "last_pub_h": 0.24,
+   "recent1": 2,
+   "just_in": false,
+   "hours_seen": 1,
+   "days_seen": 1,
+   "watch": null,
+   "related": [
+    "Biarritz"
+   ],
+   "video": {
+    "phase": "rising",
+    "window": "about 6-12h left",
+    "travel": null,
+    "sensitive": false,
+    "yt": null,
+    "social": {},
+    "score": 20.6
+   },
+   "id": "8d800ce3ec95",
+   "news": [
+    {
+     "t": "A un banquet du Canon français, à Biarritz, des manifestants bloquent les participants ; des policiers blessés",
+     "u": "https://news.google.com/rss/articles/CBMihAJBVV95cUxNNDNSZkFndWZyRWFFdnJzd3dIVlloX2pxV1dhaFBEeVFLUktWXzVET0pweFVwUHozUjFBUHVCVHJzeXVXRU1qUTkxUmhwaVhndjF0YldHOG1lUFhqdUNKYUxzVU1rOXVLUl8tWXZ3ZjJJSXZWcFRvYTBTdGNRbTlHcGlfakV0LXhjbWJQcDBYZ3BoTmgtdGY2NDloQTRiRGxUZmJpTHRLMU9iNi1Db251S05OMm1IUnNCT1N4UzNQN29DbExYVHFkWkxsQkdTTkVoN0ExeTQzV2VBSmhaWnNiaGxpaThVYUZ6eXhSU3FsV3lTLWxPNENlNnZqV1U0SE8zYnRJZA?oc=5",
+     "s": "Le Monde.fr",
+     "c": "FR",
+     "r": true,
+     "a": 0.23897893111111113
+    },
+    {
+     "t": "Des centaines de personnes rassemblées à Biarritz contre la tenue d'un banquet du très controversé \"Canon français\"",
+     "u": "https://www.franceinfo.fr/societe/racisme/des-centaines-de-personnes-rassemblees-a-biarritz-contre-la-tenue-d-un-banquet-du-tres-controverse-canon-francais_8304570.html#xtor=RSS-3-[lestitres]",
+     "s": "franceinfo",
+     "c": "FR",
+     "r": true,
+     "a": 0.2692567088888889
+    },
+    {
+     "t": "A un banquet du Canon français, à Biarritz, des manifestants bloquent les participants ; des policiers blessés",
+     "u": "https://www.lemonde.fr/societe/article/2026/11/28/a-un-banquet-du-canon-francais-a-biarritz-des-manifestants-bloquent-les-participants-des-policiers-blesses_6816103_3225.html",
+     "s": "Le Monde",
+     "c": "FR",
+     "r": true,
+     "a": 1.7306455977777777
+    }
+   ],
+   "query": "Canon Français"
+  }
+ ],
+ "stories": [
+  {
+   "name": "Looking for affordable finds this Black Friday? These deals are all under $50",
+   "category": "Tech & AI",
+   "tier": 1,
+   "score": 23.3,
+   "story": true,
+   "countries": [
+    "DE",
+    "US",
+    "GB",
+    "ES"
+   ],
+   "summary": "DE US GB ES · Tech & AI · Top news #15 (US) · 10 news sites · since 26h",
+   "context": "",
+   "url": "https://news.google.com/rss/articles/CBMiiwFBVV95cUxOQUJseGdhY09CbHQ3bW5LZG5OYlo1bDktdUk3X1gxVms3b0J3bGVJSy1lQnJLd3RwV1d4NXNyOW5uOURfYV9WcHhEYVFiQTJFM2EyTUhzUlNXRm9pelhrV211eDZqLUlfaTRGaE1ycndONTZiT2VyRGlILUJNQXo2Uzk4M0NGM2JSMDN3?oc=5",
+   "first_pub_h": 26.07,
+   "last_pub_h": 0.17,
+   "recent1": 1,
+   "just_in": false,
+   "hours_seen": 1,
+   "days_seen": 1,
+   "watch": "apple",
+   "related": [],
+   "video": {
+    "phase": "peak",
+    "window": "about 3-6h left",
+    "travel": null,
+    "sensitive": false,
+    "yt": null,
+    "social": {},
+    "score": 19.2
+   },
+   "id": "e053e28d13e8",
+   "news": [
+    {
+     "t": "Apple Black Friday deals are still live: Save $100 on AirPods Pro 3, MacBook Neo, Apple Watch and more",
+     "u": "https://news.google.com/rss/articles/CBMipAFBVV95cUxOQnFBODd6TjJYWmJVT1ByblNLX2EweVExX3NOTHZCUnNLQlI4bXdQY3Q1TTQ4RDR3aHRJQnR4c19CSW1SOW1KRWJkS1NCZVJFWV9IU01PT0xldGtObFZKZ3JwTUw1aWlkbWlVMzlqcWJqR2hsd2NqZWRkRUhNTEp3bzh6ZDAya3B5dllNdWlXTFhRODBZaTh3MWgydTZDV3Jpczh6ZQ?oc=5",
+     "s": "Tom's Guide",
+     "c": "US",
+     "r": true,
+     "a": 0.17370115333333333
+    },
+    {
+     "t": "LIVE Black Friday TV and home cinema deals: our expert reviewers find the best OLED, Dolby Atmos soundbar and AV bargains",
+     "u": "https://news.google.com/rss/articles/CBMimgFBVV95cUxOZk1xSTZqRXh3NW1TRHZKLXZuS2dkaDl1TnRQZ1NOTkpDa2xCTk8yMFMwTUo4Vl9idHEyalJEd0l4a3JFbmg0RDJjM1o4OVRQMldHZHBQM1U0SmZWS0t2RHd0YmY1N05BNVducVNzVE1aSVZVX0xYYnBQWDEwRWFtMDJRWHp1Q0pKZW13YWtxMW5VdG5hMk5WWG53?oc=5",
+     "s": "What Hi-Fi?",
+     "c": "GB",
+     "r": false,
+     "a": 5.3603678200000004
+    },
+    {
+     "t": "I’ve found the 9 best Black Friday gaming laptop deals with up to $1,200 off Asus, Lenovo, Alienware, HP and more",
+     "u": "https://news.google.com/rss/articles/CBMiogFBVV95cUxOdk9QN1pvejhrcjA3aVZuZ1htZW1RVXR0Vk5LejgzYVNENG4xRkEwXzFTS2FzbkFXcFlCcFFLQWhGTXhwdjdzTHlOcGIycWJQcUVZcUp4djc4Z0t1WVZpeldJSXJlRTcwQzNUa09VV2xYUFdrMU55S2tiVjhDdWJoVnl5elNucWs1LXBMQ3dLN1k2aU5kbTBaWWRoU0RmSkF3c1E?oc=5",
+     "s": "Tom's Guide",
+     "c": "US",
+     "r": false,
+     "a": 26.071478931111113
+    },
+    {
+     "t": "I’ve struck audiophile gold on Black Friday with this stunning premium hi-fi bundle deal",
+     "u": "https://news.google.com/rss/articles/CBMi-wFBVV95cUxNNHZJZWd2clhMdG1aN19MUHpZb0FCbkhxV2xqV2hzYWJrRzNBYTJWMXFfNTBzTFB0MnhfejBrNmVFSGI5YjBpMnJ4OW9YRFE5ck9DTG9vVlhSbzRqU2xHT1ozenAyYmJhR3E0WDBXdTBWS1dHeERrZnQ1dkJoNFhnVWdEc3Y1R1puWk9sa29HWTU5S09RWmduZG1felVpV0xmbmZfdl83UzJybllrVFg4dFg0VWw4N01sV3dhbnhFek5NaFRjaUlCWVpOMll4cEZXMXdHRzBMZEZVT0dGUms1cVNhVGplanFFdXpfdU91OFRXSEtfdmVyUmdQaw?oc=5",
+     "s": "What Hi-Fi?",
+     "c": "GB",
+     "r": false,
+     "a": 24.35536782
+    },
+    {
+     "t": "The Best Black Friday iPhone Deals Still Available",
+     "u": "https://news.google.com/rss/articles/CBMifkFVX3lxTE9vdnZVanhzZ1ptSzF3Yk5PV3ZON1lFMDkteFBDOU5kaWRlVDdVREtYODNPSXpaYTNUbm84NHo2dUNXZUdRanFWd013Y3VVSTNLeDU2dGxmMHhxRXVPYWdoV3hZRHNBS3Z3TkgxYS0yOHY4M3hRczN3NHQxWUcwQQ?oc=5",
+     "s": "MacRumors",
+     "c": "US",
+     "r": false,
+     "a": 20.03036782
+    }
+   ],
+   "query": "looking affordable find black friday"
+  },
+  {
+   "name": "Nvidia wird zum Familienbetrieb: Plant Jensen Huang seine Nachfolge?",
+   "category": "Tech & AI",
+   "tier": 1,
+   "score": 15.7,
+   "story": true,
+   "countries": [
+    "DE",
+    "US",
+    "FR"
+   ],
+   "summary": "DE US FR · Tech & AI · Top news #17 (DE) · 8 news sites · since 3 days",
+   "context": "",
+   "url": "https://news.google.com/rss/articles/CBMi0wFBVV95cUxQSHhnb1FzdW94b1AzNnhIZkh1SVYxTGw3b3BFdGRtbEhwWkFWN3BVVjlnb1QwVEVhMk5HakhMakEzREJVRjlYOTZ4Z2pwV0NqazdBbWx0cVZjRENkOEZHLXljT09NTk9zRHlPek1pYjczNjJ0UkhvMVJVeU95WXY5QU1nVjBnb0JycVV1Wm1yZEIyTkFDaDhHY2NsMF9JWG9lc3ZRWDlfOTR3dldIZ2VJTzBTTHY1MEJnN2Q0T3Vtend0UEh4LVE4VlBUSmU2ZlUyMU5v?oc=5",
+   "first_pub_h": 69.82,
+   "last_pub_h": 9.21,
+   "recent1": 0,
+   "just_in": false,
+   "hours_seen": 3,
+   "days_seen": 1,
+   "watch": null,
+   "related": [],
+   "video": {
+    "phase": "rising",
+    "window": "about 6-12h left",
+    "travel": null,
+    "sensitive": false,
+    "yt": null,
+    "social": {},
+    "score": 16.2
+   },
+   "id": "3fd9d807faaa",
+   "news": [
+    {
+     "t": "Charles Ferguson, investisseur et actionnaire de Nvidia : « Jensen Huang est déconnecté de la réalité et son ego est totalement hors de contrôle »",
+     "u": "https://news.google.com/rss/articles/CBMi-wFBVV95cUxQeFQ2TVNLMWlDMzZlZFZyWmpPOEtReWhScjJxZnpERy1ULTR0MEZUSVlSZTk4WkpVWVE2dElnNXFUSE5UbjRfaHoxT0tsOVpKYU0zeG9HTzJzeVRfXzU0cmJ5VFUtRGlKam5fby1ON3V0Ym1hbHpadGxqYjJoMk9CaU8xcGt5UEZmME1sTnFFYlJ0RlBMdEJGa3VZaTg2N3Bway01aGxMbDI1bVlFTTVZbURfTnltYjQwUUNPT3VQUmc3cFVIMWxsNU5MbHd4U2wzUExCd0FJX2dER2E0ZmVvWHhPZ0hhd3pkblNnNUJZekxWanB2VWtYNDM1TQ?oc=5",
+     "s": "Le Monde.fr",
+     "c": "FR",
+     "r": false,
+     "a": 25.739534486666667
+    },
+    {
+     "t": "Nvidia reinstates Jensen Huang as CEO weeks after his resignation",
+     "u": "https://www.gamedeveloper.com/business/nvidia-reinstates-jensen-huang-as-ceo",
+     "s": "Game Developer",
+     "c": "US",
+     "r": false,
+     "a": 116.62259004222223
+    },
+    {
+     "t": "Trump says he talked Nvidia’s board into reinstating Jensen Huang. It’s not the first company he’s stepped into",
+     "u": "https://news.google.com/rss/articles/CBMiekFVX3lxTFByYmdLMURnTXFsSTdqaUtDN3pkcVpNckk1ZjBTTlcybnlYdkNxWm44d1c2cUp3MmNhdkRiQjk5ZXB3WjlYa2tRUU9kMlpJQ3U4VWtpdVhpdUdudkx5Uml6VXNxUTFNTW53bkJoZUtTRURMZ3Q2N2MzcnNB?oc=5",
+     "s": "Fortune",
+     "c": "US",
+     "r": false,
+     "a": 9.20647893111111
+    },
+    {
+     "t": "Jensen Huang broke Nvidia’s code of conduct, and his employees may not forget it",
+     "u": "https://techcrunch.com/2026/11/25/jensen-huang-broke-nvidias-code-of-conduct-and-his-employees-may-not-forget-it/",
+     "s": "TechCrunch AI",
+     "c": "US",
+     "r": false,
+     "a": 69.82397893111111
+    },
+    {
+     "t": "Nvidia-Chef Jensen Huang: Ein CEO als Sicherheitsrisiko",
+     "u": "https://news.google.com/rss/articles/CBMijAFBVV95cUxQNHM3MTktaml6bFBaU25DZmIta3g1bXN3Rk1OVmZmeUFuNHZ0dGFIUHpmdTk4bWRMYXJOWTE3MG9yRmswY3NicEk2X2VvMUsyU19oVlJMYm1XUWo4LUVOWTRIWml1aG1fQTBiUWY0cng1TEFsVWx1ekdSRlJ6X3docXhnQTlPbEl1UVh6dw?oc=5",
+     "s": "ZDFheute",
+     "c": "DE",
+     "r": false,
+     "a": 28.50647893111111
+    }
+   ],
+   "query": "nvidia familienbetrieb plant jensen huang"
+  },
+  {
+   "name": "Bonoloto: comprobar sorteo del viernes 27 de noviembre",
+   "category": "Business",
+   "tier": 1,
+   "score": 13.0,
+   "story": true,
+   "countries": [
+    "ES"
+   ],
+   "summary": "ES · Business · Top news #17 (ES) · 4 news sites · since 23h",
+   "context": "",
+   "url": "https://news.google.com/rss/articles/CBMinAFBVV95cUxOblhReDNZcHJMdXFWanJnR3FtblUwSVV4SERTbndHWFJZUzBsck9Na0ZqcC03S3ZKUEJUVmlRNVVBRHI4SVdNLVdwRkZhaDRpMm15Nk4tT0JfYkZ0Qi1mSEg2MzNoaUpoUkRoOXpycUs2blY3NjYxYWRFQXZnZzBmX2I1MWdEODVqejVoeXBMM2xERGVsYVlrM09mVUXSAbABQVVfeXFMTU5FZlM1QXdzUklKU2h0REd3UVV4eDVTOWtpS2ZMMDRkeWNNb2FYZ0p5X0NkY0taR0NHUXlka3NwVW5oOVZWNXBPYnZKRFAxOGI2QnlRNmlXdUhHSFFyTEIya3UzX3BRdThZZWtPalVENFZ0R3NPSDFnV0l3Y29DQ05NRWFpakU2Q3Y2MVJURGdBU3VjRDh5dUZYbFp4emdVRVU1VWd0LUpDUGgwUUxJemc?oc=5",
+   "first_pub_h": 22.73,
+   "last_pub_h": 2.73,
+   "recent1": 0,
+   "just_in": false,
+   "hours_seen": 4,
+   "days_seen": 4,
+   "watch": null,
+   "related": [],
+   "video": {
+    "phase": "rising",
+    "window": "about 6-12h left",
+    "travel": null,
+    "sensitive": false,
+    "yt": null,
+    "social": {},
+    "score": 16.2
+   },
+   "id": "240d26722605",
+   "news": [
+    {
+     "t": "Bonoloto: comprobar sorteo del viernes 27 de noviembre",
+     "u": "https://news.google.com/rss/articles/CBMinAFBVV95cUxOblhReDNZcHJMdXFWanJnR3FtblUwSVV4SERTbndHWFJZUzBsck9Na0ZqcC03S3ZKUEJUVmlRNVVBRHI4SVdNLVdwRkZhaDRpMm15Nk4tT0JfYkZ0Qi1mSEg2MzNoaUpoUkRoOXpycUs2blY3NjYxYWRFQXZnZzBmX2I1MWdEODVqejVoeXBMM2xERGVsYVlrM09mVUXSAbABQVVfeXFMTU5FZlM1QXdzUklKU2h0REd3UVV4eDVTOWtpS2ZMMDRkeWNNb2FYZ0p5X0NkY0taR0NHUXlka3NwVW5oOVZWNXBPYnZKRFAxOGI2QnlRNmlXdUhHSFFyTEIya3UzX3BRdThZZWtPalVENFZ0R3NPSDFnV0l3Y29DQ05NRWFpakU2Q3Y2MVJURGdBU3VjRDh5dUZYbFp4emdVRVU1VWd0LUpDUGgwUUxJemc?oc=5",
+     "s": "EL PAÍS",
+     "c": "ES",
+     "r": false,
+     "a": 21.739812264444446
+    },
+    {
+     "t": "Comprobar Lotería Nacional de hoy, en directo: resultados del sorteo del sábado 28 de noviembre",
+     "u": "https://news.google.com/rss/articles/CBMilwFBVV95cUxNbV9hWmJrWncydUFFZWhIVXBrMGs3eXpMMW1pcmk5MHQxQzcxc1RHdV9FdmtmMUQ0X25YQkZiNTNoWHhMa1BkOTkteDNiQzEtb2xRb0VDUGswR0NMaHZmOXc3aFRBcXkwWmtzMVBHMVkzVmF3YWpQMzdSZllGcGx0ejU1ZE9OYk5tZW1zdGZieHNxN2h3Rkxj0gGXAUFVX3lxTFBmckJKYmdZdm9KVUlIdy1aODVDeXRkcExSRWZ3djEwdU11dHhaT3FiZl9yN1c4STFPLXEwaTVaenIzV2FDYzU4TEhaTU94LTd4enRtbFRTQ18xSjZMUy15OXhNOV9Vd1Q1RXp6Y1BOX3hHcTdyaDY2MHRrMS05ejVsWXBmenBLZG5FdUhJNm5DbUFmNWhaTUU?oc=5",
+     "s": "SPORT",
+     "c": "ES",
+     "r": false,
+     "a": 5.428701153333334
+    },
+    {
+     "t": "Once, comprobar resultados y premios del Cuponazo y el sorteo de hoy viernes 27 de noviembre de 2026",
+     "u": "https://news.google.com/rss/articles/CBMizgFBVV95cUxNOW1KdE5lSk52Sk9rWHFTTURQNm1yajV5ek9qZjJDM3dzckswU20tMjZ5VWZfdVk4bWhOSkVMX0dtVXdjcWN1R2dSeGF3V0xDTEFwVUtFSm5DcVBQMmdQd3RjV3RsTDdJS0tRVTlVNTJEeWxKM2VqZnBaVk9HZ0FYRmVMd2t5bjB0S1pPblpKY0t4SDJCTTE1REZNcVF1OFE5U2FBTnhzcF80a1RBU1ZUR0I2bGI2THBOTzdLZk8za1gxMlhvYWtRcS1vZXZmZ9IB0wFBVV95cUxOZWhZdUc5LUtaQ1c2TnVJQ3R5TXRXOGdxQzV0b1RTbngtdGJ5Sm5uZ0RJUlpXUEhKRXFBVjN5Z3NEVzlCQWxCakZMemJnNmo3ZW9NY1hLdFlzZlpHUFZIU1lzYVI5TlNqOU9aNWhyZkJ3bkVzd2ktOXoweTFMbVZpTjZxX3JGdHJpbzZtdkJTYW1HaHp3MF96RnFaVkszTklhZ01lNlY2SHZzVzJOSHFnWjdYVThpUnNNTEd2X1E0ZUdTVFdoemFLQjZfX0ZlZG1adFZr?oc=5",
+     "s": "La Vanguardia",
+     "c": "ES",
+     "r": false,
+     "a": 22.729812264444444
+    },
+    {
+     "t": "Euromillones: comprobar sorteo del viernes 27 de noviembre",
+     "u": "https://news.google.com/rss/articles/CBMilAFBVV95cUxPZm9pUEpJbnZXOUZjMXU2ZmxXbG1lcERkNG5IWjFFZ3U0YU11OGhmMXlrZjFKb3hfM1d4Z1dOVXdiZV9BSmxqcDFiSXVGSjUxdGtEamRVSlE3MEhQZ3Y3cmZneXVadzdaa0kxN3dReW5EMEl1ekZaZnN3NkZ2OWdRLU15ZDN5VEotYlVTZXpna011YlN50gGoAUFVX3lxTE1WdnpZaGl5RzBEUURvQkxyV0ZRUEltSDE4ejJfaUZ6Tm1laEJyal9qdm9JS2R2RUUzWEdqeDRDYWFDVGE4cF9YNDBYRmVqU291bDh5VE5SMU5PTXQ0eUhBN2U5TDhuTExYeFJwbElEXzVsTGUta3ZFOW96SEFRMGw3SUxtMnlvUHVzdVJ2Q0NfMURkdUNFQWdjU2lzQkx6NmEwMzZLbEh5UQ?oc=5",
+     "s": "EL PAÍS",
+     "c": "ES",
+     "r": false,
+     "a": 21.739812264444446
+    },
+    {
+     "t": "Sorteo Lotería Nacional: Comprobar décimo de hoy sábado 28 de noviembre, en directo",
+     "u": "https://news.google.com/rss/articles/CBMi5wFBVV95cUxNcmZLNDBXRTQ2czl1eTJCMDBRRTZPNkVyVkNIallIOFkwcmp6R1V0c3g3aDc1eFhkbWNBUjEwZmkyN3d5VTF4OXdRSnliNHlpR1Q0NGd5d2ZWMU9GNEFMX1pGQWd3SUU4M0M5ckRidVY3b0cyMDkzZXd0ZHpES1FRdEpfWEJubkcyaUV5OXhMZV9kb0FxelNmTHVJNHBZYlI2cXE3NlB2UzZiWE1rTTNuVTZpSmE5b0xEQ2xLa3JkWVVaZTE2X1dLam9aNncyWmlOMWJPUUdsbnJuZTlaTjU3OEphWURBMFnSAecBQVVfeXFMTlFuNkxNLWkycmNna24xZGpscGpPd1FDOXBTMGNqUFg0RE5XVDExTlNjUnBFMnh6WFRfR2lkRnN0cWh6SGRQTEtwY0ZZY1JjaHZxX211eTZGYVhxZFBaNGFaa2JVLWI2Ni1rTlVGRVRYNmpRQzFmZ2dIcE5jZGdlRURQaW11TllEejFkRU1IQ2FfNW5aSjRhSHM1ckl6aHNQcXBZaWhJUHpIQUF6Ml9jQld0ZGZEQU9GUndzRE1MYTZFY2JJV3oxTXg3eHVwbE1BQS1wYlJPRVl2ZmFRNS1uTDJvTHBObFJv?oc=5",
+     "s": "Antena 3 Noticias",
+     "c": "ES",
+     "r": false,
+     "a": 2.732590042222222
+    }
+   ],
+   "query": "bonoloto comprobar sorteo vierne noviembre"
+  },
+  {
+   "name": "Princess Kate takes to the mountains to face mortality in film about cancer recovery",
+   "category": "Movies & TV",
+   "tier": 1,
+   "score": 10.9,
+   "story": true,
+   "countries": [
+    "US",
+    "GB"
+   ],
+   "summary": "US GB · Movies & TV · Top news #23 (US) · 3 news sites · since 18h",
+   "context": "",
+   "url": "https://news.google.com/rss/articles/CBMirgFBVV95cUxNTm5fMzJuWElVTEVpdG9FZHlZV2txZ3dEVmJjUENfUEgtdVpDOGxBaXNBNUJsQ1RZV054SndZc2pPV21GMW1CMWx3NENXNlBEb0RlRGRiVGx4ZDNtQ0JfSnNRTnRNbHoyR01FVlRPd21hX3FBc3A4UFRra3cyMWhqR3h6QktKdVUwclV3UFVJZTEtcmdHYlpEbGF0OU1NY3d2a3I2MHozV3BOdjZKYlE?oc=5",
+   "first_pub_h": 18.29,
+   "last_pub_h": 1.25,
+   "recent1": 0,
+   "just_in": false,
+   "hours_seen": 1,
+   "days_seen": 1,
+   "watch": null,
+   "related": [],
+   "video": {
+    "phase": "peak",
+    "window": "about 3-6h left",
+    "travel": null,
+    "sensitive": false,
+    "yt": null,
+    "social": {},
+    "score": 13.6
+   },
+   "id": "d37aef097eb4",
+   "news": [
+    {
+     "t": "New film explores Princess Kate's cancer recovery journey",
+     "u": "https://www.cbsnews.com/video/new-film-explores-princess-kates-cancer-recovery-journey/",
+     "s": "CBS News",
+     "c": "US",
+     "r": true,
+     "a": 1.2539789311111111
+    },
+    {
+     "t": "Princess Kate takes to the mountains to face mortality in film about cancer recovery",
+     "u": "https://news.google.com/rss/articles/CBMirgFBVV95cUxNTm5fMzJuWElVTEVpdG9FZHlZV2txZ3dEVmJjUENfUEgtdVpDOGxBaXNBNUJsQ1RZV054SndZc2pPV21GMW1CMWx3NENXNlBEb0RlRGRiVGx4ZDNtQ0JfSnNRTnRNbHoyR01FVlRPd21hX3FBc3A4UFRra3cyMWhqR3h6QktKdVUwclV3UFVJZTEtcmdHYlpEbGF0OU1NY3d2a3I2MHozV3BOdjZKYlE?oc=5",
+     "s": "AP News",
+     "c": "US",
+     "r": false,
+     "a": 9.556478931111112
+    },
+    {
+     "t": "UK's Princess Kate climbs mountains, fights cancer in intimate documentary",
+     "u": "https://news.google.com/rss/articles/CBMitAFBVV95cUxOQTF5YVJuNUoxSzFjMFZuSk1neXZ6YUJUZ1JzOThGLTlHODdXZkhBYkhlVjMwTTJZMG1xd2FnU2pLQWZKSFpTZVc5QzBoTkdoNG9LN0VTaGJSSFpuYkJQdGtGNlc4VmlxaGdBVW9FVV9EeFhLb3VpWUh5eWFpNGwtdllCVzJSSmEyUDc4b2FRTkZKN0F0X1F6dTJfUFczVE5jRnRRMDd5cGV2U1l2ZU5pdDJIVi0?oc=5",
+     "s": "Reuters",
+     "c": "GB",
+     "r": false,
+     "a": 18.289812264444446
+    }
+   ],
+   "query": "princess kate take mountain face"
+  },
+  {
+   "name": "Ucrania - Rusia, última hora de la guerra | Zelenski anuncia nuevas sanciones contra Putin y sus principales aliados en el Kremlin",
+   "category": "World & conflicts",
+   "tier": 1,
+   "score": 10.8,
+   "story": true,
+   "countries": [
+    "ES"
+   ],
+   "summary": "ES · World & conflicts · Top news #2 (ES) · 1 news sites",
+   "context": "",
+   "url": "http://www.rtve.es/noticias/20220610/ucrania-rusia-ultima-hora-guerra-zelenski-anuncia-nuevas-sanciones-contra-putin-principales-aliados-kremlin/2372402.shtml",
+   "first_pub_h": null,
+   "last_pub_h": null,
+   "recent1": 0,
+   "just_in": false,
+   "hours_seen": 100,
+   "days_seen": 22,
+   "watch": null,
+   "related": [],
+   "video": {
+    "phase": "falling",
+    "window": "late - only with a new angle",
+    "travel": null,
+    "sensitive": true,
+    "yt": null,
+    "social": {},
+    "score": 4.4
+   },
+   "id": "2ef27d2f6ae5",
+   "news": [
+    {
+     "t": "Ucrania - Rusia, última hora de la guerra | Zelenski anuncia nuevas sanciones contra Putin y sus principales aliados en el Kremlin",
+     "u": "http://www.rtve.es/noticias/20220610/ucrania-rusia-ultima-hora-guerra-zelenski-anuncia-nuevas-sanciones-contra-putin-principales-aliados-kremlin/2372402.shtml",
+     "s": "RTVE",
+     "c": "ES",
+     "r": false,
+     "a": null
+    },
+    {
+     "t": "Ucrania - Rusia, última hora de la guerra | Un tribunal prorruso de Donetsk condena a muerte a dos británicos y un marroquí por combatir con las tropas ucranianas",
+     "u": "http://www.rtve.es/noticias/20220609/ucrania-rusia-ultima-hora-guerra-tribunal-prorruso-donetsk-condena-muerte-dos-britanicos-marroqui-combatir-tropas-ucranianas/2370542.shtml",
+     "s": "RTVE",
+     "c": "ES",
+     "r": false,
+     "a": null
+    }
+   ],
+   "query": "ucrania rusia hora guerra zelenski"
+  },
+  {
+   "name": "Tres muertos y tres heridos en un nuevo tiroteo masivo en Estados Unidos",
+   "category": "Crime & accidents",
+   "tier": 1,
+   "score": 9.9,
+   "story": true,
+   "countries": [
+    "ES"
+   ],
+   "summary": "ES · Crime & accidents · Top news #1 (ES) · 1 news sites",
+   "context": "",
+   "url": "http://www.rtve.es/noticias/20220610/tres-muertos-tres-heridos-nuevo-tiroteo-masivo-estados-unidos/2372502.shtml",
+   "first_pub_h": null,
+   "last_pub_h": null,
+   "recent1": 0,
+   "just_in": false,
+   "hours_seen": 100,
+   "days_seen": 25,
+   "watch": null,
+   "related": [],
+   "video": {
+    "phase": "falling",
+    "window": "late - only with a new angle",
+    "travel": null,
+    "sensitive": false,
+    "yt": null,
+    "social": {},
+    "score": 4.5
+   },
+   "id": "0626845ebc76",
+   "news": [
+    {
+     "t": "Tres muertos y tres heridos en un nuevo tiroteo masivo en Estados Unidos",
+     "u": "http://www.rtve.es/noticias/20220610/tres-muertos-tres-heridos-nuevo-tiroteo-masivo-estados-unidos/2372502.shtml",
+     "s": "RTVE",
+     "c": "ES",
+     "r": false,
+     "a": null
+    }
+   ],
+   "query": "tres muerto tres herido nuevo"
+  },
+  {
+   "name": "Livestream: Die Nachrichten auf tagesschau24",
+   "category": "General",
+   "tier": 1,
+   "score": 9.8,
+   "story": true,
+   "countries": [
+    "DE"
+   ],
+   "summary": "DE · Top news #3 (DE) · 1 news sites",
+   "context": "",
+   "url": "https://www.tagesschau.de/multimedia/livestreams/livestream-ts24-104.html",
+   "first_pub_h": null,
+   "last_pub_h": null,
+   "recent1": 0,
+   "just_in": false,
+   "hours_seen": 100,
+   "days_seen": 24,
+   "watch": null,
+   "related": [],
+   "video": {
+    "phase": "falling",
+    "window": "late - only with a new angle",
+    "travel": null,
+    "sensitive": false,
+    "yt": null,
+    "social": {},
+    "score": 5.9
+   },
+   "id": "ed90fe002ef4",
+   "news": [
+    {
+     "t": "Livestream: Die Nachrichten auf tagesschau24",
+     "u": "https://www.tagesschau.de/multimedia/livestreams/livestream-ts24-104.html",
+     "s": "Tagesschau",
+     "c": "DE",
+     "r": false,
+     "a": 81.6842567088889
+    }
+   ],
+   "query": "livestream nachrichten tagesschau24"
+  },
+  {
+   "name": "Estados Unidos avisa a Irán de que sus actos hacen peligrar la vuelta al acuerdo nuclear",
+   "category": "World & conflicts",
+   "tier": 1,
+   "score": 9.5,
+   "story": true,
+   "countries": [
+    "ES"
+   ],
+   "summary": "ES · World & conflicts · Top news #3 (ES) · 1 news sites",
+   "context": "",
+   "url": "http://www.rtve.es/noticias/20220609/estados-unidos-avisa-iran-actos-hacen-peligrar-vuelta-acuerdo-nuclear/2372382.shtml",
+   "first_pub_h": null,
+   "last_pub_h": null,
+   "recent1": 0,
+   "just_in": false,
+   "hours_seen": 100,
+   "days_seen": 22,
+   "watch": null,
+   "related": [],
+   "video": {
+    "phase": "falling",
+    "window": "late - only with a new angle",
+    "travel": null,
+    "sensitive": false,
+    "yt": null,
+    "social": {},
+    "score": 4.6
+   },
+   "id": "68eeeb054c75",
+   "news": [
+    {
+     "t": "Estados Unidos avisa a Irán de que sus actos hacen peligrar la vuelta al acuerdo nuclear",
+     "u": "http://www.rtve.es/noticias/20220609/estados-unidos-avisa-iran-actos-hacen-peligrar-vuelta-acuerdo-nuclear/2372382.shtml",
+     "s": "RTVE",
+     "c": "ES",
+     "r": false,
+     "a": null
+    }
+   ],
+   "query": "estado unido avisa iran acto"
+  },
+  {
+   "name": "La NASA crea un equipo para el estudio de Fenómenos Aéreos no Identificados",
+   "category": "General",
+   "tier": 1,
+   "score": 9.3,
+   "story": true,
+   "countries": [
+    "ES"
+   ],
+   "summary": "ES · Top news #4 (ES) · 1 news sites",
+   "context": "",
+   "url": "http://www.rtve.es/noticias/20220609/nasa-crea-equipo-para-estudio-fenomenos-aereos-identificados/2372522.shtml",
+   "first_pub_h": null,
+   "last_pub_h": null,
+   "recent1": 0,
+   "just_in": false,
+   "hours_seen": 100,
+   "days_seen": 25,
+   "watch": null,
+   "related": [],
+   "video": {
+    "phase": "falling",
+    "window": "late - only with a new angle",
+    "travel": null,
+    "sensitive": false,
+    "yt": null,
+    "social": {},
+    "score": 5.6
+   },
+   "id": "7941ccb5dd51",
+   "news": [
+    {
+     "t": "La NASA crea un equipo para el estudio de Fenómenos Aéreos no Identificados",
+     "u": "http://www.rtve.es/noticias/20220609/nasa-crea-equipo-para-estudio-fenomenos-aereos-identificados/2372522.shtml",
+     "s": "RTVE",
+     "c": "ES",
+     "r": false,
+     "a": null
+    }
+   ],
+   "query": "nasa crea equipo estudio fenomeno"
+  },
+  {
+   "name": "Albares viaja este viernes a Bruselas para reunirse con el comisario de Comercio europeo en plena crisis con Argelia",
+   "category": "General",
+   "tier": 1,
+   "score": 9.1,
+   "story": true,
+   "countries": [
+    "ES"
+   ],
+   "summary": "ES · Top news #5 (ES) · 1 news sites",
+   "context": "",
+   "url": "http://www.rtve.es/noticias/20220609/albares-viaja-este-viernes-bruselas-para-reunirse-comisario-comercio-europeo-plena-crisis-argelia/2372462.shtml",
+   "first_pub_h": null,
+   "last_pub_h": null,
+   "recent1": 0,
+   "just_in": false,
+   "hours_seen": 100,
+   "days_seen": 25,
+   "watch": null,
+   "related": [],
+   "video": {
+    "phase": "falling",
+    "window": "late - only with a new angle",
+    "travel": null,
+    "sensitive": false,
+    "yt": null,
+    "social": {},
+    "score": 5.5
+   },
+   "id": "f67cc3d172c6",
+   "news": [
+    {
+     "t": "Albares viaja este viernes a Bruselas para reunirse con el comisario de Comercio europeo en plena crisis con Argelia",
+     "u": "http://www.rtve.es/noticias/20220609/albares-viaja-este-viernes-bruselas-para-reunirse-comisario-comercio-europeo-plena-crisis-argelia/2372462.shtml",
+     "s": "RTVE",
+     "c": "ES",
+     "r": false,
+     "a": null
+    }
+   ],
+   "query": "albare viaja vierne brusela reunirse"
+  }
+ ],
+ "headlines_by_country": {
+  "US": [
+   {
+    "t": "What it was like to keep a 410-person band in NYC for the rescheduled Macy’s parade",
+    "u": "https://news.google.com/rss/articles/CBMitwFBVV95cUxNenVqZVd3ekN4SGExamxBY0ZzNzBxWEd0OG54V1pneWtRQzdWeXEyV1NVdE9mZ2RTSXNGS3JmbHhLLVR1YlhiZDFNZ2ZseVpuTXBRTmZiVzFYNlNXUlFRTk5IamVTX2xONHphazlMZEllOXVTVDN3cDJrWTNITjBkZHY1V0xBbS1VQXhSQUVkS0JpOTduX2RqeVBGZ2oyeVV4WVZsbHN1VmpnU3h2RzA0SUlFS0tsWmc?oc=5",
+    "s": "The Washington Post",
+    "src": "Google News",
+    "cat": "Top stories",
+    "r": 1,
+    "cov": 5,
+    "trend": "#MacysParade",
+    "b": false,
+    "a": 2.3648122644444443
+   },
+   {
+    "t": "Parts of the US clean up, power being restored after Thanksgiving storm soaks East Coast",
+    "u": "https://news.google.com/rss/articles/CBMiowFBVV95cUxPWjRuNThwR0c4LU54RVBVM3kzcFFCOGFmR0szVnA2SUI1aW55bTMtWWlvZ1FYLUVLZmNEYk1HM2ZGZmotc09Wck9ySldYcW9zTWZaeUw5eFVoNUxrcFo0aDNmejFnbzkwTmNhRDUyamhlWHpWNTFwb1BiRUlqV0ZMUllxV3lnU2NzYnlfSUhNWUVyV09WcE9wN0pmeGp5d011djRj?oc=5",
+    "s": "AP News",
+    "src": "Google News",
+    "cat": "Top stories",
+    "r": 2,
+    "cov": 5,
+    "trend": "#MacysParade",
+    "b": false,
+    "a": 12.106478931111111
+   },
+   {
+    "t": "Argentina's bid to stop Falklands oil drilling rejected",
+    "u": "https://news.google.com/rss/articles/CBMiW0FVX3lxTE9pbDVaMF8tMXpUaVJOTjZqLXFxbmkzNnVsM19uc1ZyTFRrdTdXMTIwVXUzRVp3Mlpod3V2NDhtbHlpTm5vTXhGcDBWemFpeTNValVKaXV1Q0FoeVU?oc=5",
+    "s": "BBC",
+    "src": "Google News",
+    "cat": "Top stories",
+    "r": 3,
+    "cov": 5,
+    "trend": null,
+    "b": false,
+    "a": 4.129812264444444
+   },
+   {
+    "t": "Millions of Children Are Losing Food Stamps",
+    "u": "https://news.google.com/rss/articles/CBMimwFBVV95cUxQQ0RTWHowQk9kck1WdGJqVW1pVHAzQklPakU3c2xwZFo5emVLVzJVdzNnUzNHSG9EaUJGa1lqWlBfYVhRVjFrMFNkaFJYR0VRazBHaFpMQy1fMDdiUzVYdmE0VVFnQjJ2WjdXbFVBa1FQQ01iOS1QdHhrNndpVVV3Smh6c0VwTjU5Qjh2blAxcGNsWnhVOS10MHVXMA?oc=5",
+    "s": "The New York Times",
+    "src": "Google News",
+    "cat": "Top stories",
+    "r": 4,
+    "cov": 1,
+    "trend": null,
+    "b": false,
+    "a": 7.701478931111112
+   },
+   {
+    "t": "New wave of Democratic attorneys general may reshape the justice system",
+    "u": "https://news.google.com/rss/articles/CBMilwFBVV95cUxNQjA3S3VadGtLLWtaRWl4dVFMVll1VU0yXzV5TlNMYzhlWnlHWC04TkdYNE5KTHl0WW9zVUJNUUkxd3pSS3dfdWtSTnN4elVEZm9Da1JSWm1rVGVQb2xoUF9FUkN5MkR2RXFFZlJrZzBzLTFCT2hXS3BvMEtHWEZjbEhRelRvZTg3WGQtSE1Hckx3Vmc4Szgw?oc=5",
+    "s": "NPR",
+    "src": "Google News",
+    "cat": "Top stories",
+    "r": 5,
+    "cov": 1,
+    "trend": "Justice",
+    "b": false,
+    "a": 7.739812264444445
+   },
+   {
+    "t": "Afghanistan explosion kills 10 students and injures more than 100, official says",
+    "u": "https://news.google.com/rss/articles/CBMiW0FVX3lxTE9XMk50RGlkOXd3WG1YOW56UHBybHV5TkpQVkN0RjdUR1k1bEdfMUZUeDRPLXBQcVVrTkN6ZUxVQUlkYkJSV1RRVjh3Y01UbkdLVTc0RXJ3aThxV2M?oc=5",
+    "s": "BBC",
+    "src": "Google News",
+    "cat": "Top stories",
+    "r": 6,
+    "cov": 5,
+    "trend": null,
+    "b": false,
+    "a": 3.57286782
+   },
+   {
+    "t": "As Afghans in U.S. face threat of deportation back to Taliban rule, women carry much of the burden: \"We are afraid\"",
+    "u": "https://news.google.com/rss/articles/CBMifEFVX3lxTFBCOUZuVENTMjZBZ1JOeWlzeHlGVkZ2ZGhESk4zbkppRks4Nmh3ekhza3dmVjk0RWlFTWVkb2F1ck9DTlJ6aDlfMnp1eUxJVDZVNVNRdkpyTDJjeUhuXzdmZkwzWFVZZUZ1dlJXSl9FbzhmcTFSZFFnSEN5bWI?oc=5",
+    "s": "CBS News",
+    "src": "Google News",
+    "cat": "Top stories",
+    "r": 7,
+    "cov": 1,
+    "trend": null,
+    "b": false,
+    "a": 3.0281455977777774
+   },
+   {
+    "t": "EPA says no rise in contamination after Army detonates lead azide stockpile in Iowa",
+    "u": "https://news.google.com/rss/articles/CBMijAFBVV95cUxNQ0pMM1FXOUZzbnVIRGo0NXFFb1I0UjhYdFlpNmlqSlZ1Tk41bmVXS2NrY0V1bkRJOUVkdkhvelVZazZZLURCVmxBbThXUVNCMzdhRzYzRC04V0djTllKanltajRkVURTejZLV2pseE9HT0pVaktnTHhkNUlaRDRaWXBYeUdZa2lDdjRXMw?oc=5",
+    "s": "AP News",
+    "src": "Google News",
+    "cat": "Top stories",
+    "r": 8,
+    "cov": 5,
+    "trend": null,
+    "b": false,
+    "a": 4.5398122644444445
+   }
+  ],
+  "DE": [
+   {
+    "t": "Bundesparteitag: BSW gegen Abgrenzung von AfD - mehrere Austritte",
+    "u": "https://news.google.com/rss/articles/CBMifEFVX3lxTE1tSkM5Y29WRXZoTllVY0FzWkl4Q3RLQ0N5bFNiOEhUMFcwZkdHRDRMY0dxR1NBYXhFOVcxNm42WTdVV1B1ZWJaeTBxaWt3cDNSejhBT2llN3BueWV4aWxGbkNYQ1FmM0pqOU5wTVFEVU8wNzBqMFIwVUdEcFk?oc=5",
+    "s": "tagesschau.de",
+    "src": "Google News",
+    "cat": "Top stories",
+    "r": 1,
+    "cov": 5,
+    "trend": null,
+    "b": false,
+    "a": 1.5731455977777777
+   },
+   {
+    "t": "SPD: Jusos fordern Trennung von Regierungsämtern und Parteiführung",
+    "u": "https://news.google.com/rss/articles/CBMipwFBVV95cUxQb211Slk3X3R6YkpicHV6TmRpYk5jMEZNS3pqME9aalBYb1l1ZWlVMHdMSzA1UDhuYWFpU05LOWZsMWVpZllRTHYzZVk3VFdzZm5sUFVZendxMW8zMDI5eDdmYnh3X1FOb0V6TGs4ZXNHSFIyb0hwWENwS2lPM3UtbFJnRFZscEZWRl9pM2F3X2dTVHpmdVJuSXZxNHY2T2R4NFdJZ3Zubw?oc=5",
+    "s": "DIE ZEIT",
+    "src": "Google News",
+    "cat": "Top stories",
+    "r": 2,
+    "cov": 5,
+    "trend": null,
+    "b": false,
+    "a": 5.552034486666667
+   },
+   {
+    "t": "Jean-Luc Mélenchon: Angst vor den Deutschen? Niemals!",
+    "u": "https://news.google.com/rss/articles/CBMinAFBVV95cUxNTDVkRlFXbUtYVTVGS3JRRm50a0wtbWdmWGNwblpfSklrZVFqMEhRR3QycHdCVE9NTlM3M1h1d2NLc1dQNGxpUWFFWk5yZ3hUUy1lbFFNbG9mZWNHeTJ6U3c1ekx6VjQ2cVh0aDVmQmhRQU02aXJQRVhRSDdXd2JmenNxQVhyMW9iSUpZUzBRbjVGZXRiMWg3ZHZEZTg?oc=5",
+    "s": "DIE ZEIT",
+    "src": "Google News",
+    "cat": "Top stories",
+    "r": 3,
+    "cov": 5,
+    "trend": null,
+    "b": false,
+    "a": 3.822590042222222
+   },
+   {
+    "t": "Rentenreform: Arbeitgeber schlagen Alarm und warnen vor einem Belastungsschub",
+    "u": "https://news.google.com/rss/articles/CBMi6AFBVV95cUxNQzdRWDdBSHpXbzl1N0xFRjVvSzkwM2FSOEQ0dmh6Z2FJdUtPenZvZ291UnBBNDd5UnZURmFKVUNGb3g3XzJQVkZFd0NwYmJfVF9BZUFWYkpoczh4Mi1UYVR5QjFmNEI1T1I1Q1p5aVNZSHBySDZMQ3VjcFdBNjJZRkkyWDQxbWJNU0lGZEVCM1RVX2V1S1R2RlBQQXo3dGQyOGVWVC1tTnFWMTUtU3hEaHhaaTFjdmFxRkxaQlo2em9FSDR2TWlGZUk3Q3d4OUh4djJwQk5DRXpkOU1BLTlkVV9JTnBiMzBr?oc=5",
+    "s": "WELT",
+    "src": "Google News",
+    "cat": "Top stories",
+    "r": 4,
+    "cov": 5,
+    "trend": null,
+    "b": false,
+    "a": 6.857312264444444
+   },
+   {
+    "t": "Alle heißen jetzt \"Bibi\": Taliban machen Frauen mit neuer Maßnahme unsichtbar",
+    "u": "https://news.google.com/rss/articles/CBMi4wFBVV95cUxOd0dDOENJLWxWb2hWQ2lPZ2R2V0l1QTN2WWFuSllkSTQ0OUwxRWREdXdFVHVQV1kyak9NemNaS0lsa0dxb2NENjU3N2Izb2h3ckJBRnFEdW5nUGhlQTlVVUxqZXoxX3hQM2ZuTDg1eU9HS1hMMHpUZFlFZW9PWkVSbTB6NmowU0tLZ2o0WXpfTkpJMGZLY1Z4aXJoMTJsRW43X2NPRDR1dTJGdTF3TmJtdlNqOVFVQlFfdjNhZEEwaTdFMW5FSFRvTmpFLUx6eENZYmhhX1pjU19DRjl3Ny14VEYtOA?oc=5",
+    "s": "T-Online",
+    "src": "Google News",
+    "cat": "Top stories",
+    "r": 5,
+    "cov": 5,
+    "trend": null,
+    "b": false,
+    "a": 8.766478931111111
+   },
+   {
+    "t": "Migration in Spanien: Ceuta hat die Stimmung gedreht",
+    "u": "https://news.google.com/rss/articles/CBMinAFBVV95cUxQeko3TWpKbi1XZXNpX2YxUHBhQWJuYlF0cHVmQ1otTnBabGYyUDdpWVdGUVd6UkRBNm0wN3dDZjZjVm9US1JXc3ozWE1iQkFtSVdva0d1VTR2dTRDcXpYTUg2V0M2VS0tT3REWGxOZmpqN0JaaFByMWdJd3JpemFrbVU2T2VFcWxJcDROOHJQLXU0Rkd1cFBYSXJnNGw?oc=5",
+    "s": "DIE ZEIT",
+    "src": "Google News",
+    "cat": "Top stories",
+    "r": 6,
+    "cov": 5,
+    "trend": "Ceuta",
+    "b": false,
+    "a": 9.021201153333333
+   },
+   {
+    "t": "Plötzlich steht der Bus in Flammen: Fahrer evakuiert Fahrgäste",
+    "u": "https://news.google.com/rss/articles/CBMi4gFBVV95cUxNVHRhNldYNWRZQjJ5eU16RFdvX2dBb2RLSEV3Q0R6cnF4VXZxUXVQOWxxUkFjblZRa3Ewc3NDTVZIT2t6WnNIVUkzMTkxQXRxQXhQRkZfOWhBRzRaTUlGODdkTFQyWWVEc1Q2SjUyZlFEWHpjT0ZjMGFiUWNxVkk0SWxCVHFmdGpWZVo2UWV4aDNReXBMNk5CdHExRFJuR25wUXpGZGphTFNuQ09uekg0VWVLcVdwakxPRjJjSGtWV0p0WUlxTXdIdDdOV3Q0YXV0WUFzYUxjNklua0RJdzRJVnRn?oc=5",
+    "s": "WAZ | Westdeutsche Allgemeine Zeitung",
+    "src": "Google News",
+    "cat": "Top stories",
+    "r": 7,
+    "cov": 5,
+    "trend": null,
+    "b": false,
+    "a": 4.367034486666666
+   },
+   {
+    "t": "\"Ich bin kein 29-jähriger Obama\": Vorsitzkandidat Hubertus Heil umgarnt den skeptischen SPD-Nachwuchs",
+    "u": "https://news.google.com/rss/articles/CBMisAFBVV95cUxPbHU5Zkh3aDNFLWxhM2pZcDF2Vm16bFRVRWZpRjJtV1h0emhISV9FV1NjdmxjZ3dQV0NQQVE3dmt2QnVNeFFFT0lsYjdiQzJySFd4VU44a1NUaVNhVDJrSTB2TWJRa1d5SWZiZWg1VGxHYUFCQUNsMXo3OTdNMGlTNFVJMWlsZnk4RUFPaVBSV0xTWjFZR2JUYk5YakdfMUQ3Um1vUFBJcEFTZjhuWUVGQg?oc=5",
+    "s": "n-tv.de",
+    "src": "Google News",
+    "cat": "Top stories",
+    "r": 8,
+    "cov": 5,
+    "trend": null,
+    "b": false,
+    "a": 2.28036782
+   }
+  ],
+  "GB": [
+   {
+    "t": "President Milei reacts after court rejects Argentina's bid to block Falklands oil drilling project",
+    "u": "https://news.google.com/rss/articles/CBMipwFBVV95cUxQMnQ5S05MSUoycEFyMTBIdW1ZbGdvbFJqaWMtQzBZeEh3NDIxVktUdml0S2hQTkRoMXlvQUstYi1fZUpKVGZZaVdac0lOZFJjVVRtcDZwTzRycHlmbUhSS2xQZUFBcTA2b1J1SGdQVHh1ak1tVVBJVHBwcFFhb0VmalRmenZfWU1LSS1PV2x4UkItaDhCZF93MlhpVTlQQ25JU1NtVUN4cw?oc=5",
+    "s": "Sky News",
+    "src": "Google News",
+    "cat": "Top stories",
+    "r": 1,
+    "cov": 5,
+    "trend": null,
+    "b": false,
+    "a": 1.6981455977777777
+   },
+   {
+    "t": "Man arrested on suspicion of murdering girl, 16",
+    "u": "https://news.google.com/rss/articles/CBMiXkFVX3lxTE9RQnRIQ2JjaXNGN25pVkJlemVLdS1ZOEUtandQQU5zR2JPQjJQS0tzMFJudEM3ZEtzbm13TUJSUHRlemtuY0JWZkVxZGtzVkx0dm5Na1BkdzlaQndXNmc?oc=5",
+    "s": "BBC",
+    "src": "Google News",
+    "cat": "Top stories",
+    "r": 2,
+    "cov": 5,
+    "trend": null,
+    "b": false,
+    "a": 3.2970344866666665
+   },
+   {
+    "t": "Woman, 21, dies in crash following police pursuit",
+    "u": "https://news.google.com/rss/articles/CBMiXkFVX3lxTE8taGROUnAxQU5HQjVrcXZMNTNNa2dKUzBNRkc1NmMwd3FnT1NtMVVvVElfS2hqbHVvenIwaTZGRXloMlF2ZTVmaDVjOVVsblNaQ0JhWUduVnlPLTcxMlE?oc=5",
+    "s": "BBC",
+    "src": "Google News",
+    "cat": "Top stories",
+    "r": 3,
+    "cov": 5,
+    "trend": null,
+    "b": false,
+    "a": 5.587312264444445
+   },
+   {
+    "t": "Swinney insists Scotland's NHS is safe despite hospital scandal",
+    "u": "https://news.google.com/rss/articles/CBMiXkFVX3lxTE51clhfNmlCS1lnanFNYmhnVVpJQ1NkcndZRGhUd2dyVUQwUl9uRG02VWJrZGpIVF9YWEVud0NYTHZ2X1JwdUdvTWhDNTBUakV0SE1Edy1IV05SOEVRb3c?oc=5",
+    "s": "BBC",
+    "src": "Google News",
+    "cat": "Top stories",
+    "r": 4,
+    "cov": 5,
+    "trend": null,
+    "b": false,
+    "a": 3.019812264444444
+   },
+   {
+    "t": "Why young people are having less sex, according to an ethicist, a matchmaker … and you",
+    "u": "https://news.google.com/rss/articles/CBMiiAFBVV95cUxNcEN4VXpEN1pXUHdlT1EyNlJ1amFDVXltaHpuMXRvSHU1TVROdVQxaER3Wk94WWF5WEtRMm1Wc1lLZ0FuY3ZQQkJrZVRHaTF4VDJncjBlVkJtTmljaWpVcU5HaEtoMGJNd0pRRkQtcVdPcmlJTnpQb0NneGoyVktrUDg2REt4MW43?oc=5",
+    "s": "The Guardian",
+    "src": "Google News",
+    "cat": "Top stories",
+    "r": 5,
+    "cov": 5,
+    "trend": null,
+    "b": false,
+    "a": 9.406478931111112
+   },
+   {
+    "t": "Italian PM was furious during call with Zelenskyy about attack near Libya",
+    "u": "https://news.google.com/rss/articles/CBMiZEFVX3lxTE1abzZNTi1zZW1HRkhiTmJzajAzQUE1bjRLbGVtQVZZMFo0OV90czQwZGNUNkg4TXZnMTRlWWw1UE1WWTlteEV3VmRDci0xbEJadDdGLVFHNlpjMzJIeUdTMEZEVi3SAXBBVV95cUxQNnBGVktnaEd5NTlKSFlSekRkbHVqUVA5N2laNFZ2VkhwUzdtTzgwaWFSaGJLSWxqNVZzU2xxSDB2eW40MUszZUdxczdEaVRsNlRRLXBZYVNBM0pmcDZIWkVQUl9tSE80Z0ljNUJZd2lH?oc=5",
+    "s": "Українська правда",
+    "src": "Google News",
+    "cat": "Top stories",
+    "r": 6,
+    "cov": 5,
+    "trend": null,
+    "b": false,
+    "a": 5.0398122644444445
+   },
+   {
+    "t": "DWP cyber incident ‘probably an attack’, says former UK chief technology officer",
+    "u": "https://news.google.com/rss/articles/CBMizAFBVV95cUxNQzBMNmZ3S09ld1VyV1R6QXJMMlFLU3lRMDBpUDF0eGE3THl6MGdwZ1BwRWRjYTBwaW11WHRsYjltWnppaWtxNjl5dXZ6QUZ5X0NIc2hJR3NkVDFzV2VEdDRzb2dlYTYtQ2hNQVBTVWlFUXpEVS0zOUo1OWV6dTRKUkRqaXYxdVV0SktCblRTS1ZHMFNMUWh3R09mbGlIVFNDWFJweXBPbE5iSHI3ZWJUZDlQTkZ4T2RmNHdrZElKUFpvYTlfY0Z6R2MxZ0U?oc=5",
+    "s": "The Guardian",
+    "src": "Google News",
+    "cat": "Top stories",
+    "r": 7,
+    "cov": 5,
+    "trend": null,
+    "b": false,
+    "a": 6.2898122644444445
+   },
+   {
+    "t": "Heavy rain, gale force winds and flooding forecast for UK",
+    "u": "https://news.google.com/rss/articles/CBMilwFBVV95cUxOSUJlVWp4ZW1FbmNkV1h6RFd5SDBKcGxrNHRxblRFZHRiR0ZiMmlzUHR4S2NZSllMemtjR0lEVktRUjlZVUJSTi1udS1NY2xsWGhncTZFSTBWRHpuU1ZmNks4bmQ5TWsteHVPLVhxajdpMU54RW5QN01VelFXOFVBc2VHNHVON0dsQ2VqVkpWaVotZUU4ZDdZ?oc=5",
+    "s": "Sky News",
+    "src": "Google News",
+    "cat": "Top stories",
+    "r": 8,
+    "cov": 5,
+    "trend": null,
+    "b": false,
+    "a": 1.68036782
+   }
+  ],
+  "FR": [
+   {
+    "t": "A un banquet du Canon français, à Biarritz, des manifestants bloquent les participants ; des policiers blessés",
+    "u": "https://news.google.com/rss/articles/CBMihAJBVV95cUxNNDNSZkFndWZyRWFFdnJzd3dIVlloX2pxV1dhaFBEeVFLUktWXzVET0pweFVwUHozUjFBUHVCVHJzeXVXRU1qUTkxUmhwaVhndjF0YldHOG1lUFhqdUNKYUxzVU1rOXVLUl8tWXZ3ZjJJSXZWcFRvYTBTdGNRbTlHcGlfakV0LXhjbWJQcDBYZ3BoTmgtdGY2NDloQTRiRGxUZmJpTHRLMU9iNi1Db251S05OMm1IUnNCT1N4UzNQN29DbExYVHFkWkxsQkdTTkVoN0ExeTQzV2VBSmhaWnNiaGxpaThVYUZ6eXhSU3FsV3lTLWxPNENlNnZqV1U0SE8zYnRJZA?oc=5",
+    "s": "Le Monde.fr",
+    "src": "Google News",
+    "cat": "Top stories",
+    "r": 1,
+    "cov": 5,
+    "trend": "Canon Français",
+    "b": false,
+    "a": 0.23897893111111113
+   },
+   {
+    "t": "Ce cadre du RN et très proche de Marine Le Pen soupçonné d’être le destinataire des fuites",
+    "u": "https://news.google.com/rss/articles/CBMiigJBVV95cUxNWUktdFAxeE9vVEhNWXlucjVjSC1IazZaQ2lndWRwU1E5eWFGOTBrNUdBY0ZERXMtTDRjdzdhMFU2NjlYWU0tTXc4TGg2M1hfMk9qeWg0dGRMSVZHaUJ2U2twaURDSnlBWWM1aGtIaXRmTVVmTUpJamFFbFk4TU51djVrMDVrbmZtQkE4QmIydk5LLU13ZUc4Z0hrZkRiX3NQdVJPMEc1c1RBQl9BcTZoY1RQanRhR0dIUzNRTEJKVUU5dUVjNGwteGFRVWFLRFlydEdvSm05X1JZTV93YmNpWTBRUXZTNUFZZGFFWGNJQUdHQ1JUVjFZNjFHc2ZMOTRkVEtDYUg3ZFcyQQ?oc=5",
+    "s": "Le HuffPost",
+    "src": "Google News",
+    "cat": "Top stories",
+    "r": 2,
+    "cov": 5,
+    "trend": "Marine Le Pen",
+    "b": false,
+    "a": 11.008145597777778
+   },
+   {
+    "t": "EN DIRECT - Colère sociale : nouvelle journée de mobilisation ce samedi, contre les violences faites aux femmes",
+    "u": "https://news.google.com/rss/articles/CBMivgJBVV95cUxOSkVRWDFTc2hnU2pmczdjM1pXanVXUFlmUS15b3ZISWtWb01hSC1rUThaaXZfaHoyTHByX2Z5T1MtTV81MW9qRHo0U1hsdk0zZmZLOXVXVklVbk9idjN6Z0x6RlNkWVlzSVdMQkJRUXBoNlM5SW0wWmdlZTdGNDJwVVlwcUpHd3FWYVhNMDM5cmpjRHRsSlRfbnRTYmxiSlVFaFdNQ2xCeTAxZHN6amRXTVlXR1ZKZUtKVHZaVl9DLWxTSEoxeDZrbUZCcEdKVVJPWGFUcnpQRlRnaVJPakdJS21UNEtDVzFnNXFUZWdiRTZ1akdPT0VOcUxoX3FMTW55U0hXVWZYR0VwYnpfSm1NLXhmYW5uUmZZcXJKOUdkSWZCYnJ0enNCSEtNUHNSeHFBR0M1X3RRREZ3cWFuekE?oc=5",
+    "s": "TF1 Info",
+    "src": "Google News",
+    "cat": "Top stories",
+    "r": 3,
+    "cov": 5,
+    "trend": null,
+    "b": false,
+    "a": 6.323978931111111
+   },
+   {
+    "t": "Zelensky n’a pas du tout apprécié que Trump qualifie Poutine d’« ami »",
+    "u": "https://news.google.com/rss/articles/CBMiygFBVV95cUxOYWxLRm5RM2tEVHQ0NDkwYmdiOURmUzRJSDZFN2Y1eVY1cUhPOGJKUUhacV9mMndENlFuSEFHOGhHd2MzM2RuOTc5aGs1Ri0yNjdoYzB5cDRSUzJMc2g0ekRpdGRhaUJpZVFPZ1djd0pQdlNvb0NvbWRaZGd4U2NIUkVEYl8wNFJGUnhZUmY0Q2hCTDAyaUs1UWZDUFVFbzg2Z3NPRUhmOG9kbFdYaVl0RzNyZkJGc1M1Wk51R0lkYWJnNWxKQlJOUHVR?oc=5",
+    "s": "Le HuffPost",
+    "src": "Google News",
+    "cat": "Top stories",
+    "r": 4,
+    "cov": 5,
+    "trend": "Zelensky",
+    "b": false,
+    "a": 8.065923375555556
+   },
+   {
+    "t": "France: un expert psychologue livre son analyse au procès de la jihadiste Émilie König",
+    "u": "https://news.google.com/rss/articles/CBMi1AFBVV95cUxQMThaS3RIRUROOXBIbUZzLXdJWUU3RlRlYzRfVjR0WjQ1YUV3RW5UWkNYcVdnX3MzNmQydUlsZVI4TG5OLXFFRDdZR1daYnhVZHZ0Q29CM0FWQS05OUpHbXJSNDI0N25pekc1Sy1mNS1ZTmhYN2NoOGg1ekh2QWJBdnFqalFhRkVhc0U1NEUxLTZhWEkxREdITUpBaGRtc3VTQ1hCazlVZ2MxYzVWMmpjVUxsTWNvbFNRdW5VejYtdGE4RUt1SEpzWGxUcFV3R01QcWg3Uw?oc=5",
+    "s": "RFI",
+    "src": "Google News",
+    "cat": "Top stories",
+    "r": 5,
+    "cov": 5,
+    "trend": null,
+    "b": false,
+    "a": 11.998423375555555
+   },
+   {
+    "t": "Présidentielle 2027 : Raphaël Glucksmann soutiendra François Hollande s’il « se présente en recours », affirme le porte-parole des députés PS",
+    "u": "https://news.google.com/rss/articles/CBMiygJBVV95cUxOWDZ4b1hMN0dFZHd3TmR0Uy1naUx0a0p1NEN3c0dzV1RCaWNKRndtdjExeTBfak1Ic3lYTk9WSkpaMnJKaEZ4enNSejR4Q21ELUkwUzMwWkdHNTB3Yzdxc2RmNlh2QTVwdU1Qa1czWnpvbWZ4c3FKMS1sbUxRSmFNczBLN3FGZVByQnhlWW5iUWRkU2RJaC1NVlhLa01yMVdsMk04WGJGem5icW5KdDVwZENFelJLaGlYSHI4RDB2ZWRBc2VrX1FKV2EtWllUd25pRUdXT1lyZXBRNEJHT1g2YU5mNW80blRKUHZSMVlwdzY1QVA0NGZYdU5jck1NSkd1TVhUeWFabzlvMnJNUGhIMU1IQU9GNDhpUktObFlqdTZ1eENyVV9jUFRidGhUd1JOdUI0MWdWaHltQUhVWE1LX21NOW8tbjRDclE?oc=5",
+    "s": "Le Parisien",
+    "src": "Google News",
+    "cat": "Top stories",
+    "r": 6,
+    "cov": 5,
+    "trend": null,
+    "b": false,
+    "a": 6.3475900422222225
+   },
+   {
+    "t": "Cinq euros par jour de prison : le Sénat vote pour taxer les détenus",
+    "u": "https://news.google.com/rss/articles/CBMisAFBVV95cUxNMHg0Y1BwbmpBNEZHbmd4YTU3SC1pd25MTWN1Y19DUVdURDRpRUJjNllEOG04M0h1N2JteEtoa0RBdElHRE0tNzNRSWJ5NG85bVdBSWRCQmU2WTJtbzJDYTVBekVPTkpxN083M3NSd1NZRWVQVVU4ZVZxTUczZnRGMDBIMjZ3b2hQTmJ4WVVuN3RfUXRqRHBHVkNUT3d5VHloSFBPaERhOUs2aWpMOW1hYw?oc=5",
+    "s": "Le Figaro",
+    "src": "Google News",
+    "cat": "Top stories",
+    "r": 7,
+    "cov": 5,
+    "trend": null,
+    "b": false,
+    "a": 4.215923375555556
+   },
+   {
+    "t": "Attentat de Trappes : Pourquoi le père de Pengo Bossio Wangi ne participera pas à l’hommage national",
+    "u": "https://news.google.com/rss/articles/CBMi6wFBVV95cUxQRTd5WlpWaXNmSkVjS1lnZ05ERm9qM1BvX19pWVFwOHRkM0JnLVVYN2xXSThKb0dNSC0wX05PcWt5WXZLU0RMdFlGVjVXZndPdld2d3FvMlQwdV9jdnFBNEZUQ0NHLXJ5akVfTlFyRnNHZktWdkt4ZExlY2xnaVRIWmpNQVFib2h6RXJhUDV3UzBBNV9UMXJvcWZRbEpBOTFQcGFYdXhYQV96dGxpaS13bTQ4WmI4TEVvM25ydFpta2hqd0FZTkFRQjZXdnM0UEVlcFNuRUFYdnlDWVdIWDQwNGQ1VGV6aFk2eVN3?oc=5",
+    "s": "Le HuffPost",
+    "src": "Google News",
+    "cat": "Top stories",
+    "r": 8,
+    "cov": 5,
+    "trend": null,
+    "b": false,
+    "a": 9.968978931111112
+   }
+  ],
+  "IT": [
+   {
+    "t": "De Gennaro, l'autopsia conferma il suicidio. Oggi camera ardente a Roma, lunedì i funerali",
+    "u": "https://news.google.com/rss/articles/CBMijAFBVV95cUxOUDFYdmxyb1Y2Y3M2eE5nY054Wk1WcGtTUXNMOHh0b1NZN0p6ajZpZDM3R3B2ZWZJaVNFR041UUFzaFBuV2hCakpZQ053UjlRMFZXSnRzaXFmckUyNzZrSXVCUm5Zdl91WC12NXFUWk9EUzFiRG1rS3lOb1N1ZE9Bb2xzRlZPanh0QkdrTQ?oc=5",
+    "s": "Sky TG24",
+    "src": "Google News",
+    "cat": "Top stories",
+    "r": 1,
+    "cov": 5,
+    "trend": null,
+    "b": false,
+    "a": 11.246756708888888
+   },
+   {
+    "t": "Congresso Anm, Nordio tende la mano: «Superati i dissidi, lavoriamo insieme». Gratteri attacca sugli stipendi: «Soldi per i funzionari di Palazzo Chigi sì e per i magistrati no?»",
+    "u": "https://news.google.com/rss/articles/CBMijAFBVV95cUxOYkIzeTJ1bXVlSWhEUHV5NXk2ZHRObTJCZmJ1NUFXOUl1WEkxWnhWc0RPUVVTMWtVS0hMNDVIampzWnlpRWljRDFXWEFpUkQtbUVyd2o2dWlCaDI2WUlsN0tMbmY3N01Zb3BDMzIxajlwNTYyOV9VcXVsQTFLTXFMYll3ZDdRdVdiNjVyYg?oc=5",
+    "s": "Open",
+    "src": "Google News",
+    "cat": "Top stories",
+    "r": 2,
+    "cov": 5,
+    "trend": null,
+    "b": false,
+    "a": 2.9064789311111108
+   },
+   {
+    "t": "La Russa: «Legge elettorale, se la Consulta toglie indicazione del premier favorisce la sinistra». L'ira delle opposizioni",
+    "u": "https://news.google.com/rss/articles/CBMiswJBVV95cUxQMmVhQ2VnWFpacEtLeUJ2Q09iWTBBbmlFanFHamhRQTB5NTRTb0FZOHR1aloyYmMteVZrZXFSMjBESVExNUJaSnRBemllSUoxdkR0Y1RHRDdCUUpmanRiRVFzYWtwcjhNdGNVZ3JXVmp6SkNrMjVudTZWTGxaamgtSFloWlRjRC1FeThDamU0enhlZW5VZHAwRjF2ZF9JN0VVVTVTWVM3bUFyN1pkRm5yQ3l6TEJEaVQ4ZERpNWVITEZhNFhpNWlYTW93QzZhOVdfRkRvRTY1UWM2TDZtU2hHVmY2V3VnRXAwT1U3VlVfcTBBbTJDLVg3RDhoODFOYU54V1dkV2NEUWFXcUNYQkk2T1RfNHFRR0JMcVlEYkxtWDl5bUJMY1NRQ1hZM3NPSF9oM2hJ0gG4AkFVX3lxTE8tb000MjNsdS1jQlZGZVBXalVDSWpDRU1wcU5IT1VzTVUyZGJNOHp3LUtlNG5pWFRKWDNBRktINVFvSl9mc19sMlVwblRjc3JTSS1zTEdJTnRqZlJiVVpOd2NORGM5aVl2WjVZQ1drN0JsNGZvLWFrWDl0SWZYbHF5UmVqN2RNZEtiMlRScGtOWXFrQnFYS3dtS05sQjY3WUZHLXhOQU5RanBMQV9JeXo0bFZqdFBhRTBlS1VNX3I4M19tbXQ2amJiSEt0RHZocTBobWFaRk8tV180RzlZd1JaZ2REeE55YmRMYUt2aXpyVjNubml0RFdFOUpnTllXSWdXS3prT01ibGR4cm5jN2ZaVzRzazdQMGtOY2c2ek95RGZBSWxub0Y3c3hvdGl3TGJZN010WkRoMQ?oc=5",
+    "s": "Corriere della Sera",
+    "src": "Google News",
+    "cat": "Top stories",
+    "r": 3,
+    "cov": 5,
+    "trend": null,
+    "b": false,
+    "a": 5.406478931111112
+   },
+   {
+    "t": "Francesca Albanese lascia la Costa Rica: \"Tornerò quando sarà un Paese libero\"",
+    "u": "https://news.google.com/rss/articles/CBMidEFVX3lxTFBpUlBWM1BMcjV6UTVYVUZMX1J5RVN2OTh1Z2hzWDBuVEhNdWlsQWhnTzVYS1U5S2RpbEd2UUhDZ1dlWVpLVTZjZnVPSVdoQ2ZBSGFuLWFHOFFnaHFLSll1Z3VxS2hERmNZTGRsU0RwRDk0Y3pu?oc=5",
+    "s": "Sky TG24",
+    "src": "Google News",
+    "cat": "Top stories",
+    "r": 4,
+    "cov": 5,
+    "trend": "Costa Rica",
+    "b": false,
+    "a": 9.086756708888888
+   },
+   {
+    "t": "Ucraina, droni russi su Kiev e Kharkiv: una vittima nella capitale",
+    "u": "https://news.google.com/rss/articles/CBMiiAFBVV95cUxPVWdFZnBBX0xuRUJHcDRWN3hwM0hHeEI2MnJTY0FUcVRCam12NFJsVEdsaU0wV0RvY0RrLTh6Zk1zR01QZWFzaGs0eWtFRlZ2Qkxac1drZkRMWURLU1Y3TkQweXhQczV3aXFPTFo5WlMwRDFKeHp4MTVQVW9kUDhtSEdPUE51amQ0?oc=5",
+    "s": "Sky TG24",
+    "src": "Google News",
+    "cat": "Top stories",
+    "r": 5,
+    "cov": 5,
+    "trend": null,
+    "b": false,
+    "a": 1.84786782
+   },
+   {
+    "t": "Venezia, sparatoria tra polizia e tre persone: morto un giovane, in fuga un secondo uomo",
+    "u": "https://news.google.com/rss/articles/CBMi4gFBVV95cUxNa0trOTlhUUkxWXY5SUtwWS1pMGxiTzBEcnh6ckMtejFJdjFvYjdLdEQ0Tm5OelN1MWhTUnVDR29rZG1YOTZoRmtiV1NQeWYxUlhHUS1pc3k4NDc4WE5VaHk0S1d4dTRmTXZLS1R5NktYLUhkQ1NJMEpLRjNyT2ZTVm94Tm40VG5TNUNoX1NsLU1qVERhT29nZFA0VHctazBEVDBIT2JNRnVXalZpaG5ZN1Z2NVpoS2xrN0diamp3ZmVzeTV3UjNQMDJKQmFqQWtiUm1WX2xyUFg2cXpWVFZMNlhR0gFoQVVfeXFMTlZtczVULWFUYkktdnE2Tnlqai15TzdZY0VIUTBNTVJnb0hGNHRVZlNFOFE3TjhCYUFUWV9BTlhlUnFSNTVhalUyODRzb2JEWHNKMjFiTGwxSFQtOGRzZFNzX1dFUzE5VmY?oc=5",
+    "s": "Tgcom24",
+    "src": "Google News",
+    "cat": "Top stories",
+    "r": 6,
+    "cov": 5,
+    "trend": null,
+    "b": false,
+    "a": 7.662590042222223
+   },
+   {
+    "t": "Roma: il cadavere di una giovane donna nuda trovato in strada",
+    "u": "https://news.google.com/rss/articles/CBMi6gFBVV95cUxOYVlwVmlWdl83RGdIQjZ0aUh1NGdzSk8yS0wwb2tQbjk5Z0xINnNaU2ZEMFE1ZG5pQTJHX21wYnBJWUh6bDd4bWZhcVpQTm9aWlhGeG9vNnpEVTBQUkRyREhiV1RKcHhQMVJYOGhJbHJfYkZRZENDWnVRM1FORTJtcXhrSFhNaXE0OEFRTVBDVVRtWVhsX2Z6Y1U2NXpzby1rWlhacnY5d0hpTzJFTEVjRXJ2eHUxQnkwUUhqZTNOSmpwWWNuck5hN1Jxc1pEa1d2WGktQWQ2N2JJMEVHSVBCX0h5ZmJFNGFIdVHSAe8BQVVfeXFMUDhLTHVmcUxFcDhJNDFrUmlkVjJGTTAwS3ZmRmJEeVFGUm03MmFuaGtSQmRmMWJ4Z3l6SjNwUVBpVlhxMzZmRi1SQ2R5QnNxc2pHOWo2anFrVGdmODRuYVVEMlMtN2FfX0FiN0tJb1hDV3ZJOVZock8xQk44RUpoNEk2LWpnY2Nja1Iyb0M2TTJ6MnlTcnJneXc0ay1sc0RuaGFWMnpqdG9fLWsyVG9NbjVzd3FpM0pYRW14bW5wQVpIVGpSZTFzellyMnBHYlp1SzM0bmRSOWgtSy05VkJsMEJVQWVMNGMzX3Y1LWJOejQ?oc=5",
+    "s": "RaiNews",
+    "src": "Google News",
+    "cat": "Top stories",
+    "r": 7,
+    "cov": 5,
+    "trend": null,
+    "b": false,
+    "a": 1.6445344866666667
+   },
+   {
+    "t": "Ricorso alla Consulta dell’Emilia-Romagna sui tagli alla sanità, Prodi: “Atto di difesa”",
+    "u": "https://news.google.com/rss/articles/CBMiyAFBVV95cUxNa29xbzBSRXV3alA3MUdVdFhuNFMyS19zTi1fd0dqam4wVmtKRGxvbzkzd3Q1XzZ6dDV0aTZhaS1jMU1Xbk9qRFd1SlJWS2FVSnZXYmZUX1dTRFFnOGtma1pFU1VOT2pqRWdabF9vV0pCb2FrYm5SVDEwdUN1RDJXbG9qY0l6ZHg0dkhYMVBlcVMyNzg5QzBFQ1lmRERXa2NoOVpramtNdlctUlJZR0hUQm82NDduZDI0Zm11dElseGR4NnFkdkVNdQ?oc=5",
+    "s": "la Repubblica",
+    "src": "Google News",
+    "cat": "Top stories",
+    "r": 8,
+    "cov": 5,
+    "trend": null,
+    "b": false,
+    "a": 5.8714789311111115
+   }
+  ],
+  "ES": [
+   {
+    "t": "Deporte, paseos en familia y un viaje a Ceuta: así pasan los candidatos la jornada de reflexión antes del domingo electoral",
+    "u": "https://news.google.com/rss/articles/CBMi0gFBVV95cUxOU0xpazAzNm56RlFPYXE4YjBtNEp5MUNLYXl2VTN0MktOTEljOGd4WUNKcVk3WUFqeG95QjMzYmM1TVhINjl3dV93MmgxY2QzdVNad2ktc0JJMi1ma0w3ZkVmbGd4YUk5SzMwRjRvSWZCM0lZcmV3azdZOEdpZV9GUC1lcFdpaDBZWmxRaW9zYzdyWVVZU1o2MXJMdHM5MXJVV3VRSzBMVHBYSXBFMk9hLVk5ZE1leWlpS3VPNm9ybkNwVXZXOGlXTHVLbUVYSWthVVHSAewBQVVfeXFMUDVGcFZ6TkVBTmVscEJvcDNnN0l5Sk4xV0xwdUZlMkp4bndOR2ZaaUdNZkIyX3VhUjI3N2pyZV9BZlZyODN5RWtBNnBUTEZENXF3TUg3SDd4UTIzcE54dXJwMDQxaXY1Y0JUR3VaODdoYmM3S3ExV3A5MEZIa3ZBb1dCVG85cEpkbzZGRExuRHg1OW9CeWs4LUdXY2hMUWkwVi0xUFZyQThaMmlRNFo5NElGdnk4TkFETUktYU1PY0N0Z1NSMXpLZFV6UjRneEk0dUhtNkt2UFBjdnd3SXVqZTlMVm5fXy16bnE4VUo?oc=5",
+    "s": "Infobae",
+    "src": "Google News",
+    "cat": "Top stories",
+    "r": 1,
+    "cov": 5,
+    "trend": "Ceuta",
+    "b": false,
+    "a": 4.7898122644444445
+   },
+   {
+    "t": "El barco naufragado cerca de Ibiza avanza a uno o dos nudos mientras los técnicos monitorizan una mancha de combustible",
+    "u": "https://news.google.com/rss/articles/CBMiwgFBVV95cUxNSmNMNnVBRktJbGRGMTF1dU5tRTVjS19LTXE1VVE2WWM3cU9mWXZMVjB5Q0hUSUxaeGNkMEZRYmdRVjJickVZeGVWbF9wYmo1ekJraEdOTFhkVndvU3AzaWM3NE1OTGRLSElSaXJFaFM0SGNVa1A1Umt1YzRXMlNRTVRJbTI4cUkxSXdoRnNXb2Y4TmN5aE1DWk0tS2pfM2Q4ZkNuZEs0MEZSUE9jR2hJVnUtSnFLdWo3eWxYMHJ6dHJWQdIBxwFBVV95cUxPeGFQTWZMOFIxTjFSblFPTS0tU1NxcDJCa0RnM0s4MkhiTXJzVzdjMjh0NTdTVml2LUs1Und2aURRYjUyZjRvMWhwS1ZMSGloTnFqeXJYa2ktZThpMTF6NjFvNE9aVEJfaFR2eF8yT0F4NzdwUnBwMUVycjFhNlZfZVEwMEtveE1CR212dE1zTzVhekVyWmQtQWVmZjl5WFZyUUVoTWplZnJQM09QWGUxbWFndGFxazFZdjczXzRMbWpxSnphamNj?oc=5",
+    "s": "Diario de Mallorca",
+    "src": "Google News",
+    "cat": "Top stories",
+    "r": 2,
+    "cov": 5,
+    "trend": null,
+    "b": false,
+    "a": 3.5092567088888886
+   },
+   {
+    "t": "Elecciones generales 29N, en directo | Fin de campaña y repercusiones del debate a cuatro",
+    "u": "https://news.google.com/rss/articles/CBMixgFBVV95cUxNcENtcTVpWE5QSFZhb1YzM25JMFVyTE14RnpWOFJXcUFUdzV0VmtWWHZ0bFczeEIxZi15RW53bmFWVng1WFhLbWotakRoNW1fcmc3N3lKNHBuLTd0S2VrZXB1V1piWkJPWjFSTTJGYUJ4NFFYdmVRcUtDMEF1ZE8yczRFTUI0ZGNuOFdKVmluLUYzeWdVNnRWYzlVeHdGQ2w1V0VvX1d2TkR3Nnc5SG9LVTBtUDc3Q1dVdDdWTmtIN1NGSmdqU2c?oc=5",
+    "s": "El Periódico",
+    "src": "Google News",
+    "cat": "Top stories",
+    "r": 3,
+    "cov": 5,
+    "trend": null,
+    "b": false,
+    "a": 11.844812264444444
+   },
+   {
+    "t": "En directo: Rueda de prensa de la Secretaria de Estado de Comunicación y la Subsecretaria del Interior",
+    "u": "https://news.google.com/rss/articles/CBMi0gFBVV95cUxONk5ON0RuOUFPLUdiOTdnZlJTWTBsaUwtZklaczUwUnl1d19KNHpoQ1NnNkNIYy1YRVRjOXRWY1hIRVhPV2VIVkZmN3NBZzJxQnFIMV96Z2Zqa20zTzdpUVdGSDFRQklzb0U0c0xKaXRIbl9KNUMxd1doQzNrUnU1YmJmbjZQelpVTlVxeVRpUWlRVHZ4RENNT2d0azVsY3NuTG1GNzNxaHdpWUJkLXJsVHBvX1RyLXFLdEhSRmZzdTNYVnp5U0xqSDdmcFk5bkZuUnc?oc=5",
+    "s": "La Moncloa. Gobierno de España",
+    "src": "Google News",
+    "cat": "Top stories",
+    "r": 4,
+    "cov": 5,
+    "trend": null,
+    "b": false,
+    "a": 18.739812264444446
+   },
+   {
+    "t": "La Región llevará al Congreso Nacional del Medio Ambiente sus proyectos de conservación, recuperación de ecos...",
+    "u": "https://news.google.com/rss/articles/CBMiggFBVV95cUxNWUN5b2RHNVpyOHI3UFpYN21GSnNnY1YxR242Ynh4Ulo4d0JnbFRFOEhtc2EtMnJuTG5EQUl3S293dWRZZk1wdXVUMU41b21IbTVOVVlBVVRpeEhCZ2lxRkdxX0xfYnFRa3FraEphaVk2OW41dm80NXp3S3NLWGhlRlR3?oc=5",
+    "s": "CARM.es",
+    "src": "Google News",
+    "cat": "Top stories",
+    "r": 5,
+    "cov": 5,
+    "trend": null,
+    "b": false,
+    "a": 8.487590042222223
+   },
+   {
+    "t": "El tándem Sánchez-Colau contrarresta la ofensiva de Feijóo y Abascal en el debate a cuatro",
+    "u": "https://news.google.com/rss/articles/CBMiwAFBVV95cUxQVUNsRE9tdVQ5dHVVTlM5NTZHd0xzOGNCWmdKZXBPdk1YVGNGdnk3MWFDS0hEN1JDZzM4ZVRqZDRWeEphSVJQS2VFQ09tS0FiQVRRQnVyU1djMEtrZC1vVjdGeGhCY2tSY1BGVjgwLUF4SnVuUDNPX1dZWUlJNUJXZDRoZFpFTWs3dnA4NjdOWWJ6NHZ6M0lXXy1VeFFoNEsxWGNuVjBEREVmUVhFRmhBYWpONGJTUTRwQmMzTUtjb3XSAcYBQVVfeXFMTWplM0oyQVlYNHdSbXFfWVhqWG5ONFV6TjZVWXdfb0pJUTIzb2tpM2djUUhnczVFd25Md29Qb0NzTXhDY2UxRlp4REpCVUVQRC1JQ29GcERaRUpNVDY2S2hXQmk5MTI3c0hVaGFtZlZlZFFKaHFQNGxjNDVsMHhpbGc0NkptdW1sSF9nbll4a2lCam5BYUFpcXNMMTdjb3Z4YmZtSkFqRldXVlhUTmNzTWpxZUtpTGlVOVRTMnZMalN6RGFTc05B?oc=5",
+    "s": "La Vanguardia",
+    "src": "Google News",
+    "cat": "Top stories",
+    "r": 6,
+    "cov": 5,
+    "trend": null,
+    "b": false,
+    "a": 41.81675670888888
+   },
+   {
+    "t": "Abascal cierra su campaña en la plaza de toros de Valencia: \"Aspiro a decir misión cumplida, Sánchez se va'\"",
+    "u": "https://news.google.com/rss/articles/CBMivgFBVV95cUxQSUtIY3hxODFsVWVWZ09TM1phSzV6Smt0NXlJVFJyOTdHTm1SRXc5UnlxekdqNTVXRVBaMWJFTG9CNGhxLW9JRFlYOEZHTTNMYWNYc0k1QmNScjdJVGJaemttOHdZUnpkQWZnSi1BUDkxdzBQb1JleHBBNEk2TGdrdk5IWTlJTENiR252MHN3aE02YzYzQkRKNWo3ZlA0eEZ4R29xaTRvb3lHNm90S29OTEMxNWZBWFhIQU9ReWJn?oc=5",
+    "s": "RTVE.es",
+    "src": "Google News",
+    "cat": "Top stories",
+    "r": 7,
+    "cov": 5,
+    "trend": null,
+    "b": false,
+    "a": 22.90953448666667
+   },
+   {
+    "t": "El cardenal Semeraro beatifica hoy en Madrid a once mártires asesinados en la Guerra Civil",
+    "u": "https://news.google.com/rss/articles/CBMiywFBVV95cUxNQ0tpOVJPTWlNLVBqUW05ZERKeXctYTVhb0s0SGZlcHhSNWRMNUU5S3BzZVJla1VuZFBKMXFyMExYeHFVaVgtaUNXZkpTLW5Ha1lQVlFNRjAxeW5ibTdETUZBRklqU0xsdEUwd295VkJvV3QwZUhhWkVKUmpyRDNCdXRaRExnSE84anhPc1h6WE9hczN3dHpGQ2k4Z2FfclpxN3BuVkNaeWxDTzBianc2TEFZNEpSTklodEcwT0szM0o3YXZhUTJYYzYtTdIB0AFBVV95cUxQb0dPS2NnekgtRl81NE9PZWNBVmJQN1VIMFQ1SW1CRDhRaENCR0tYY3MtUnZlbUkxdlVYbF9kY1JPejFfRjlPVEJwVzZiYURXLVFpTnNweGh2NWRCRXRXUmRGcnRwUHRMYnFVblh6Ql96WnpMWmtDaU02Ylk3S3NJdVRNbFl4WjlaNnlwbkh2b1RiMHFIRldGZFJFZFpIRVBILWN3YVYyZFZXOTFIRzQwUE9LekhnNVJIaU9lVTJ6RFhUM1gwX25mZEt2LXFlSGxw?oc=5",
+    "s": "El Debate",
+    "src": "Google News",
+    "cat": "Top stories",
+    "r": 8,
+    "cov": 5,
+    "trend": null,
+    "b": false,
+    "a": 14.239812264444446
+   }
+  ]
+ },
+ "watchlist": {
+  "avengers": {
+   "today": 39,
+   "last_2h": 10,
+   "top": [
+    {
+     "t": "Doctor Doom Is Coming to Disneyland’s Avengers Campus December 11, Plus Disneyland Paris and Hong Kong",
+     "u": "https://news.google.com/rss/articles/CBMingFBVV95cUxPMEVIVHdObTVxWjEzb1Rmc0RwSFl1NlgySFJONlhaREJsNHdXaFF2QjJmWnRLTy1uZUN5ZmF0SWkyV0xGX1NERkViTllkMXJRU2NUOEpNeHk4N1BuVF83ZlVXVEcwNXJwUHZHOFlVczZCQlJOUW9fWlowTEUyODhMYWdSYTVVSDhUQnM1Vm5zZGpBUTZzTlZ6WndhaUZQdw?oc=5",
+     "s": "The Main Street Mouse",
+     "p": "2026-11-28T17:30:30+00:00"
+    },
+    {
+     "t": "Why Is 'Avengers: Doomsday' Hiding Its Actual Plot So Much?",
+     "u": "https://news.google.com/rss/articles/CBMid0FVX3lxTE1BZDZCckNPOE40Yzk1UXpsSU5faGE5NDRiLWtHdmw1SHNUUzRLbzFVZXQtZUNubWdWSFVjRzJadHhkMTRSSUhVZHVCdjRSam1fdVh1MW1nVUlVbkROdDQwd0ZIcWdaZG5FUDg0Sk9TekcxU2stM3c4?oc=5",
+     "s": "Gizmodo",
+     "p": "2026-11-28T17:25:47+00:00"
+    },
+    {
+     "t": "Chris Hemsworth Reveals Viking God Transformation Before Avengers: Doomsday",
+     "u": "https://news.google.com/rss/articles/CBMiZkFVX3lxTE9LQW42WUh3NzZLVG1Oak16VWpYczZqZzdHZmFTY1dKZmgwQkpnY1BZcVRPX1JlZGlWa1FjOHpIQ0s0aDd3V0hYZDVWZUdLYzBvNVBBQUlzWDFXZlZ5Ul9MejEzU1ZLUQ?oc=5",
+     "s": "IMDb",
+     "p": "2026-11-28T17:25:04+00:00"
+    }
+   ]
+  },
+  "doomsday": {
+   "today": 39,
+   "last_2h": 10,
+   "top": [
+    {
+     "t": "Doctor Doom Is Coming to Disneyland’s Avengers Campus December 11, Plus Disneyland Paris and Hong Kong",
+     "u": "https://news.google.com/rss/articles/CBMingFBVV95cUxPMEVIVHdObTVxWjEzb1Rmc0RwSFl1NlgySFJONlhaREJsNHdXaFF2QjJmWnRLTy1uZUN5ZmF0SWkyV0xGX1NERkViTllkMXJRU2NUOEpNeHk4N1BuVF83ZlVXVEcwNXJwUHZHOFlVczZCQlJOUW9fWlowTEUyODhMYWdSYTVVSDhUQnM1Vm5zZGpBUTZzTlZ6WndhaUZQdw?oc=5",
+     "s": "The Main Street Mouse",
+     "p": "2026-11-28T17:30:30+00:00"
+    },
+    {
+     "t": "Why Is 'Avengers: Doomsday' Hiding Its Actual Plot So Much?",
+     "u": "https://news.google.com/rss/articles/CBMid0FVX3lxTE1BZDZCckNPOE40Yzk1UXpsSU5faGE5NDRiLWtHdmw1SHNUUzRLbzFVZXQtZUNubWdWSFVjRzJadHhkMTRSSUhVZHVCdjRSam1fdVh1MW1nVUlVbkROdDQwd0ZIcWdaZG5FUDg0Sk9TekcxU2stM3c4?oc=5",
+     "s": "Gizmodo",
+     "p": "2026-11-28T17:25:47+00:00"
+    },
+    {
+     "t": "Doctor Doom Coming to Select Disney Parks Across the Globe",
+     "u": "https://news.google.com/rss/articles/CBMihAFBVV95cUxOQ0NTLUJjNU9JaUluaUE4ZER1RDlhVWxqclNRMFJER0RVdmFhalFvcTNPMHd1QTlpbXBoLWc2QjU1UEVqTUxEZjN3STZ2WUVGSmR6WVJnYXRUalFwRW5uMHV1Um11ME9VM0VNN0FiWlZEOWpOSk9YMXZJbjFFOHh1RnZPQlU?oc=5",
+     "s": "LaughingPlace.com",
+     "p": "2026-11-28T17:21:53+00:00"
+    }
+   ]
+  },
+  "marvel": {
+   "today": 36,
+   "last_2h": 8,
+   "top": [
+    {
+     "t": "Marvel Officially Confirms the Punisher Will Hunt the Predator in Brutal New Series",
+     "u": "https://news.google.com/rss/articles/CBMifkFVX3lxTFBXV0FLb2xnQVhZVWY5dU91VzR5N3MxODJBT091c1p5QUUzbTJiZnRGUUNPRnpqeG9KbGxQSm9Scmg4U3JoWWxMVWNzQmRzdzEzWFVDdlRjUVI5RTZzRC1lNFBacVF5bUhjbDVhcGJQR2ZPMUNRQ2Nqa3dWNk5FZw?oc=5",
+     "s": "Collider",
+     "p": "2026-11-28T17:30:12+00:00"
+    },
+    {
+     "t": "Why Is 'Avengers: Doomsday' Hiding Its Actual Plot So Much?",
+     "u": "https://news.google.com/rss/articles/CBMid0FVX3lxTE1BZDZCckNPOE40Yzk1UXpsSU5faGE5NDRiLWtHdmw1SHNUUzRLbzFVZXQtZUNubWdWSFVjRzJadHhkMTRSSUhVZHVCdjRSam1fdVh1MW1nVUlVbkROdDQwd0ZIcWdaZG5FUDg0Sk9TekcxU2stM3c4?oc=5",
+     "s": "Gizmodo",
+     "p": "2026-11-28T17:25:47+00:00"
+    },
+    {
+     "t": "Devin Booker unveils ‘Doomsday’ Nike Book 2 sneakers inspired by Marvel villain",
+     "u": "https://news.google.com/rss/articles/CBMigAFBVV95cUxNYVBqNW05RmRpcDQxT3pLMW5HZWFWVy1hejc3SEQ2SFE3aktrOFRUV0lJUm1ZRjFlNl9SenFwdVVqaF9tSG4zSFM1RzJxVm51WEFkbnQ5NUVVbnk0dTZHWTFCNWt4d3Vza3RrTmtQSTVYdTl0SEhQd2R3NnlpbV92bg?oc=5",
+     "s": "Burn City Sports",
+     "p": "2026-11-28T17:09:03+00:00"
+    }
+   ]
+  },
+  "michael jackson": {
+   "today": 26,
+   "last_2h": 1,
+   "top": [
+    {
+     "t": "'One on One' Star Robert Ri'chard to Play Joe Jackson in Authorized Biopic Series",
+     "u": "https://news.google.com/rss/articles/CBMi0wFBVV95cUxPb2hUWlc0V2NuSTJ3NkMyQnJiT0x1SU51N1JMbGVFNm4wSENRZHJhZmU4VU50NGMyalJ1M0ZkdThMUWhJZWhIQmEyM2lmUjBWVDBvaGtsQmVpNXMzWjJpTmtOT29uVVR3NmJYOUx6XzBjZS16UU40ZTNiYTF4UGhMcHcxM2V3TWE4Mk43MUlYZmhHQllwS3d4ejZ3TTZDSFl3c1dVOTFaQzFfdl9yUTlMWUxLT3ZpRFFfaVRUTWl5ekw0MHBfenc5SkhfSGhudnVLMXdF?oc=5",
+     "s": "NewsBreak: Local News & Alerts",
+     "p": "2026-11-28T16:37:38+00:00"
+    },
+    {
+     "t": "Vice City x Michael Jackson - Grand Theft Auto: VI #GTA #GTA6 #GTAVI #michaeljackson #shorts",
+     "u": "https://news.google.com/rss/articles/CBMiXEFVX3lxTFBkZV9NaGxBeDJGOU1qem5DUm1VV0JiaExBa01tdzlHYjJJTkw5a1VOWEhEUnVpVGd3RWdkbWZSeFVNai1pRkJHSW1WNzlkNEl2VThCQVJPSm1FcExy?oc=5",
+     "s": "YouTube",
+     "p": "2026-11-28T13:38:52+00:00"
+    },
+    {
+     "t": "▶️ Hydrabadi (Mithun Style) Monologue",
+     "u": "https://news.google.com/rss/articles/CBMiUkFVX3lxTE8yTTRWTUs2ZTFySVM4SlcxZENlbnh3bGFWQTJxNU85M1lkMGpybVhjX0ZCWXoxMGRQRC00SzhkQmdtc2xXcFljY3VTM29tWnNMQVE?oc=5",
+     "s": "IMDb",
+     "p": "2026-11-28T13:19:33+00:00"
+    }
+   ]
+  },
+  "murphy's law": {
+   "today": 6,
+   "last_2h": 0,
+   "top": [
+    {
+     "t": "Luck of the Irish Trip for UMD Bulldogs? More Like Murphy's Law: Puck Drop",
+     "u": "https://news.google.com/rss/articles/CBMilwFBVV95cUxOVW9Cc1ZiMkRsdFh1cTNqVFJ6aF92bkJ5b3BlZVZPcWZxVnNBNVVJZmVvOHZaSVlYRUVtUXhIZlRGVGVyMExsT0dfQ0VQSHBFT2xVV1pzM0NFNnJuQlI0UnhQaDhqZWhPcnBSenNXdFRXemFkcHlNd1QzcmZ1Ykt2UzEtd1ptd280YUJnNTRYcGVCYXZnT0pn?oc=5",
+     "s": "Yahoo Sports",
+     "p": "2026-11-28T07:19:52+00:00"
+    },
+    {
+     "t": "Luck of the Irish Trip for UMD Bulldogs? More Like Murphy’s Law: Puck Drop",
+     "u": "https://news.google.com/rss/articles/CBMivwFBVV95cUxNX1hZbENZYUhtek9iYXprSXJ3cVBxVVZJNVliOXdHYTV1YkZwRENfUjFvY1NVQWhJZU5MLTREdkZmOXNoeTFKOTlINjh3T29XbVd0N1ZCbFNxV3dtaGt0RXQzZ2EzLTEwYlpMb1hRNHdUZm53U0pXaU0yZnhIcWx2U0xXXzJMR0ZsblhxOUNoZkpndWNiRkZhNHVlUGFVa1hzYnRkQ0FsTFFEYkZoS3BDbTRuU2UxOEN1Z01seEZEOA?oc=5",
+     "s": "Sports Illustrated",
+     "p": "2026-11-28T07:19:51+00:00"
+    },
+    {
+     "t": "Chargers’ Justin Herbert To Miss Week 12",
+     "u": "https://news.google.com/rss/articles/CBMiiAFBVV95cUxPYUZ1WHNBUjNISlVYZmpCQVJxX29YY3VYaU1YZW1GUktVNUQ3TkNWeVVUaU4tS0p6RmpVUDFOSGpPdWQ2RUVJcHMzUVM3N0NsOWNGelNLeDdFUWwzS0VIWHpIZnNoZFJyVnprYl9XemJycGNKUThUeGoyc3BpVC11VWNhdnV3Vmt5?oc=5",
+     "s": "NFL Rumors - ProFootballRumors.com",
+     "p": "2026-11-28T00:30:57+00:00"
+    }
+   ]
+  },
+  "gta 6": {
+   "today": 40,
+   "last_2h": 13,
+   "top": [
+    {
+     "t": "How to Slap in GTA 6 – Smacking NPCs Explained",
+     "u": "https://news.google.com/rss/articles/CBMiY0FVX3lxTE9OcUNpUVFOeVdpUDRNYkEtandhenlub1czbVB1YWhUbDNJUjQ1TDNHeUhFVTAzTUN4bnJYYlA0Y1hha0dKWjJCUDF5VjZGb3hxUWVoZE5YZks5UUh3eUQ1RXpLTQ?oc=5",
+     "s": "VICE",
+     "p": "2026-11-28T17:32:07+00:00"
+    },
+    {
+     "t": "GTA 6 Players Are Frustrated By One Major Problem With The Game's Money System",
+     "u": "https://news.google.com/rss/articles/CBMihgFBVV95cUxNamR3WDVpZzhES0tYWjZwS3NDb2pmTUUtME5XWS1OVVdTYXRXQ0F5dTJHWlFPY3k5NTdsWGFNbHFudXc1a2FZQWpITlI3cmlaT2d5WHVKREJLd1BXdHJYUGtKaE9nZlVWbzZrcWpJcWJaZXdRUllCWDFRY3FVSGc1c0xma1RRUQ?oc=5",
+     "s": "SVG",
+     "p": "2026-11-28T17:00:00+00:00"
+    },
+    {
+     "t": "GTA 6 Best Settings: Visuals, HUD & Aim",
+     "u": "https://news.google.com/rss/articles/CBMiekFVX3lxTE1GT3hVRzRTcFpVUTczTGRhQUF0dkhWYllPMVZqY05DZnVGdzRLQ0tmUThQUlVXVHR2R3gySWg0cHhGX2NVblJSR0dmX3JRVG5MT0RUQVNQV2l3ZnY1UEtVaDB6VVNPYzhQWGxSV0laakZFeUlaYklsdllB?oc=5",
+     "s": "Mobalytics",
+     "p": "2026-11-28T16:59:48+00:00"
+    }
+   ]
+  },
+  "gta vi": {
+   "today": 40,
+   "last_2h": 9,
+   "top": [
+    {
+     "t": "GTA VI Hits Taylor Swift Scale: $2B Eras Tour Comparison",
+     "u": "https://news.google.com/rss/articles/CBMijgFBVV95cUxNdWhVT29iTjA5NFhmTEJUOS1kVjhiRE43Z1dUNFRaRjV2REJYUmlubF9wMmRCWlZNb1NjNG0wMlBkdEZHMmhTWkw2TmhjLUc0OHQ5M3J0TXhSVVlvY2NxYUNFYkkwR0dfRnFtcDhTMVVobloyV1AyLVZTbkczVENSaUJTczVoZW5YQ1BVbjBB?oc=5",
+     "s": "shattered.io",
+     "p": "2026-11-28T17:15:08+00:00"
+    },
+    {
+     "t": "Rockstar explains why GTA VI makes senseless violence come with consequences",
+     "u": "https://news.google.com/rss/articles/CBMivgFBVV95cUxQWHNBQldyUzgzSUhfYzFwMWdQN3hVSmJqaEJiXzN3X1RSemU0bDJGT0EzQjVxbkRLR21sc0xkVHl2M20zUU9aSGlGX3FaQkFlbFJXb3dtbFZfRHJjNU9nNjJJb0RaQXhmVlpfR0RCNE0zSENoUzJ3MEVMajBWakRnM0ppT2JPelJ4MzZYVXIydXVBR2luSk00RGs1TnNKNzd0Zzl1ZDF3WTNTZWJTN3l3S2I1ZEZEVUZsN3VkcXlB?oc=5",
+     "s": "Notebookcheck",
+     "p": "2026-11-28T17:04:00+00:00"
+    },
+    {
+     "t": "GTA 6 Players Are Frustrated By One Major Problem With The Game's Money System",
+     "u": "https://news.google.com/rss/articles/CBMihgFBVV95cUxNamR3WDVpZzhES0tYWjZwS3NDb2pmTUUtME5XWS1OVVdTYXRXQ0F5dTJHWlFPY3k5NTdsWGFNbHFudXc1a2FZQWpITlI3cmlaT2d5WHVKREJLd1BXdHJYUGtKaE9nZlVWbzZrcWpJcWJaZXdRUllCWDFRY3FVSGc1c0xma1RRUQ?oc=5",
+     "s": "SVG",
+     "p": "2026-11-28T17:00:00+00:00"
+    }
+   ]
+  },
+  "dune": {
+   "today": 39,
+   "last_2h": 2,
+   "top": [
+    {
+     "t": "December 2026 Movie Releases: Avengers: Doomsday, Dune: Part Three And More",
+     "u": "https://news.google.com/rss/articles/CBMie0FVX3lxTE52Ylh2QkpxUEc3VF9YMkhjUE90ZEpCbTVmWjdaYnNtZUZVYUx5MHN6ZG1wOGdQZEQxMVh1aUxZOXh4dGZzWHZzc0NxYVZXWExsNEV0NlVReUtYOXNEUl9jOWlxa0lrelI1N2hGYnJwUWdxaXUtSEJMWWJSWQ?oc=5",
+     "s": "SlashFilm",
+     "p": "2026-11-28T16:10:00+00:00"
+    },
+    {
+     "t": "Dune 3 Director on Avengers: Doomsday Box Office Showdown: \"I Hope We Will Survive\"",
+     "u": "https://news.google.com/rss/articles/CBMiigFBVV95cUxONjc0eElmVWNyekd1cDZaeERDSUZINjFGX1lHUGVGU2RrOGtHLUFwcXdHT3ExUkszdmJYcTQ4YVIyLWhYT0YwLTdRQkQzMS1nX084blVESndLTEJtb3dKaHQ4bC1jVVN6eFpKaTIxZEJ5NThjRE0wRDE4TVpVd1NtRWVyM0ZpWjFBZVE?oc=5",
+     "s": "Comic Book Resources",
+     "p": "2026-11-28T15:50:27+00:00"
+    },
+    {
+     "t": "Denis Villeneuve Wishes ‘Dune: Part Three’ Had Its Own Weekend",
+     "u": "https://news.google.com/rss/articles/CBMilAFBVV95cUxPcjBPc3lPTko5YnFGaGpSalNFYkZYb29zZHFFMGRCaVM5R1hQbTIwX0szM1N6MktKcDZKMXgwWFp0TUtlOXMtN19mTWxhbGJGOGRJRUxmanpLNjVtbFlXbXJnSEh4bHRpTFBiOGJpbGNOODREeWVTYmRZLUJsRlVBNVBiWHo0TnpxaVIyWXFiV3pEWVAy?oc=5",
+     "s": "Gizmodo",
+     "p": "2026-11-28T15:30:21+00:00"
+    }
+   ]
+  },
+  "tesla": {
+   "today": 39,
+   "last_2h": 5,
+   "top": [
+    {
+     "t": "Tesla Stock Price Prediction: Is a 30% Rally Possible in 2027?",
+     "u": "https://news.google.com/rss/articles/CBMipgFBVV95cUxNSDhNbGhqbnE3Q1NsejRMaFhmbHkyYWZwdnc3c0hTRU9EWmg1NUJ2Rl9tcmE3Z3JlLWFWd09KXzRkTzhnWVVfaXM2djJOY05TX0VlUjg3NzBSOUU5UjRhNTZMdjFVZjlKMTZuOUdhaGxZS1ljUGVaX1dSbHQ4ZmtyNnVkUWJQS184UTEycEJ1ck9iUzBxREQyNTZJVGdnZ1ZnNHJLNTJn?oc=5",
+     "s": "24/7 Wall St.",
+     "p": "2026-11-28T17:33:00+00:00"
+    },
+    {
+     "t": "Tesla Cybercabs spotted headed to Florida ahead of possible launch",
+     "u": "https://news.google.com/rss/articles/CBMihAFBVV95cUxQSXFIekhKTVVoNmYycS14cnNwZkF3T0JZUVlOcV9LWkdMc2ZvUkNZOFFBZHAtREl4a2hOUktYSTlqT1JIanNPaHNRTzRBcXBsa25rRWwzWFJhN2J3eld4WWxVaWpBcWpCNHdtY041MTRhNWVXTUVlUXlXMnhwZ0VDZFl2WlU?oc=5",
+     "s": "Drive Tesla Canada",
+     "p": "2026-11-28T17:25:06+00:00"
+    },
+    {
+     "t": "Elon Musk’s SpaceX Could Fall Below $100 on Tesla Merger, Former Goldman Sachs CIO Warn",
+     "u": "https://news.google.com/rss/articles/CBMilwFBVV95cUxNamdvY3VveEZ5NkswYVdlcW9zWGJ1M1dqOEx1RVZRN05OSEVGazBjSlgyckI3ejNzZXJrRnhBd0djbDhiVl9TUXpKR0pfWUlJY0JCN0U2d1ZDREVvaDlMUGdMMzZoNG1FUTdCTkQ2Nm92cDdaSEFfSlJfczZfdzE1TWpMUzhZd2RTR183cFpDNHZjZE1HbnVJ?oc=5",
+     "s": "Yahoo Finance",
+     "p": "2026-11-28T16:01:48+00:00"
+    }
+   ]
+  },
+  "elon musk": {
+   "today": 38,
+   "last_2h": 4,
+   "top": [
+    {
+     "t": "Musk said Google is interested in additional SpaceX capacity",
+     "u": "https://news.google.com/rss/articles/CBMilAFBVV95cUxQbG1DSGt6b2ZDdHEtYzJabU1xVGFTUDhpUFo4VWFfd3Q3ZTdGWlRtMXVwZU5JZGpfYnhkZk9fQmdDSVluMlFEVXJFcEs0d3l6UkJseWk4Q3BSMTZLdUZyZFVKS281d1E3cS1MbW1tSGY0LU00OG5EZlpXZ1VNYUI2VlRqSDJLVUI1ZkNFdU5helNPWDh20gGTAUFVX3lxTE1kN1N0MDRGRTkyQndVVE9nVTlJMFRzLWdTaEJ5M0RrQVhRTUZ0cXBQV0cyVzBjUDk3ZXE0Q0Q4b19UUkpRYWVCV0t0MS1uZkI0QXlLcDQxVHFQaXEtMjBPYU9FMngyandqTVdYcDBCRmpUV3BFTm5abmxvck14MnVhbTdvaXhXSmV3bTJjekdTMkJvMA?oc=5",
+     "s": "Українські Національні Новини (УНН)",
+     "p": "2026-11-28T16:35:18+00:00"
+    },
+    {
+     "t": "Bernie Sanders Tells Elon Musk His Spending Isn’t ‘What’s Foolish’ — It’s a System That Lets 1 Billionaire Shell Out $450 Million to Undermine Democracy",
+     "u": "https://news.google.com/rss/articles/CBMilwJBVV95cUxNYUdyVTNDQjFDMlNvRFlRenRvR3d1aTdoZlRsZFhwM2RZcFlUMUJVYWJrQlRKbThqRHRHOFRPRXlGdU9Bb19USlNnMzRXTnNUdlpwMWRWbmEtRXFBb1dvcUlUYzc3T010aG4zTGRLSXJNR0c5UW9qNGVDLWJlaEZUMkcyZzVYb016MExXd3BlQ2hhcmpIX08yeE1BTFZJTlJNLTVyeG1Xd0JWRVZmTWJ0MW1TX0NCNGxXU2cwaTh0cmxIWjh4Q1JyR2pzb2p4VDZsdkNUMDczLVp5dU8wUTlqTGpZeFU5UzFrZmNheHFqR3hmaDh6eDRCQlRsZE4yZUxpODJvSEtNSGVtZThKNU9xODI4RmVVSG8?oc=5",
+     "s": "Barchart.com",
+     "p": "2026-11-28T16:30:03+00:00"
+    },
+    {
+     "t": "SpaceX Shares Soar As Musk Vows To Expand Stock Giveaway—Pledges A Share To Every Child Each Year",
+     "u": "https://news.google.com/rss/articles/CBMi6AFBVV95cUxORmsza1BiczhzTWJyallqaEEwcDQ5dVNyZXp4WDFKZjRSRnhjUjFNY2hsb1dYOUl4NnlRbXZjZlRsdzJRNDZRcVNxTjBfTEthUXJlejhQVmUxbjRtNkVQSDZfeGR2aEJtZUpQWGdYc0Zna3dDREJDZWFWUFIxZGRqaTNDb0QzNzBVazNTQVNpazVpVVlDbkE0ZG9oNDZ6SjhhcG5lR1UxSkxSRzJRNmdHRGlJcllpQ2JoUEpybzFMZlZRV3Y4YXRlQjJoYmcyZ2NfUjVfcjV6U2M4aGI1cWZGNWF4Q19pcDU4?oc=5",
+     "s": "Forbes Africa",
+     "p": "2026-11-28T16:16:36+00:00"
+    }
+   ]
+  },
+  "spacex": {
+   "today": 36,
+   "last_2h": 5,
+   "top": [
+    {
+     "t": "SpaceX might soon give AT&T, T-Mobile, and Verizon more reason to take notice",
+     "u": "https://news.google.com/rss/articles/CBMijAFBVV95cUxQSWNLMHpDUFR6YjNXdDJxeXNkYTN0QVNESlRldW9mckpQRnYzWjlsdzM5TmRkZ1RzM0dydDVaMXdWN1liSFoteVFxdTlaUjFhWGczOWRDOGZNOXk1WU9LUDRhRzlTZEdvNXR5NUVZSlFJMzNMQm9wN0plQUxRUG9lMzIwQTQxLVpBOHpMaQ?oc=5",
+     "s": "PhoneArena",
+     "p": "2026-11-28T17:10:32+00:00"
+    },
+    {
+     "t": "Musk said Google is interested in additional SpaceX capacity",
+     "u": "https://news.google.com/rss/articles/CBMilAFBVV95cUxQbG1DSGt6b2ZDdHEtYzJabU1xVGFTUDhpUFo4VWFfd3Q3ZTdGWlRtMXVwZU5JZGpfYnhkZk9fQmdDSVluMlFEVXJFcEs0d3l6UkJseWk4Q3BSMTZLdUZyZFVKS281d1E3cS1MbW1tSGY0LU00OG5EZlpXZ1VNYUI2VlRqSDJLVUI1ZkNFdU5helNPWDh20gGTAUFVX3lxTE1kN1N0MDRGRTkyQndVVE9nVTlJMFRzLWdTaEJ5M0RrQVhRTUZ0cXBQV0cyVzBjUDk3ZXE0Q0Q4b19UUkpRYWVCV0t0MS1uZkI0QXlLcDQxVHFQaXEtMjBPYU9FMngyandqTVdYcDBCRmpUV3BFTm5abmxvck14MnVhbTdvaXhXSmV3bTJjekdTMkJvMA?oc=5",
+     "s": "Українські Національні Новини (УНН)",
+     "p": "2026-11-28T16:35:18+00:00"
+    },
+    {
+     "t": "The Cost of Insuring SpaceX and Oracle Against Default Just Hit Record Highs. Wall Street Is Pricing Their Debt Like Junk.",
+     "u": "https://news.google.com/rss/articles/CBMi9wFBVV95cUxOcWdjWDVyc1dybjVJbWYwTVp3T3JKaXgyU0JaclZFUVVwTmJKcXYyYWZaQ1k4V192djlZdEQ0YXFnNmFqeFppd21MQ2pnSGQ3b3VvUUR2OVdLM1pkN2NWM3FkeHRGVHZVdW9TUHV3QjA0UVNDYm44X21kOGxfaXNkdWxwU2JjZE50TWFFdG9nY1FLT3VIeFhEVUxNWTA1X3JXLV95MkF1SjJ2NVVBQXY3YVVjdTdnd0duaWFYRFdjMFd4RERBajg3WmZELVVha3B5Y2hOang0MTFRa203emYtM0w1VFlOdllPQmotUEs1NkY2Xzl0a19z?oc=5",
+     "s": "24/7 Wall St.",
+     "p": "2026-11-28T16:07:00+00:00"
+    }
+   ]
+  },
+  "apple": {
+   "today": 40,
+   "last_2h": 9,
+   "top": [
+    {
+     "t": "I've searched the internet to find the 65 best Black Friday laptop deals from Apple, Dell, Asus, HP, and more",
+     "u": "https://news.google.com/rss/articles/CBMidEFVX3lxTE5HTFNwSVR4TzRBNXhBVVN3c29UWVRlZGpsSlU0MzVOaWs1UVZyRFZZOUpfX1lLVG9nRjZPRmg5WnBTbmlYbXcwbmZrN3pocGx6UzZGaTRuak5wN0VBZ3hfYmlSbWpiS3lkU3E4YUk1MUJyQUU5?oc=5",
+     "s": "Mashable",
+     "p": "2026-11-28T17:31:11+00:00"
+    },
+    {
+     "t": "How To Access The Hidden Developer Menu On Your Apple TV",
+     "u": "https://news.google.com/rss/articles/CBMihAFBVV95cUxNNl9iaElKSmZQcXRJd0I1ZFR3RlhBV0R6dE04NFJvYzdZVG1paGNlcU5PTDBvVS1OT3gyMFZ1eVdNWi1za2tKam5PSXpMRTFaOExsMlpQaHViOTJFc1dtWncyRXFqNWhuVHFQcndGQjZ6Z3RMdENlZU5pcExZRkJOY3M2QVQ?oc=5",
+     "s": "Engadget",
+     "p": "2026-11-28T17:30:00+00:00"
+    },
+    {
+     "t": "Apple’s excellent Beats 360 headphones are finally on sale for Black Friday weekend",
+     "u": "https://news.google.com/rss/articles/CBMitAFBVV95cUxOTXhNMThrNkVicnZJbmx1eEtUSWswZXJkdjJNTjRFeGR2UktaZjhvai13czR1a2k0UjZmM0hnTG9QSHA3dHlQM25SaEVTdmc3MDdIYjJrRXlrN3Z5SXhVTlRMUTQ5UjNEWDFSWG1Wdjc1aVoyWVEwWk5yZUx0ZVJ5bG1uOVMwdkJvMDVOaHlWQVM2U2lpek0tMXNJMERIYW1xbkxsZkxDbXAzenhrbC12azlwOEE?oc=5",
+     "s": "9to5Mac",
+     "p": "2026-11-28T17:18:00+00:00"
+    }
+   ]
+  },
+  "iphone": {
+   "today": 40,
+   "last_2h": 6,
+   "top": [
+    {
+     "t": "Best Black Friday iPhone deals 2026: How to pay $0 at select carriers",
+     "u": "https://news.google.com/rss/articles/CBMidEFVX3lxTE1IYnYwNnQ0bjNfUHQ0NnhMQlB3ZkhQV2R5elRaNDN1LWhGbmRGdjBHZnE1VEEtUjBzVW8yVXJ3Uzl6ZFdoRjNtM3JaZ0Y4Z0QwSDNGMEtGbm5xNERRNXhkbkFQT2d3Y04xV255RlZlMEFQd3dz?oc=5",
+     "s": "Mashable",
+     "p": "2026-11-28T17:26:10+00:00"
+    },
+    {
+     "t": "Cell Phone Deals: Galaxy S26 $799.99, iPhone 17 Pro",
+     "u": "https://news.google.com/rss/articles/CBMijAFBVV95cUxNcC1Wb1lXVUhGLUc5dmxQQkdkQkd6Y283VTVxaFpqc3o1cXgtU2x2RkNyWHlhRGs4cC1MTzRud2kxNTk2eDdvWWZxcDlsYnRmZFdCaXliem1HeUF1QktHZGs1MXZveTVoLWNxaGhYNXF1YzNYYnU5cUZLakJPTXM4dGNZeE1ETEp3WmxJZQ?oc=5",
+     "s": "shattered.io",
+     "p": "2026-11-28T16:35:08+00:00"
+    },
+    {
+     "t": "T-Mobile Black Friday Deal: How to get the Apple iPhone Duo for free this weekend",
+     "u": "https://news.google.com/rss/articles/CBMiekFVX3lxTE5menowVlJRWDRjSDFBdmhjUTkxc1hzZm9KNE9VY19nbFZmRXd6aGhJcGlRemVzeEJGamR6bmVfRjlDUTJCR25hN3FlUmpDY3FXR182ckgyT2xsNTB6T0p2MmxjV1hUZGVTdTRwSGxxMFg0MG9QQVM1cUhR?oc=5",
+     "s": "Mashable",
+     "p": "2026-11-28T16:34:10+00:00"
+    }
+   ]
+  },
+  "super bowl": {
+   "today": 39,
+   "last_2h": 3,
+   "top": [
+    {
+     "t": "Kendrick Lamar - Super Bowl LIX Halftime Show",
+     "u": "https://news.google.com/rss/articles/CBMiSEFVX3lxTFAybGk5cno1dmZvU0o1QUNjM2Nud3pERjFVWWotSS1sbWhYc0tZdXdTVXNnNl9aRmdLRnNyY0dFRV92OW1qajRRUA?oc=5",
+     "s": "TIDAL",
+     "p": "2026-11-28T16:44:04+00:00"
+    },
+    {
+     "t": "Patrick Mahomes faces a December gauntlet with massive playoff implications",
+     "u": "https://news.google.com/rss/articles/CBMirwFBVV95cUxNM0VONHRXY0tFaUNtYVJMa05zdGNDLWViZndpWTZJWHZEV3k0c3laRk1aTnZ5LXBiYjhNSzN3LTFvYlpxSVllOFBmR1dneVhRTHJhNzdrRERlNXhZMHdxU2tFSE5hTDVPU1pmdjBkb0JtbXc3T2EyTjdoRnVXQUxIbGtEQ21pNU52cXY5Y0M0SUFiemI4a2U3Vzd6UURLdDVCTldFVTE2NVU2UkZMVlVn?oc=5",
+     "s": "KC Kingdom",
+     "p": "2026-11-28T16:30:00+00:00"
+    },
+    {
+     "t": "Steelers Ticket Prices Drop Sharply After Aaron Rodgers’ Release",
+     "u": "https://news.google.com/rss/articles/CBMikgFBVV95cUxQSmdpSlAxdWtNbnRtVnhQcUNILTJ2aktqSGpaaXlCaFpxdEtEUWlCU3B3OHlJRnJxMnpfbWQ4OHpjVzk0c0dIYVZsNEEwaDJkUkd4cGVSLXhJTnlrWmJMdWszYUxmUkRxM2xnZHd3bjBJWjFCdGNmMVhscE9HMEtyWjBVX3lGRHRqR1B5RUR4QlJHZw?oc=5",
+     "s": "Yahoo Sports",
+     "p": "2026-11-28T15:51:03+00:00"
+    }
+   ]
+  },
+  "taylor swift": {
+   "today": 38,
+   "last_2h": 4,
+   "top": [
+    {
+     "t": "GTA VI Hits Taylor Swift Scale: $2B Eras Tour Comparison",
+     "u": "https://news.google.com/rss/articles/CBMijgFBVV95cUxNdWhVT29iTjA5NFhmTEJUOS1kVjhiRE43Z1dUNFRaRjV2REJYUmlubF9wMmRCWlZNb1NjNG0wMlBkdEZHMmhTWkw2TmhjLUc0OHQ5M3J0TXhSVVlvY2NxYUNFYkkwR0dfRnFtcDhTMVVobloyV1AyLVZTbkczVENSaUJTczVoZW5YQ1BVbjBB?oc=5",
+     "s": "shattered.io",
+     "p": "2026-11-28T17:15:08+00:00"
+    },
+    {
+     "t": "Inside Taylor Swift and Megan Moroney’s Sweet Friendship—Including One Heart-Melting Moment",
+     "u": "https://news.google.com/rss/articles/CBMitwFBVV95cUxNRkJ5TWpoU2ZmSmczanBlVEM2Z3RNVWpXS0YzMV9uTWtONGQwVVFGSmFJZ09hUzlXVjVGamZ0QTgyNkRPRXZWRkc2M1l5QTh0RHpSMU1KeDNDOTByUXpYRTQ5YWtzMXM5ZUFjVHF6QlBIRmpvWTZOUThJalF3elMzMng1TllqRVJ5VzVxYlVxUEI1aGR3MktRejlHNk13Y19EZWJTZzIxMEJNd1k5MmJ1TFBSZXo4cEU?oc=5",
+     "s": "Woman's World",
+     "p": "2026-11-28T16:59:55+00:00"
+    },
+    {
+     "t": "Taylor Swift’s Black Lace Top Is on Sale Right Now",
+     "u": "https://news.google.com/rss/articles/CBMiqwFBVV95cUxNZU1NWHdZZlVkbGJRNkdTTGNsalNvTHByamtzSS1vRHctdkJtdTJOM0VqLWVRblZaODlwNGJyUDFWdkZ6dXBBQ25WLXFEa0J5RDZ2bTRJTXlxajVqUG5ES3NmMThjbG41d2Z3M3Z6c2tZWnEtQ096RVczaXE4M3pNRjFtTDFhWWVJclBoRkYyOHZiZzZtQ0VNQjFPWTMwb2toN2s0TUpyN2VVV28?oc=5",
+     "s": "ELLE",
+     "p": "2026-11-28T16:54:00+00:00"
+    }
+   ]
+  },
+  "netflix": {
+   "today": 36,
+   "last_2h": 9,
+   "top": [
+    {
+     "t": "What Did Netflix Get Wrong About Binance and the $8 Billion FTX Fraud?",
+     "u": "https://news.google.com/rss/articles/CBMinAFBVV95cUxPSHRxX0V4Y0dDd0hsdzV4TldvTGg3TEF6aXAwZS1qM2pMRDQ2d2FEYndETy1HWXA0YlZncjZsY1FDTDhNQ3g5UDJhTWt0Wm1xTFdmVFdrTWR0bjhTemNlbDdaQzBfZFEwZ1B0U1N2c0VhV1RBeFo2dzJURjlnUUY0OVdUQWZ3UGY0cGtPM3l6QUE4MXNLV1kya2ppQ1M?oc=5",
+     "s": "Coinpaper",
+     "p": "2026-11-28T17:26:25+00:00"
+    },
+    {
+     "t": "Netflix’s Strongest Week: Four Releases Worth Your Time",
+     "u": "https://news.google.com/rss/articles/CBMif0FVX3lxTFBENDBKeXowOGwtMzRZUVY1TXFrMTZTTlM5WVI5SDk2UHA1bUN2ajBWSGx5c3ZZSnZWd0wzbXEydHAzX3RQLXc1d0F3SUR1NFhXX1htUHQ2M204N213UGE4TG1LLWlFSEpxMkxhQVlKcDJteWI4bXhUeFo5Rk9nUjg?oc=5",
+     "s": "dscene magazine",
+     "p": "2026-11-28T16:58:33+00:00"
+    },
+    {
+     "t": "Netflix’s Best New Movie Has A 90% Rotten Tomatoes Audience Score",
+     "u": "https://news.google.com/rss/articles/CBMitAFBVV95cUxQRWVsWUMxS09LcGdYR1dmMWZ3ZXFKNVpwOUlFVWZRVFRhTnZ1YmtmbzJGR1hyVnBaa0tWWTlYa1VsNWg4MGl0bkhoMkhsdnJuZzlVMndlNExXVEFieEtoQ3VYQ3BTTTUyNmxWcVViaTIyWFZqV1A4djQtMFo2R3hjSkVCckpIUGpNNHUwbENyb2Jaak9pRWpfbUE5MnNwbUxfWUhNaXlzelhaYTNNVkUwMEluaVQ?oc=5",
+     "s": "Forbes",
+     "p": "2026-11-28T16:42:37+00:00"
+    }
+   ]
+  },
+  "openai": {
+   "today": 38,
+   "last_2h": 3,
+   "top": [
+    {
+     "t": "OpenAI counter-sues Apple, alleging unfair competition and theft of intellectual property",
+     "u": "https://news.google.com/rss/articles/CBMiwgFBVV95cUxNWXBPZjZfZnZSYTY0ei1tSjFBZ3dudGhFMmUwVXA3R0J3Z1pCRk84cU44bWI2eFlhSEYtZ2R2RFJFSzRmY3RLZkU2bDRkUGE5OFRxM1FnRlhDTGxDYnZjeDJIdHFfOUhUUlNPUUVmdkc0NGxqNE5hVW53QnRtc2lnZDlGSGVSS0Rad2d4VjViRnA4bS1JOXg4MVE1Y1phZGQ1UFJCZ0stemkzYXZ2SDlxay01cUFvY0dDbUt1YVdrUGFXQQ?oc=5",
+     "s": "Mashable SEA",
+     "p": "2026-11-28T17:03:22+00:00"
+    },
+    {
+     "t": "Saudi Engineer Accused of Bugging OpenAI to Be Released on $1 Million Bond",
+     "u": "https://news.google.com/rss/articles/CBMiqwFBVV95cUxOaUdJQnh3YWdwSlhUalhNT3RVdVJmamprVFRUdFVKQXFxSEpjU0JVNEYtSDFNQXREcUVsRE4xUWVOQ2h1RFhXaWVOdlU0amtCa1k0MkVmZXdmajlpdFBjWElKZjRqLVlucF94NWVHV0NkSmRrWFYtcjlLVFFNZHpQc3lGWUdydUVXT0JBWl9MRFNGR0Fnd2h0d2hiSWwyUkRRbEVLVWd4VHFDMFk?oc=5",
+     "s": "WSJ",
+     "p": "2026-11-28T16:09:38+00:00"
+    },
+    {
+     "t": "OpenAI files countersuit at US Federal Court against Apple in trade secrets case",
+     "u": "https://news.google.com/rss/articles/CBMickFVX3lxTFB0bFpjd0RqWVpNT2dTNWMxWmpYcEd0SWRlRmI2NWJHcHk0Rm5KdjdhWDA3WG9UanpYSDBqQTk3VFUzMW5kQkJkUzNZYlZqZUJ0Q1ZMemlkS1BhRXlweFRSM1JHTWJLcmQ2WmNIMjhNQ1RsUQ?oc=5",
+     "s": "Digital Watch Observatory",
+     "p": "2026-11-28T16:08:37+00:00"
+    }
+   ]
+  },
+  "seedance": {
+   "today": 5,
+   "last_2h": 0,
+   "top": [
+    {
+     "t": "Best Free AI Video Generators 2026: Daily Credits, No Watermark",
+     "u": "https://news.google.com/rss/articles/CBMiX0FVX3lxTE05R1VuQ3ZaMFdnZUJOZTVCc25ibHlfSWJIa0dfTHpabVlaVzdsUXVQeEhpY2VEQzd0b0pRV2dBQTFEUXB5MmVJemphaG1VWUFXY1VPblhOWlN1LUxZd0tn?oc=5",
+     "s": "Fello AI",
+     "p": "2026-11-28T12:14:01+00:00"
+    },
+    {
+     "t": "China AI Micro Dramas: 1,600 Launches/Day (2026)",
+     "u": "https://news.google.com/rss/articles/CBMiiwFBVV95cUxQWTZ6NEppOFVFWjVkcURLLWdqd0p0Q19OXzk0YXBNUFlZWXlWdWh5N2pjV3doSy16R05NejUtVDBMV0xfOEFZcF85cUlKYnY0QlhIdVJZQlR0VHdkZUJldlhIOWxBMHY2bkVQdWs5cWNicDhmYzhra2pBSEZaX19CM0dLMEt5ZVZVMDFJ?oc=5",
+     "s": "explainx.ai",
+     "p": "2026-11-28T00:00:00+00:00"
+    },
+    {
+     "t": "Higgsfield Black Friday Sale (NOV. 2026) – 75% Annual OFF LIVE",
+     "u": "https://news.google.com/rss/articles/CBMiYEFVX3lxTE9aVDVsM21Hcy1obVBsYTNqYmhGcnpaYzluYTRaUmxpVndHWk9PZ1QwV2pFdzFESC05YS1DeUFYbDlxYk5KS3FaNHU5TWVEcEIzS1BYWmxETmJXVkpXQV9qVA?oc=5",
+     "s": "DemandSage",
+     "p": "2026-11-27T21:59:28+00:00"
+    }
+   ]
+  },
+  "kling": {
+   "today": 8,
+   "last_2h": 1,
+   "top": [
+    {
+     "t": "Gloria Domina Obituary (2026) - Bethlehem, PA - WFMZ-TV 69 News",
+     "u": "https://news.google.com/rss/articles/CBMiiAFBVV95cUxPWl9za3VxSlBEaEJsa3YwQ3NUUFlCNGVYaTc1Tmtkb05HWmI1TFFNSFFDQUFZeGV2TGxHS2M0Qi1OSEZ0ZWFBdE9OcXR3MTF3d1VvQ05WNFV4MHNCbFZGLTNDczRkZGlQQ3h0SDV1MEdKOTNzTy1uTFBMOXMzOUZ0ZUs3bjBqdzl6?oc=5",
+     "s": "Legacy obituary",
+     "p": "2026-11-28T15:55:40+00:00"
+    },
+    {
+     "t": "Best Free AI Video Generators 2026: Daily Credits, No Watermark",
+     "u": "https://news.google.com/rss/articles/CBMiX0FVX3lxTE05R1VuQ3ZaMFdnZUJOZTVCc25ibHlfSWJIa0dfTHpabVlaVzdsUXVQeEhpY2VEQzd0b0pRV2dBQTFEUXB5MmVJemphaG1VWUFXY1VPblhOWlN1LUxZd0tn?oc=5",
+     "s": "Fello AI",
+     "p": "2026-11-28T12:14:01+00:00"
+    },
+    {
+     "t": "Ladybird alpha download: macOS and Linux steps",
+     "u": "https://news.google.com/rss/articles/CBMigAFBVV95cUxPMFBDcV85MEk4S0NDTUhwMFlFMUpYM2ZYa1lNX0d5UE0tMl9faXFPTXBHMm9uZ0ptcEsxQlJXX0ZsaHc5X1FDakdJX05laHR5d3BvbXVkWW5yeWVUREJXMnVibkszTWJXZUxaeGJQREYtYnFVSmFmTG9tbVVmTFhscQ?oc=5",
+     "s": "NeoTeo",
+     "p": "2026-11-28T07:55:55+00:00"
+    }
+   ]
+  },
+  "veo": {
+   "today": 2,
+   "last_2h": 0,
+   "top": [
+    {
+     "t": "Best Free AI Video Generators 2026: Daily Credits, No Watermark",
+     "u": "https://news.google.com/rss/articles/CBMiX0FVX3lxTE05R1VuQ3ZaMFdnZUJOZTVCc25ibHlfSWJIa0dfTHpabVlaVzdsUXVQeEhpY2VEQzd0b0pRV2dBQTFEUXB5MmVJemphaG1VWUFXY1VPblhOWlN1LUxZd0tn?oc=5",
+     "s": "Fello AI",
+     "p": "2026-11-28T12:14:01+00:00"
+    },
+    {
+     "t": "Pollo AI vs Adobe Firefly: Features, Video Quality, Pricing, and Performance Compared",
+     "u": "https://news.google.com/rss/articles/CBMiswFBVV95cUxOR3hzUDIxcHN1bVBudzFsOGZudEJkNXJNbUFPMzRyVVJwUFUzby1uSXdrcXVyT2R4TUM3SncxSWVyVXBxZkx4am9wbnNnSXZTa09zX2VXcTJiQnRhU1JqRUlxeWpSU0E0VjFPcUwwRVFiZU1UdTF6ZHAyMUZLRFJWeDlxdDZacmRia1ZvYVVtMGtHUzFYU2tXTTdXTm5YQnN5OG1Ybnd3RWRvSDlGa1BmbG5ZQQ?oc=5",
+     "s": "Programming Insider",
+     "p": "2026-11-27T18:16:49+00:00"
+    }
+   ]
+  },
+  "hailuo": {
+   "today": 1,
+   "last_2h": 0,
+   "top": [
+    {
+     "t": "Best Free AI Video Generators 2026: Daily Credits, No Watermark",
+     "u": "https://news.google.com/rss/articles/CBMiX0FVX3lxTE05R1VuQ3ZaMFdnZUJOZTVCc25ibHlfSWJIa0dfTHpabVlaVzdsUXVQeEhpY2VEQzd0b0pRV2dBQTFEUXB5MmVJemphaG1VWUFXY1VPblhOWlN1LUxZd0tn?oc=5",
+     "s": "Fello AI",
+     "p": "2026-11-28T12:14:01+00:00"
+    }
+   ]
+  },
+  "runway ai": {
+   "today": 0,
+   "last_2h": 0,
+   "top": []
+  },
+  "pika": {
+   "today": 8,
+   "last_2h": 0,
+   "top": [
+    {
+     "t": "Pokémon Anime Reveals 2027 Plans for Liko and Roy | Outlook Respawn",
+     "u": "https://news.google.com/rss/articles/CBMixAFBVV95cUxNbVk0VzB0b25ja2ZfLVlZdG5YSTBIX0ZPa1UtWUtfaC1xSWxTTVVLVWd6QzJaNmMyQ1NVWkU4TFdvTjBoYWNFNkNZMWwxVy0zbUc5TXhRUERtVU95aUxpNjFvek9lWkJUWl9DY3hYZkFXbnBlczQ4RXRQczM1OWs1T0UxMUE1VmE4YTJfbEdKOGJENkhYRWtqbnFZdjZoTTFqSGVDOGk2OHlvSWg0SW43NE5WaGJZWHBtV3FxOGZNLVBad3ZR0gHEAUFVX3lxTE1tWTRXMHRvbmNrZl8tWVl0blhJMEhfRk9rVS1ZS19oLXFJbFNNVUtVZ3pDMlo2YzJDU1VaRThMV29OMGhhY0U2Q1kxbDFXLTNtRzlNeFFQRG1VT3lpTGk2MW96T2VaQlRaX0NjeFhmQVducGVzNDhFdFBzMzU5azVPRTExQTVWYThhMl9sR0o4YkQ2SFhFa2pucVl2NmhNMWpIZUM4aTY4eW9JaDRJbjc0TlZoYllYcG1XcXE4Zk0tUFp3dlE?oc=5",
+     "s": "Outlook Respawn",
+     "p": "2026-11-28T13:30:00+00:00"
+    },
+    {
+     "t": "Pokémon Horizons Announces New Season Premiering October 2027",
+     "u": "https://news.google.com/rss/articles/CBMipwFBVV95cUxPRkk1LU5LaWR5cnRFNm5UbGtiMm45OElFRnlnRjVyamFwQ3FmZnNqNVl5WE1lakNwdkxZYjV2WVRmV1hGaFFOaHFGcVpNajhrSXExT3JvbElCTmxaZ0Q3TmdxNndhWVluN0U1OURUMkpNZ1BxNkZxS2VxaEZrNWI0a1RKQ1VDdWtMQXNyUU1XdWdwbElTU1FtbDlNM1FVaHNGS3FPaHZCWQ?oc=5",
+     "s": "Anime Trending",
+     "p": "2026-11-28T09:01:14+00:00"
+    },
+    {
+     "t": "Flash Ikumkani – Do Your Dance Ft. IV Swiss & Quote T",
+     "u": "https://news.google.com/rss/articles/CBMijgFBVV95cUxNOTdVbjczendPTFRJRl9uWnMzaXdlS1pDQXpZOVJOVjJ3MzRkYjVKTFdDNmVsOEw5b2NjNzg2dkZDNUluWTZNbTZXcGtzSU1XUDlzTkhJbXVEeHJTbEVoQmdqek9sQTJiRXZfZmRPVUR2bFpUZkMyTTY5aHhrN25KWGhRa2thMlUzOHItTUhB?oc=5",
+     "s": "TrendyHipHop",
+     "p": "2026-11-28T00:00:00+00:00"
+    }
+   ]
+  },
+  "luma ai": {
+   "today": 0,
+   "last_2h": 0,
+   "top": []
+  },
+  "midjourney": {
+   "today": 3,
+   "last_2h": 0,
+   "top": [
+    {
+     "t": "Midjourney unveils its first-ever spa in San Francisco's Union Square",
+     "u": "https://news.google.com/rss/articles/CBMiugFBVV95cUxPTjdFSkVoTWt3dmFRc1pvNjlmaDh0NFpRYV94dHc5RE5nVDNNWTdoOHZLUFF3NFl0d1Y1MllTejdBOEREUUw5NzFjWENKMXgwOVM4UThZNkhzWVQ0a0tydkZLWUhVNHplU3dUcUlob1g0a0pPTlgtRnZuYV9JQkFzSUxGaElSdEplc3doT1EtV2ZCRGtVVTNiTWhhMTl4eVNlbGczNjFnYWJ6Tlc2S2dCeE1QLWkxWjVJY0E?oc=5",
+     "s": "Markets of Tomorrow",
+     "p": "2026-11-28T15:01:52+00:00"
+    },
+    {
+     "t": "Audun Raises 3 Million Dollars to Automate Debt Collection",
+     "u": "https://news.google.com/rss/articles/CBMilAFBVV95cUxPTnVnY1JQR2liTXRKVDdTWHpQcmZJRVFBMDk2QllLR0hmNnhCT0h0OHZlWWF6eXZrMjMtWGp4WVlrdmhPZ19TdzNtS1BfODJDYkhqaDRXY2hQX1RhVWZDNElkLWw0NmlqUnRzbEc0cXdvdUQxZjdfSlc0cThDRTNQZXZEM3ZlOHgtYk5tMk1jWEduWjhI?oc=5",
+     "s": "n24.com.tr",
+     "p": "2026-11-28T10:16:43+00:00"
+    },
+    {
+     "t": "AI is collapsing centuries of math and science research into days — is The Singularity upon us?",
+     "u": "https://news.google.com/rss/articles/CBMixgFBVV95cUxOTzljR0lpUmFJRENZWEoyTDdUSFZpQ0tfWmltV25tRGNCa19RekZmWmdHc1F4NnY1SjVCakNvZUpDUWxyNDFYaU8zSy13YUdscDFjR1ZuaHEwSzNwaG9hQzZoenBVUXFVNlE0cWVmX0xHalYwaFdSeENuM3F5ZHZuNHBRbURvVjFYRnc1ejE5dERxU2dDUEx3cG8yeDR0UkVqZ281alpLTG5rUGhoVkxCNVh6eTJudWF6MENPd3V4clhGVWh1YlE?oc=5",
+     "s": "VentureBeat",
+     "p": "2026-11-27T19:16:10+00:00"
+    }
+   ]
+  },
+  "nano banana": {
+   "today": 9,
+   "last_2h": 1,
+   "top": [
+    {
+     "t": "TOZO Showcases VIZO Z1 Pro for a Bigger Personal Entertainment Experience This Holiday Season",
+     "u": "https://news.google.com/rss/articles/CBMinwFBVV95cUxPUktjdXBobFJaUjN1ZlNVTzNaNUFMSFJYbHp2eE1Vc1dxWkNNWkZBdzNGVmd5NTZGUXljcjhHTG8ybGgtaW9rSDdtZlFTZHFIU2Y0VU5LaDA0UTA2bTJWVFlONk1SdEN3RDN2LWZ4QUp6aG5peHYyVkR2QjlVYlo4eHJMaHV2c0w2YmMyRWRPdGxoenR1QnVLVkFKTUhrSXM?oc=5",
+     "s": "openPR.com",
+     "p": "2026-11-28T16:38:03+00:00"
+    },
+    {
+     "t": "EasySMX Launches S05 Pro Wireless Gaming Controller",
+     "u": "https://news.google.com/rss/articles/CBMikAFBVV95cUxQeHVCU1pmUzh0RTVraVI5YzVLWWppMW5ENVQxNUFKa1JGM2FjNTE0bnRBZWNVYnluT2Fubnk5N1RUWWlqV2lCTEpRWlExb2R2OFJYZFdmSkwzTDdZam5zTUVqT2FMQkZMNmRhU1ZtYnYydjY2RGhPLWt4bjMzQ01nY0Zabmdia015b0hJN1c5OHU?oc=5",
+     "s": "openPR.com",
+     "p": "2026-11-28T13:18:05+00:00"
+    },
+    {
+     "t": "Google Deepmind's \"Humanity's First Exam\" shows top AI models still fail simple everyday tasks under repeated runs",
+     "u": "https://news.google.com/rss/articles/CBMi0AFBVV95cUxOa0p4QWdjN1VOcUJBaUZCQjRlRU1DWlJUVi1VWHZ0SmRwdWRTVGYyVm4xNTNzaXpsMXlocGhNbEJpNmE3Y0Uya05wLTF6c1dkczlzcENRNnIxZGNfcVNkZXFycDdBaUZTSnFKVmVVTUF1Nm83d19SUFpXazFsTUVMeGVHSldBSUtMcUlsVDZUd2poQUJ2TU01R0pLRGNyN3dvWVp2T2Y3bHowUmoydlBQMmp1NWk4V2MtS0hpaHVxNE9BbTZka1l6anNQWXY1ai1B?oc=5",
+     "s": "The Decoder",
+     "p": "2026-11-28T11:12:30+00:00"
+    }
+   ]
+  },
+  "seedream": {
+   "today": 1,
+   "last_2h": 0,
+   "top": [
+    {
+     "t": "Higgsfield Black Friday Sale (NOV. 2026) – 75% Annual OFF LIVE",
+     "u": "https://news.google.com/rss/articles/CBMiYEFVX3lxTE9aVDVsM21Hcy1obVBsYTNqYmhGcnpaYzluYTRaUmxpVndHWk9PZ1QwV2pFdzFESC05YS1DeUFYbDlxYk5KS3FaNHU5TWVEcEIzS1BYWmxETmJXVkpXQV9qVA?oc=5",
+     "s": "DemandSage",
+     "p": "2026-11-27T21:59:28+00:00"
+    }
+   ]
+  },
+  "flux ai": {
+   "today": 0,
+   "last_2h": 0,
+   "top": []
+  },
+  "ltx video": {
+   "today": 0,
+   "last_2h": 0,
+   "top": []
+  },
+  "wan 2": {
+   "today": 0,
+   "last_2h": 0,
+   "top": []
+  },
+  "hunyuanvideo": {
+   "today": 0,
+   "last_2h": 0,
+   "top": []
+  },
+  "comfyui": {
+   "today": 0,
+   "last_2h": 0,
+   "top": []
+  },
+  "higgsfield": {
+   "today": 4,
+   "last_2h": 0,
+   "top": [
+    {
+     "t": "Kazakhstan plans $2 billion sovereign AI hub with Nvidia B300 chips",
+     "u": "https://news.google.com/rss/articles/CBMiqAJBVV95cUxQTWFzUTRsZ2RrUG51ajZrazJjN3RmWnhVQXlORG8tS2FxOEhlR2IyQjVJa2FBQTVzRXBCT21icEROZFczZXlzTjladmZpcldEX1JQQVl5c3FXcWVIUmZZY1Y2dC1ZOTE4dEp2M2YyMFJZb2w5aHEtanY5YkhkT3VJSlVqb2JETDJ1SWRwMms0eEwtVU9NMWI2RHFVODY2aG40S01CN2Zkb3lPVFlHMjg5WWR4S0JFb1M1VXVDbnpMdExBX3N0MTd4dHZ6N3RrdU5ncTlOVG0zZE9Nb2llZTVFRk1mOHVSVW1nbE93bjBwZzF6X3BsUlFKcTg5T25nVnp4V2ZhVFY2a2gyX2FoZkc3RFBRamo2YzNDeFRsTTdJMnd5TUlIUV9TbtIB8gFBVV95cUxPbUhZNU1EaWNhc2JFTFFLYlNKSlp3anJfOVRYYmlKYnNsc1R5NlhMSTBGenhJR1BwZUdyeVNzSmtJNVMtRlJaa3NSc052MU1CZjljamZfdHRKV2swUFdYcklkeGZpVEswcTJzZi1HMk5iUHBqXzhNdnVub0tOc08zWFBObXl4eHVWd0gxaEEyaVZhZTIzbXR0eWg0TzlPN25kZ1hpTmc2aDM4cEg4RTg3UUVsZXBudENsaVBlUVJlR0VsVjVIdHZZQzVXbnE1LWFEVTh4T0s1TWMyU3ozT3RjNHVGam9fVGtEa0F1bi0zTi1xdw?oc=5",
+     "s": "ET Datacenters",
+     "p": "2026-11-28T02:20:02+00:00"
+    },
+    {
+     "t": "Higgsfield Black Friday Sale (NOV. 2026) – 75% Annual OFF LIVE",
+     "u": "https://news.google.com/rss/articles/CBMiYEFVX3lxTE9aVDVsM21Hcy1obVBsYTNqYmhGcnpaYzluYTRaUmxpVndHWk9PZ1QwV2pFdzFESC05YS1DeUFYbDlxYk5KS3FaNHU5TWVEcEIzS1BYWmxETmJXVkpXQV9qVA?oc=5",
+     "s": "DemandSage",
+     "p": "2026-11-27T21:59:28+00:00"
+    },
+    {
+     "t": "MAGI-2 vs Seedance 2.5 (2026) — Blind Benchmarks, Reference Limits, and Real Cost Math",
+     "u": "https://news.google.com/rss/articles/CBMigAFBVV95cUxOajlhc1Rwd3Vfc3FaMkFKZzRkNllzUUVJMmwwVTkwOXNLd1dhWDItRTRDLW1PUC1Za1BucUZTa29iWWZHV0JZeklPZlozU2cxNmg0dGhPVllIaWU0YW5LTlBvT3dDNVZHemRGcVZfWUwtRWFhYy1xVGp5OWxZYzhSdw?oc=5",
+     "s": "Nerdbot",
+     "p": "2026-11-27T18:06:30+00:00"
+    }
+   ]
+  },
+  "ai video generator": {
+   "today": 4,
+   "last_2h": 0,
+   "top": [
+    {
+     "t": "Best Free AI Video Generators 2026: Daily Credits, No Watermark",
+     "u": "https://news.google.com/rss/articles/CBMiX0FVX3lxTE05R1VuQ3ZaMFdnZUJOZTVCc25ibHlfSWJIa0dfTHpabVlaVzdsUXVQeEhpY2VEQzd0b0pRV2dBQTFEUXB5MmVJemphaG1VWUFXY1VPblhOWlN1LUxZd0tn?oc=5",
+     "s": "Fello AI",
+     "p": "2026-11-28T12:14:01+00:00"
+    },
+    {
+     "t": "CapCut World London Marks Grand Finale of Its First Ever Global Event Series",
+     "u": "https://news.google.com/rss/articles/CBMioAFBVV95cUxNTGl5MDJubWQ1Q1VsWV80OHVPOEU2ZmJlQ3hKRE8tbFhac1g1Y1hVY0dTd3ZMSXJSWTlKVHNMQVpaNmNwV21ic0VCSTA4OXJMY2NINERXVElsWDBMVElzOTdybkRKa0JyQXNLWmpFV1Brcm41N3VaT29MMFZ5a25EQXhwNDRNTVJrcU1hQUhpTGwxU192RngyVkQzcFdycklp?oc=5",
+     "s": "Yahoo Finance",
+     "p": "2026-11-28T10:10:00+00:00"
+    },
+    {
+     "t": "OpenGen.ai Review: A Versatile AI Studio for Creators",
+     "u": "https://news.google.com/rss/articles/CBMijAFBVV95cUxPM2JqMzJCNjhra0h0STYxcXE2dE9GeGg0dVpHYWRYa2ZoeWhJSFRwUE9XNE9hdk1VVVNfNGI4QlFSZ2hOMXVGY29UakNxY3pmcjJKQVFzaHAzeVpUcVJkYVBfWGF3YWxub0lvanMwRi1UY3pCV19wSzN0LVhhcWRVc2lqQTZnZlhneWljaQ?oc=5",
+     "s": "Nerdbot",
+     "p": "2026-11-28T08:11:43+00:00"
+    }
+   ]
+  },
+  "open source video model": {
+   "today": 1,
+   "last_2h": 0,
+   "top": [
+    {
+     "t": "What Are AI Data Centers? Uses, Count and Downsides",
+     "u": "https://news.google.com/rss/articles/CBMiWEFVX3lxTE9VbkdZOWdKbmtfX3doaHp2Rl8tR2JsSTlrVE1BYS1UU1h0YVlQWkpZejJEYmNxbWJFQjg3MEI4Mmt6Yy1VS01PRjJkRWhWekZEY2tMdm13N04?oc=5",
+     "s": "Fello AI",
+     "p": "2026-11-28T07:06:28+00:00"
+    }
+   ]
+  },
+  "elevenlabs": {
+   "today": 6,
+   "last_2h": 1,
+   "top": [
+    {
+     "t": "Disrupt the Ordinary Hackathon",
+     "u": "https://news.google.com/rss/articles/CBMipAFBVV95cUxPOEtfWFRBaU1jRFJjNnFoWTNTWVIxT2NKLUlHRXZnNjc0bU1fMkFBcFNhS2Rlc3h3eDJ3RlFQS1A1OVp0Rlg5ZXB1Y0d1NzFNQ0dVdGVJcmVMYl81elktaEJYOVR1ckNJM1VJWVI0UnZMR3hCa3dSSXJBcDU2aXNRS21BbUhOaDVENFZlVDFzSFdnUGE0SnVwQkE2MXRQQllGR0JzNA?oc=5",
+     "s": "Superpower Daily",
+     "p": "2026-11-28T16:47:18+00:00"
+    },
+    {
+     "t": "ElevenLabs to buy Japanese voice AI lab Kotoba",
+     "u": "https://news.google.com/rss/articles/CBMid0FVX3lxTFBZakNNTUF1R2p2dnBZdW9Gdm41RnB6NUpram1pdHk5M3VlTEVMUGN1YzA5dGp6QnBoMXhIN1RuVW1ucmtQR1VVc2NxOWhMelNHUVFkbmV2VElvOHNwSU5Eb0s4OEFDV0pORGhMaTFadXh2eFpOTWlJ?oc=5",
+     "s": "Outsource Accelerator",
+     "p": "2026-11-28T01:00:00+00:00"
+    },
+    {
+     "t": "Voice AI Reshapes Telecom Operations Amid Rising Security and Infrastructure Demands + Video",
+     "u": "https://news.google.com/rss/articles/CBMiO0FVX3lxTFBnVl9mVndjU3NEVlVjb2VnRHFWRTZHUjU5aDZPXzNBUGNraDhoZDktWktVVnRlYzFCQjJn?oc=5",
+     "s": "Howl.Link",
+     "p": "2026-11-27T22:03:31+00:00"
+    }
+   ]
+  },
+  "suno ai": {
+   "today": 4,
+   "last_2h": 0,
+   "top": [
+    {
+     "t": "Germany proposes AI copyright payments for musicians",
+     "u": "https://news.google.com/rss/articles/CBMitwFBVV95cUxOX2ZTUURSUTdfVkp3X2RsR016QWdZU0MyTE92bVZWSzBydXFsc3pucUlfMk9XNVFna0VXNDJ5cnYwb1FIdnhRSWRoWVhHRmpKYnk0QjRLT1RETFJrOFl4dFdSVjliUUZLcFdJbU5mRXhiSEdiRmxYN29XYnRxOHhtem5VR1BNRkUtdWJpejlqWW85cVc1a1RQd0g5N0xmRnY5S3M3c1lwZ1dpbEsyQXNZaGZnWFZ4cTA?oc=5",
+     "s": "KarloBag.eu",
+     "p": "2026-11-28T09:44:11+00:00"
+    },
+    {
+     "t": "Best Black Friday 2026 Deals That Should Be On Your Radar",
+     "u": "https://news.google.com/rss/articles/CBMibEFVX3lxTE9nR3V2RXhxNlRseFVWSlRNU3JSV2h5LXBhZ3hJNlBCOWNRUDA5emRCandIUWN2ZHRmbUV2MXZ5aGk4TjJFVjhXdVF3YUpDNVdRV24zcDJ3QlRIWlJjUmtkaExYRnZXYlp0SjJ3QtIBbEFVX3lxTE9nR3V2RXhxNlRseFVWSlRNU3JSV2h5LXBhZ3hJNlBCOWNRUDA5emRCandIUWN2ZHRmbUV2MXZ5aGk4TjJFVjhXdVF3YUpDNVdRV24zcDJ3QlRIWlJjUmtkaExYRnZXYlp0SjJ3Qg?oc=5",
+     "s": "Beebom",
+     "p": "2026-11-28T07:30:37+00:00"
+    },
+    {
+     "t": "Chicks Join Lawsuit Against AI Song Generator Suno",
+     "u": "https://news.google.com/rss/articles/CBMiiwFBVV95cUxQNzYweTc1bnNiNzBwLUY5OUQ0TVNjMUNUX24tTHZvbzRVMWxPXy0zZkNsOXFQU0pDbURTcFlsSXl0bEVIVXg5X1NOMHJPdlEySkpIUE5MRFlxSHJQeU9sUER2RVF3am11Skxtblhra3dMMFBYWGV0M205Z2ozNEdlcGExWFdsZlRDMVcw?oc=5",
+     "s": "Wisevoter",
+     "p": "2026-11-28T03:18:07+00:00"
+    }
+   ]
+  }
+ },
+ "big_games": [
+  {
+   "league": "LaLiga",
+   "c": "ES",
+   "name": "Atlético Madrid at Elche",
+   "txt": "Elche 0 - 2 Atlético Madrid",
+   "date": "2026-11-28T17:30Z",
+   "state": "in",
+   "detail": "14'",
+   "notes": [],
+   "big": "team",
+   "u": "https://www.espn.com/soccer/match/_/gameId/401882793"
+  },
+  {
+   "league": "Ligue 1",
+   "c": "FR",
+   "name": "Lorient at Paris Saint-Germain",
+   "txt": "Paris Saint-Germain vs Lorient",
+   "date": "2026-11-28T19:45Z",
+   "state": "pre",
+   "detail": "Scheduled",
+   "notes": [],
+   "big": "team",
+   "u": "https://www.espn.com/soccer/match/_/gameId/401876387/lorient-paris-saint-germain"
+  },
+  {
+   "league": "Serie A",
+   "c": "IT",
+   "name": "Genoa at Internazionale",
+   "txt": "Internazionale vs Genoa",
+   "date": "2026-11-28T19:45Z",
+   "state": "pre",
+   "detail": "Scheduled",
+   "notes": [],
+   "big": "team",
+   "u": "https://www.espn.com/soccer/match/_/gameId/401874977/genoa-internazionale"
+  },
+  {
+   "league": "LaLiga",
+   "c": "ES",
+   "name": "Alavés at Real Madrid",
+   "txt": "Real Madrid vs Alavés",
+   "date": "2026-11-28T20:00Z",
+   "state": "pre",
+   "detail": "Scheduled",
+   "notes": [],
+   "big": "team",
+   "u": "https://www.espn.com/soccer/match/_/gameId/401882789/alaves-real-madrid"
+  },
+  {
+   "league": "College Football",
+   "c": "US",
+   "name": "USC Trojans at UCLA Bruins",
+   "txt": "USC Trojans vs UCLA Bruins",
+   "date": "2026-11-28T20:30Z",
+   "state": "pre",
+   "detail": "11/28 - 3:30 PM EST",
+   "notes": [],
+   "big": "ranked",
+   "u": "https://www.espn.com/college-football/game/_/gameId/401858543/usc-ucla"
+  },
+  {
+   "league": "DFB-Pokal",
+   "c": "DE",
+   "name": "Hertha Berlin at Bayern Munich",
+   "txt": "Bayern Munich vs Hertha Berlin",
+   "date": "2026-12-01T19:45Z",
+   "state": "pre",
+   "detail": "Scheduled",
+   "notes": [],
+   "big": "team",
+   "u": "https://www.espn.com/soccer/match/_/gameId/401932935/hertha-berlin-bayern-munich"
+  },
+  {
+   "league": "Bundesliga",
+   "c": "DE",
+   "name": "Bayern Munich at Hamburg SV",
+   "txt": "Hamburg SV 0 - 0 Bayern Munich",
+   "date": "2026-11-28T14:30Z",
+   "state": "post",
+   "detail": "FT",
+   "notes": [],
+   "big": "team",
+   "u": "https://www.espn.com/soccer/match/_/gameId/401884722/bayern-munich-hamburg-sv"
+  },
+  {
+   "league": "NBA",
+   "c": "US",
+   "name": "Miami Heat at New York Knicks",
+   "txt": "New York Knicks 105 - 108 Miami Heat",
+   "date": "2026-11-28T00:00Z",
+   "state": "post",
+   "detail": "Final",
+   "notes": [
+    "NBA Cup - Group Play"
+   ],
+   "big": "special",
+   "u": "https://www.espn.com/nba/game/_/gameId/401909326/heat-knicks"
+  },
+  {
+   "league": "NBA",
+   "c": "US",
+   "name": "Milwaukee Bucks at Detroit Pistons",
+   "txt": "Detroit Pistons 113 - 98 Milwaukee Bucks",
+   "date": "2026-11-28T00:30Z",
+   "state": "post",
+   "detail": "Final",
+   "notes": [
+    "NBA Cup - Group Play"
+   ],
+   "big": "special",
+   "u": "https://www.espn.com/nba/game/_/gameId/401909327/bucks-pistons"
+  },
+  {
+   "league": "NBA",
+   "c": "US",
+   "name": "Philadelphia 76ers at Indiana Pacers",
+   "txt": "Indiana Pacers 87 - 111 Philadelphia 76ers",
+   "date": "2026-11-28T00:30Z",
+   "state": "post",
+   "detail": "Final",
+   "notes": [
+    "NBA Cup - Group Play"
+   ],
+   "big": "special",
+   "u": "https://www.espn.com/nba/game/_/gameId/401909328/76ers-pacers"
+  },
+  {
+   "league": "NBA",
+   "c": "US",
+   "name": "Brooklyn Nets at Toronto Raptors",
+   "txt": "Toronto Raptors 124 - 100 Brooklyn Nets",
+   "date": "2026-11-28T00:30Z",
+   "state": "post",
+   "detail": "Final",
+   "notes": [
+    "NBA Cup - Group Play"
+   ],
+   "big": "special",
+   "u": "https://www.espn.com/nba/game/_/gameId/401909329/nets-raptors"
+  },
+  {
+   "league": "NBA",
+   "c": "US",
+   "name": "Atlanta Hawks at Boston Celtics",
+   "txt": "Boston Celtics 86 - 87 Atlanta Hawks",
+   "date": "2026-11-28T01:00Z",
+   "state": "post",
+   "detail": "Final",
+   "notes": [
+    "NBA Cup - Group Play"
+   ],
+   "big": "special",
+   "u": "https://www.espn.com/nba/game/_/gameId/401909330/hawks-celtics"
+  },
+  {
+   "league": "NBA",
+   "c": "US",
+   "name": "Memphis Grizzlies at Minnesota Timberwolves",
+   "txt": "Minnesota Timberwolves 109 - 114 Memphis Grizzlies",
+   "date": "2026-11-28T01:30Z",
+   "state": "post",
+   "detail": "Final",
+   "notes": [
+    "NBA Cup - Group Play"
+   ],
+   "big": "special",
+   "u": "https://www.espn.com/nba/game/_/gameId/401909331/grizzlies-timberwolves"
+  },
+  {
+   "league": "NBA",
+   "c": "US",
+   "name": "Dallas Mavericks at Phoenix Suns",
+   "txt": "Phoenix Suns 109 - 113 Dallas Mavericks",
+   "date": "2026-11-28T02:00Z",
+   "state": "post",
+   "detail": "Final",
+   "notes": [
+    "NBA Cup - Group Play"
+   ],
+   "big": "special",
+   "u": "https://www.espn.com/nba/game/_/gameId/401909332/mavericks-suns"
+  },
+  {
+   "league": "NBA",
+   "c": "US",
+   "name": "Los Angeles Lakers at San Antonio Spurs",
+   "txt": "San Antonio Spurs 99 - 96 Los Angeles Lakers",
+   "date": "2026-11-28T02:30Z",
+   "state": "post",
+   "detail": "Final",
+   "notes": [
+    "NBA Cup - Group Play"
+   ],
+   "big": "special",
+   "u": "https://www.espn.com/nba/game/_/gameId/401909333/lakers-spurs"
+  },
+  {
+   "league": "NBA",
+   "c": "US",
+   "name": "Denver Nuggets at Utah Jazz",
+   "txt": "Utah Jazz 107 - 120 Denver Nuggets",
+   "date": "2026-11-28T02:30Z",
+   "state": "post",
+   "detail": "Final",
+   "notes": [
+    "NBA Cup - Group Play"
+   ],
+   "big": "special",
+   "u": "https://www.espn.com/nba/game/_/gameId/401909334/nuggets-jazz"
+  },
+  {
+   "league": "NBA",
+   "c": "US",
+   "name": "New Orleans Pelicans at LA Clippers",
+   "txt": "LA Clippers 104 - 105 New Orleans Pelicans",
+   "date": "2026-11-28T02:30Z",
+   "state": "post",
+   "detail": "Final",
+   "notes": [
+    "NBA Cup - Group Play"
+   ],
+   "big": "special",
+   "u": "https://www.espn.com/nba/game/_/gameId/401909335/pelicans-clippers"
+  },
+  {
+   "league": "NBA",
+   "c": "US",
+   "name": "Golden State Warriors at Portland Trail Blazers",
+   "txt": "Portland Trail Blazers 116 - 94 Golden State Warriors",
+   "date": "2026-11-28T02:30Z",
+   "state": "post",
+   "detail": "Final",
+   "notes": [
+    "NBA Cup - Group Play"
+   ],
+   "big": "special",
+   "u": "https://www.espn.com/nba/game/_/gameId/401909336/warriors-trail-blazers"
+  },
+  {
+   "league": "Premier League",
+   "c": "GB",
+   "name": "Brentford at Manchester United",
+   "txt": "Manchester United 0 - 4 Brentford",
+   "date": "2026-11-28T15:00Z",
+   "state": "post",
+   "detail": "FT",
+   "notes": [],
+   "big": "team",
+   "u": "https://www.espn.com/soccer/match/_/gameId/401879226/brentford-manchester-united"
+  }
+ ],
+ "events_next_14_days": [
+  {
+   "date": "2026-11-29",
+   "title": "1. Advent + Euro 7 rule for new cars",
+   "region": "DE",
+   "category": "Culture"
+  },
+  {
+   "date": "2026-11-30",
+   "title": "Cyber Monday",
+   "region": "US",
+   "category": "Shopping"
+  },
+  {
+   "date": "2026-12-02",
+   "title": "Spotify Wrapped 2026",
+   "region": "Global",
+   "category": "Music",
+   "approx": true,
+   "note": "Usually first week of December."
+  },
+  {
+   "date": "2026-12-06",
+   "title": "Nikolaus",
+   "region": "DE",
+   "category": "Culture"
+  },
+  {
+   "date": "2026-12-09",
+   "title": "TIME Person of the Year",
+   "region": "US",
+   "category": "Culture",
+   "approx": true
+  },
+  {
+   "date": "2026-12-10",
+   "title": "The Game Awards 2026 (Los Angeles)",
+   "region": "Global",
+   "category": "Gaming",
+   "note": "Night of 10-11 Dec in Europe. Trailers & surprise reveals.",
+   "url": "https://thegameawards.com/"
+  },
+  {
+   "date": "2026-12-11",
+   "title": "Jumanji 3 (cinemas)",
+   "region": "Global",
+   "category": "Movies",
+   "approx": true
+  }
+ ],
+ "video_top": [
+  {
+   "id": "d99abf2ee2af",
+   "name": "#LMSYFanMeetingMadrid",
+   "query": "LMSYFanMeetingMadrid",
+   "countries": [
+    "DE",
+    "US",
+    "GB",
+    "ES",
+    "FR",
+    "IT",
+    "AT",
+    "CH"
+   ],
+   "phase": "rising",
+   "vscore": 91.1,
+   "has_yt": false
+  },
+  {
+   "id": "2eb556ab6e78",
+   "name": "Brentford",
+   "query": "Brentford",
+   "countries": [
+    "DE",
+    "US",
+    "GB",
+    "ES",
+    "FR",
+    "IT",
+    "AT",
+    "CH"
+   ],
+   "phase": "rising",
+   "vscore": 75.0,
+   "has_yt": false
+  },
+  {
+   "id": "ed56bb97f96a",
+   "name": "Kimmich",
+   "query": "Kimmich",
+   "countries": [
+    "DE",
+    "FR",
+    "CH"
+   ],
+   "phase": "rising",
+   "vscore": 46.9,
+   "has_yt": false
+  },
+  {
+   "id": "7b6fc988f7a2",
+   "name": "Ipswich Town",
+   "query": "Ipswich Town",
+   "countries": [
+    "GB",
+    "ES",
+    "IT",
+    "AT",
+    "NL"
+   ],
+   "phase": "rising",
+   "vscore": 45.9,
+   "has_yt": false
+  },
+  {
+   "id": "b663872af6a2",
+   "name": "Earthquake",
+   "query": "Earthquake",
+   "countries": [
+    "US"
+   ],
+   "phase": "rising",
+   "vscore": 42.1,
+   "has_yt": false
+  },
+  {
+   "id": "187bda847b70",
+   "name": "Justice",
+   "query": "Justice",
+   "countries": [
+    "DE",
+    "US",
+    "GB",
+    "FR",
+    "IT"
+   ],
+   "phase": "rising",
+   "vscore": 39.8,
+   "has_yt": false
+  },
+  {
+   "id": "de3fe2e8541d",
+   "name": "Psv - Ga Eagles",
+   "query": "Psv - Ga Eagles",
+   "countries": [
+    "GB",
+    "ES",
+    "FR",
+    "NL"
+   ],
+   "phase": "rising",
+   "vscore": 29.8,
+   "has_yt": false
+  },
+  {
+   "id": "88dbb180d191",
+   "name": "#DavisCup",
+   "query": "DavisCup",
+   "countries": [
+    "IT"
+   ],
+   "phase": "rising",
+   "vscore": 27.6,
+   "has_yt": false
+  },
+  {
+   "id": "4920df6644ad",
+   "name": "Charlotte Arnould",
+   "query": "Charlotte Arnould",
+   "countries": [
+    "DE",
+    "GB",
+    "FR"
+   ],
+   "phase": "rising",
+   "vscore": 27.0,
+   "has_yt": false
+  },
+  {
+   "id": "eb5f499f7177",
+   "name": "Jodar",
+   "query": "Jodar",
+   "countries": [
+    "ES",
+    "IT"
+   ],
+   "phase": "rising",
+   "vscore": 25.5,
+   "has_yt": false
+  },
+  {
+   "id": "fa8d801e6bfc",
+   "name": "Paderborn",
+   "query": "Paderborn",
+   "countries": [
+    "DE"
+   ],
+   "phase": "rising",
+   "vscore": 25.2,
+   "has_yt": false
+  },
+  {
+   "id": "0146992f9f8c",
+   "name": "Michael Hatzius",
+   "query": "Michael Hatzius",
+   "countries": [
+    "DE"
+   ],
+   "phase": "rising",
+   "vscore": 23.8,
+   "has_yt": false
+  },
+  {
+   "id": "d91483638b01",
+   "name": "Focker-in-Law",
+   "query": "Focker-in-Law",
+   "countries": [
+    "DE",
+    "US"
+   ],
+   "phase": "rising",
+   "vscore": 23.2,
+   "has_yt": false
+  },
+  {
+   "id": "7519a2e062e4",
+   "name": "Costa Rica",
+   "query": "Costa Rica",
+   "countries": [
+    "FR",
+    "IT"
+   ],
+   "phase": "peak",
+   "vscore": 21.4,
+   "has_yt": false
+  },
+  {
+   "id": "dfac9dc220fb",
+   "name": "Drucker",
+   "query": "Drucker",
+   "countries": [
+    "FR"
+   ],
+   "phase": "rising",
+   "vscore": 21.4,
+   "has_yt": false
+  },
+  {
+   "id": "16e840d7199a",
+   "name": "Rossi",
+   "query": "Rossi",
+   "countries": [
+    "ES",
+    "FR",
+    "IT"
+   ],
+   "phase": "rising",
+   "vscore": 21.0,
+   "has_yt": false
+  },
+  {
+   "id": "59f9cf023696",
+   "name": "Championship",
+   "query": "Championship",
+   "countries": [
+    "US",
+    "GB",
+    "ES",
+    "FR",
+    "NL"
+   ],
+   "phase": "rising",
+   "vscore": 20.6,
+   "has_yt": false
+  },
+  {
+   "id": "8d800ce3ec95",
+   "name": "Canon Français",
+   "query": "Canon Français",
+   "countries": [
+    "FR"
+   ],
+   "phase": "rising",
+   "vscore": 20.6,
+   "has_yt": false
+  },
+  {
+   "id": "7bc1aed6e4f4",
+   "name": "Bundesliga",
+   "query": "Bundesliga",
+   "countries": [
+    "DE",
+    "AT",
+    "CH"
+   ],
+   "phase": "peak",
+   "vscore": 20.3,
+   "has_yt": false
+  },
+  {
+   "id": "e053e28d13e8",
+   "name": "Looking for affordable finds this Black Friday? These deals are all under $50",
+   "query": "looking affordable find black friday",
+   "countries": [
+    "DE",
+    "US",
+    "GB",
+    "ES"
+   ],
+   "phase": "peak",
+   "vscore": 19.2,
+   "has_yt": false
+  },
+  {
+   "id": "2e399f00ec21",
+   "name": "Torino - Lazio",
+   "query": "Torino - Lazio",
+   "countries": [
+    "DE",
+    "CH",
+    "NL"
+   ],
+   "phase": "rising",
+   "vscore": 17.7,
+   "has_yt": false
+  },
+  {
+   "id": "e4b8d7884453",
+   "name": "Old Trafford",
+   "query": "Old Trafford",
+   "countries": [
+    "US",
+    "GB",
+    "ES",
+    "FR"
+   ],
+   "phase": "rising",
+   "vscore": 17.5,
+   "has_yt": false
+  },
+  {
+   "id": "9ff25c1b54d5",
+   "name": "Marine Le Pen",
+   "query": "Marine Le Pen",
+   "countries": [
+    "FR"
+   ],
+   "phase": "rising",
+   "vscore": 17.1,
+   "has_yt": false
+  },
+  {
+   "id": "13cbda8e1163",
+   "name": "Grand Theft Auto VI",
+   "query": "Grand Theft Auto VI",
+   "countries": [
+    "US",
+    "GB",
+    "NL"
+   ],
+   "phase": "rising",
+   "vscore": 16.9,
+   "has_yt": false
+  },
+  {
+   "id": "baf780b9a78c",
+   "name": "Santiago Abascal",
+   "query": "Santiago Abascal",
+   "countries": [
+    "ES",
+    "EU"
+   ],
+   "phase": "rising",
+   "vscore": 16.8,
+   "has_yt": false
+  },
+  {
+   "id": "c9e4c13ed7f5",
+   "name": "Mediterraneo",
+   "query": "Mediterraneo",
+   "countries": [
+    "IT"
+   ],
+   "phase": "rising",
+   "vscore": 16.6,
+   "has_yt": false
+  },
+  {
+   "id": "7abb8dffbc3d",
+   "name": "Luka",
+   "query": "Luka",
+   "countries": [
+    "US",
+    "GB"
+   ],
+   "phase": "rising",
+   "vscore": 16.5,
+   "has_yt": false
+  },
+  {
+   "id": "3fd9d807faaa",
+   "name": "Nvidia wird zum Familienbetrieb: Plant Jensen Huang seine Nachfolge?",
+   "query": "nvidia familienbetrieb plant jensen huang",
+   "countries": [
+    "DE",
+    "US",
+    "FR"
+   ],
+   "phase": "rising",
+   "vscore": 16.2,
+   "has_yt": false
+  },
+  {
+   "id": "240d26722605",
+   "name": "Bonoloto: comprobar sorteo del viernes 27 de noviembre",
+   "query": "bonoloto comprobar sorteo vierne noviembre",
+   "countries": [
+    "ES"
+   ],
+   "phase": "rising",
+   "vscore": 16.2,
+   "has_yt": false
+  },
+  {
+   "id": "4eacf521cb1f",
+   "name": "Saison",
+   "query": "Saison",
+   "countries": [
+    "DE",
+    "FR"
+   ],
+   "phase": "rising",
+   "vscore": 16.0,
+   "has_yt": false
+  }
+ ]
+}
